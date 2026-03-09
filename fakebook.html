@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Facebook – log in or sign up</title>
+<link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  background: #f0f2f5;
+  min-height: 100vh;
+}
+
+/* ── FAKE BROWSER CHROME (for the URL bar shot) ── */
+#browser-chrome {
+  background: #292a2d;
+  padding: 10px 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.browser-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-close  { width:12px;height:12px;border-radius:50%;background:#ff5f57;border:none;cursor:default; }
+.btn-min    { width:12px;height:12px;border-radius:50%;background:#febc2e;border:none;cursor:default; }
+.btn-max    { width:12px;height:12px;border-radius:50%;background:#28c840;border:none;cursor:default; }
+.browser-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  margin-left: 16px;
+}
+.tab {
+  background: #3c3d40;
+  border-radius: 8px 8px 0 0;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: #9aa0a6;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 200px;
+}
+.tab.active {
+  background: #f0f2f5;
+  color: #202124;
+}
+.tab-favicon {
+  width: 14px; height: 14px;
+  background: #1877f2;
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; color: white; font-weight: bold;
+  flex-shrink: 0;
+}
+.tab-close { color: #888; font-size: 13px; margin-left: 4px; }
+
+/* URL bar row */
+.browser-toolbar {
+  background: #f0f2f5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px 8px 0 0;
+}
+.nav-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: #5f6368;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: default;
+  flex-shrink: 0;
+}
+.nav-btn:hover { background: #e8eaed; }
+
+/* THE KEY PROP — fake URL bar with suspicious address */
+.url-bar {
+  flex: 1;
+  background: #fff;
+  border: 1.5px solid #dfe1e5;
+  border-radius: 22px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-family: Helvetica, Arial, sans-serif;
+}
+.url-bar:focus-within { border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,0.2); }
+.url-lock {
+  color: #d93025; /* RED lock — not secure! */
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.url-text {
+  flex: 1;
+  color: #202124;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.url-text .url-scheme { color: #d93025; }   /* http:// in red — not secure */
+.url-text .url-host   { color: #d93025; font-weight: 600; }  /* fake domain in red */
+.url-text .url-path   { color: #5f6368; }
+.url-not-secure {
+  font-size: 11px;
+  color: #d93025;
+  border: 1px solid #d93025;
+  border-radius: 3px;
+  padding: 1px 5px;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+/* ── FACEBOOK PAGE ── */
+#fb-navbar {
+  background: #1877f2;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.fb-wordmark {
+  font-size: 28px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -1.5px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  text-transform: lowercase;
+  user-select: none;
+}
+
+.page-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 56px - 72px);
+  padding: 40px 16px;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+/* Left side tagline */
+.tagline-side {
+  max-width: 440px;
+}
+.tagline-side h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: #1877f2;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  font-family: Georgia, serif;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+.tagline-side p {
+  font-size: 24px;
+  font-weight: 400;
+  color: #1c1e21;
+  line-height: 1.3;
+}
+
+/* Login card */
+.login-card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 8px 24px rgba(0,0,0,0.08);
+  padding: 20px;
+  width: 396px;
+  flex-shrink: 0;
+}
+
+.input-field {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  font-size: 17px;
+  color: #1c1e21;
+  background: #fff;
+  outline: none;
+  font-family: Helvetica, Arial, sans-serif;
+  transition: border-color 0.15s;
+}
+.input-field:focus { border-color: #1877f2; box-shadow: 0 0 0 2px rgba(24,119,242,0.2); }
+.input-field::placeholder { color: #bcc0c4; }
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: #1877f2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: Helvetica, Arial, sans-serif;
+  margin-bottom: 4px;
+  transition: background 0.15s;
+}
+.login-btn:hover { background: #166fe5; }
+
+.forgot-link {
+  display: block;
+  text-align: center;
+  color: #1877f2;
+  font-size: 14px;
+  text-decoration: none;
+  margin: 12px 0;
+}
+.forgot-link:hover { text-decoration: underline; }
+
+.divider {
+  border: none;
+  border-top: 1px solid #dddfe2;
+  margin: 16px 0;
+}
+
+.create-btn {
+  display: block;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 14px 24px;
+  background: #42b72a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: Helvetica, Arial, sans-serif;
+  transition: background 0.15s;
+}
+.create-btn:hover { background: #36a420; }
+
+/* Footer */
+#fb-footer {
+  background: #f0f2f5;
+  padding: 16px;
+  border-top: 1px solid #dddfe2;
+}
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.footer-links a {
+  color: #8a8d91;
+  font-size: 12px;
+  text-decoration: none;
+}
+.footer-links a:hover { text-decoration: underline; }
+.footer-copy {
+  text-align: center;
+  font-size: 11px;
+  color: #8a8d91;
+  margin-top: 4px;
+}
+
+/* ── FOR FILMING NOTE ── */
+#filming-note {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.85);
+  color: #f0c040;
+  font-family: monospace;
+  font-size: 11px;
+  text-align: center;
+  padding: 4px;
+  z-index: 9999;
+  letter-spacing: 0.05em;
+}
+</style>
+</head>
+<body>
+
+<!-- FAKE BROWSER CHROME — for the URL bar close-up shot -->
+<div id="browser-chrome">
+  <div class="browser-titlebar">
+    <button class="btn-close"></button>
+    <button class="btn-min"></button>
+    <button class="btn-max"></button>
+    <div class="browser-tabs">
+      <div class="tab active">
+        <div class="tab-favicon">f</div>
+        Facebook – Log In or Sign Up
+        <span class="tab-close">✕</span>
+      </div>
+    </div>
+  </div>
+  <div class="browser-toolbar">
+    <button class="nav-btn">←</button>
+    <button class="nav-btn">→</button>
+    <button class="nav-btn">↺</button>
+    <!-- THE PROP: suspicious fake URL with red "Not Secure" warning -->
+    <div class="url-bar">
+      <span class="url-lock">🔓</span>
+      <div class="url-text">
+        <span class="url-scheme">http://</span><span class="url-host">faceb00k-secure-ph.login-verify.net</span><span class="url-path">/login.php?ref=mobile</span>
+      </div>
+      <span class="url-not-secure">Not Secure</span>
+    </div>
+    <button class="nav-btn">⋮</button>
+  </div>
+</div>
+
+<!-- FACEBOOK PAGE CONTENT -->
+<div id="fb-navbar">
+  <div class="fb-wordmark">facebook</div>
+</div>
+
+<div class="page-body">
+  <div class="tagline-side">
+    <h1>facebook</h1>
+    <p>Connect with friends and the world around you on Facebook.</p>
+  </div>
+
+  <div class="login-card">
+    <input class="input-field" type="text"     placeholder="Email address or phone number" />
+    <input class="input-field" type="password" placeholder="Password" />
+    <button class="login-btn">Log in</button>
+    <a href="#" class="forgot-link">Forgotten password?</a>
+    <hr class="divider"/>
+    <button class="create-btn">Create new account</button>
+  </div>
+</div>
+
+<div id="fb-footer">
+  <div class="footer-links">
+    <a href="#">English (UK)</a><a href="#">Filipino</a><a href="#">Español</a>
+    <a href="#">Français</a><a href="#">Deutsch</a><a href="#">+</a>
+  </div>
+  <div class="footer-links" style="margin-top:4px;">
+    <a href="#">Sign up</a><a href="#">Log in</a><a href="#">Messenger</a>
+    <a href="#">Facebook Lite</a><a href="#">Video</a><a href="#">Places</a>
+    <a href="#">Games</a><a href="#">Marketplace</a><a href="#">Privacy</a>
+    <a href="#">Terms</a><a href="#">Help</a>
+  </div>
+  <div class="footer-copy">Meta © 2026</div>
+</div>
+
+</body>
+</html>
