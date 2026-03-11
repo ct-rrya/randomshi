@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -631,4 +632,639 @@
 </div>
 
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartCord</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0a12;
+    --surface: #1a1220;
+    --card: #221830;
+    --rose: #c2185b;
+    --rose-bright: #e91e8c;
+    --rose-dim: rgba(194,24,91,0.15);
+    --green: #4caf7d;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --text: #f0e8f0;
+    --muted: #8a6a7a;
+    --border: rgba(194,24,91,0.12);
+  }
+
+  body {
+    background: var(--bg);
+    font-family: 'Space Grotesk', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  /* PHONE FRAME */
+  .phone {
+    width: 375px;
+    height: 812px;
+    background: var(--bg);
+    border-radius: 44px;
+    border: 2px solid rgba(194,24,91,0.25);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04), inset 0 0 60px rgba(194,24,91,0.03);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* NOTCH */
+  .notch {
+    width: 120px; height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  /* STATUS BAR */
+  .statusbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 24px 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* SCROLL CONTENT */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 0 24px;
+    scrollbar-width: none;
+  }
+  .content::-webkit-scrollbar { display: none; }
+
+  /* HEADER */
+  .header {
+    padding: 16px 20px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .header-left .greeting {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .header-left .app-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .header-left .app-name span { color: var(--rose-bright); }
+
+  .header-right {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 4px;
+  }
+
+  .icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .icon-btn:hover { background: var(--rose-dim); }
+
+  /* SUMMARY CARD */
+  .summary-card {
+    margin: 0 16px 16px;
+    background: linear-gradient(135deg, #2a1040 0%, #1a0a2e 50%, #200d38 100%);
+    border-radius: 20px;
+    padding: 18px 20px;
+    border: 1px solid rgba(194,24,91,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .summary-card::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(233,30,140,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .summary-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .summary-total {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .summary-total .unit {
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-left: 4px;
+  }
+
+  .summary-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 14px;
+  }
+
+  .summary-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .summary-stat .s-val {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .summary-stat .s-lbl {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .summary-divider {
+    width: 1px;
+    background: var(--border);
+    align-self: stretch;
+  }
+
+  .bill-scan-btn {
+    margin-top: 14px;
+    width: 100%;
+    padding: 10px;
+    background: rgba(233,30,140,0.12);
+    border: 1px dashed rgba(233,30,140,0.35);
+    border-radius: 10px;
+    color: var(--rose-bright);
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.2s;
+  }
+
+  .bill-scan-btn:hover { background: rgba(233,30,140,0.2); }
+
+  /* SECTION TITLE */
+  .section-title {
+    padding: 0 20px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .section-title .see-all {
+    font-size: 11px;
+    color: var(--rose-bright);
+    text-transform: none;
+    letter-spacing: 0;
+    cursor: pointer;
+  }
+
+  /* OUTLET CARDS */
+  .outlets {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 16px;
+  }
+
+  .outlet-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .outlet-card:hover {
+    border-color: rgba(194,24,91,0.3);
+    background: #261b35;
+  }
+
+  .outlet-card.active { border-color: rgba(194,24,91,0.35); }
+  .outlet-card.warning { border-color: rgba(245,158,11,0.35); }
+  .outlet-card.off { opacity: 0.5; }
+
+  .outlet-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+  }
+
+  .outlet-card.active::before { background: var(--rose-bright); }
+  .outlet-card.warning::before { background: var(--amber); }
+  .outlet-card.off::before { background: var(--muted); }
+
+  .outlet-icon {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .outlet-card.active .outlet-icon { background: rgba(194,24,91,0.15); }
+  .outlet-card.warning .outlet-icon { background: rgba(245,158,11,0.12); }
+  .outlet-card.off .outlet-icon { background: rgba(255,255,255,0.05); }
+
+  .outlet-info { flex: 1; min-width: 0; }
+
+  .outlet-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .outlet-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .outlet-metrics {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+  }
+
+  .outlet-watts {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text);
+  }
+
+  .outlet-card.warning .outlet-watts { color: var(--amber); }
+  .outlet-card.off .outlet-watts { color: var(--muted); }
+
+  .outlet-cost {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .outlet-card.active .outlet-cost { color: rgba(233,30,140,0.7); }
+
+  /* TOGGLE */
+  .toggle {
+    width: 36px; height: 20px;
+    background: var(--muted);
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  .toggle.on { background: var(--rose-bright); }
+  .toggle.warn { background: var(--amber); }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    background: white;
+    border-radius: 50%;
+    top: 3px; left: 3px;
+    transition: transform 0.2s;
+  }
+
+  .toggle.on::after,
+  .toggle.warn::after { transform: translateX(16px); }
+
+  /* BUDGET BAR */
+  .budget-section {
+    margin: 16px 16px 0;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+  }
+
+  .budget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .budget-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .budget-amounts {
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .budget-amounts .used { color: var(--rose-bright); font-weight: 600; }
+  .budget-amounts .total { color: var(--muted); }
+
+  .budget-bar-bg {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .budget-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--rose) 0%, var(--rose-bright) 100%);
+    width: 68%;
+    transition: width 0.8s ease;
+  }
+
+  .budget-note {
+    font-size: 10px;
+    color: var(--amber);
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    flex-shrink: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 10px 0 20px;
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+  }
+
+  .nav-item.active { opacity: 1; }
+  .nav-item:hover { opacity: 0.7; }
+
+  .nav-icon { font-size: 20px; }
+
+  .nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.04em;
+  }
+
+  .nav-item.active .nav-label { color: var(--rose-bright); }
+
+  /* LIVE DOT */
+  .live-dot {
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 4px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="notch"></div>
+
+  <div class="statusbar">
+    <span>9:41</span>
+    <span>●●●●  WiFi  🔋</span>
+  </div>
+
+  <div class="content">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-left">
+        <div class="greeting">Good morning, Rrya 👋</div>
+        <div class="app-name">Smart<span>Cord</span></div>
+      </div>
+      <div class="header-right">
+        <div class="icon-btn">🔔</div>
+        <div class="icon-btn">⚙️</div>
+      </div>
+    </div>
+
+    <!-- SUMMARY CARD -->
+    <div class="summary-card">
+      <div class="summary-label"><span class="live-dot"></span>Live — Total Consumption</div>
+      <div class="summary-total">187.4<span class="unit">W</span></div>
+      <div class="summary-row">
+        <div class="summary-stat">
+          <span class="s-val">1.24 kWh</span>
+          <span class="s-lbl">Today</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-stat">
+          <span class="s-val">₱14.88</span>
+          <span class="s-lbl">Est. Cost</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-stat">
+          <span class="s-val">₱12.00</span>
+          <span class="s-lbl">Rate/kWh</span>
+        </div>
+      </div>
+      <button class="bill-scan-btn">📄 Scan CEBECO 2 Bill to Update Rate</button>
+    </div>
+
+    <!-- OUTLETS -->
+    <div class="section-title">
+      Outlets
+      <span class="see-all">Manage</span>
+    </div>
+
+    <div class="outlets">
+
+      <div class="outlet-card active">
+        <div class="outlet-icon">💻</div>
+        <div class="outlet-info">
+          <div class="outlet-name">Outlet 1 — Laptop</div>
+          <div class="outlet-sub">220V · 0.27A · running 4h 12m</div>
+        </div>
+        <div class="outlet-metrics">
+          <div class="outlet-watts">62W</div>
+          <div class="outlet-cost">₱5.98 today</div>
+        </div>
+        <div class="toggle on"></div>
+      </div>
+
+      <div class="outlet-card warning">
+        <div class="outlet-icon">🍳</div>
+        <div class="outlet-info">
+          <div class="outlet-name">Outlet 2 — Electric Cooker</div>
+          <div class="outlet-sub">220V · 3.86A · high draw</div>
+        </div>
+        <div class="outlet-metrics">
+          <div class="outlet-watts">850W</div>
+          <div class="outlet-cost">₱6.12 today</div>
+        </div>
+        <div class="toggle warn"></div>
+      </div>
+
+      <div class="outlet-card active">
+        <div class="outlet-icon">📱</div>
+        <div class="outlet-info">
+          <div class="outlet-name">Outlet 3 — Phone Charger</div>
+          <div class="outlet-sub">220V · 0.02A · charging</div>
+        </div>
+        <div class="outlet-metrics">
+          <div class="outlet-watts">5W</div>
+          <div class="outlet-cost">₱0.48 today</div>
+        </div>
+        <div class="toggle on"></div>
+      </div>
+
+      <div class="outlet-card active">
+        <div class="outlet-icon">🌀</div>
+        <div class="outlet-info">
+          <div class="outlet-name">Outlet 4 — Clip Fan</div>
+          <div class="outlet-sub">220V · 0.16A · running</div>
+        </div>
+        <div class="outlet-metrics">
+          <div class="outlet-watts">35W</div>
+          <div class="outlet-cost">₱2.30 today</div>
+        </div>
+        <div class="toggle on"></div>
+      </div>
+
+      <div class="outlet-card off">
+        <div class="outlet-icon">📺</div>
+        <div class="outlet-info">
+          <div class="outlet-name">Outlet 5 — Television</div>
+          <div class="outlet-sub">Off · last used 2h ago</div>
+        </div>
+        <div class="outlet-metrics">
+          <div class="outlet-watts">0W</div>
+          <div class="outlet-cost">₱1.20 today</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+
+    </div>
+
+    <!-- BUDGET -->
+    <div class="budget-section">
+      <div class="budget-header">
+        <span class="budget-title">Monthly Budget</span>
+        <span class="budget-amounts">
+          <span class="used">₱272</span>
+          <span class="total"> / ₱400</span>
+        </span>
+      </div>
+      <div class="budget-bar-bg">
+        <div class="budget-bar-fill"></div>
+      </div>
+      <div class="budget-note">⚠️ 68% used — 11 days remaining this month</div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item active">
+      <span class="nav-icon">⚡</span>
+      <span class="nav-label">Outlets</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">History</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">💰</span>
+      <span class="nav-label">Cost</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">Profile</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
+>>>>>>> 3a80caf1341f3926ca767ddebd67372367b1b562
 </html>
