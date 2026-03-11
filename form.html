@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equipment Borrowing Logbook</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f7f4ef;
+    --rule: #d4cfc7;
+    --accent: #c2185b;
+    --accent-soft: #fce4ec;
+    --stamp-green: #2e7d32;
+    --stamp-red: #c62828;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #e8e4dd;
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 27px,
+      rgba(0,0,0,0.04) 27px,
+      rgba(0,0,0,0.04) 28px
+    );
+  }
+
+  .book {
+    width: 100%;
+    max-width: 780px;
+    background: var(--paper);
+    border-radius: 2px;
+    box-shadow:
+      4px 4px 0 #bbb8b2,
+      8px 8px 0 #a8a49f,
+      0 20px 60px rgba(0,0,0,0.25);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Red margin line */
+  .book::before {
+    content: '';
+    position: absolute;
+    left: 72px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: rgba(194, 24, 91, 0.25);
+    z-index: 1;
+  }
+
+  .book-header {
+    background: var(--ink);
+    padding: 24px 32px 24px 88px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .book-header-left h1 {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .book-header-left h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+
+  .book-id {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  .form-body {
+    padding: 32px 32px 32px 88px;
+  }
+
+  .row-number {
+    position: absolute;
+    left: 0;
+    width: 72px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(194, 24, 91, 0.5);
+    padding-top: 14px;
+  }
+
+  .section {
+    position: relative;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--rule);
+    padding: 20px 0;
+  }
+
+  .section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .field-grid {
+    display: grid;
+    gap: 14px;
+  }
+
+  .field-grid.two   { grid-template-columns: 1fr 1fr; }
+  .field-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .field-grid.one   { grid-template-columns: 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #888;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  input, select, textarea {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid var(--rule);
+    padding: 6px 0;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-bottom-color: var(--accent);
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    padding-right: 20px;
+  }
+
+  textarea {
+    resize: none;
+    height: 60px;
+    line-height: 1.6;
+  }
+
+  /* Condition badges */
+  .condition-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .condition-group input[type="radio"] { display: none; }
+
+  .condition-group label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 5px 12px;
+    border: 1.5px solid var(--rule);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: #888;
+    text-transform: uppercase;
+  }
+
+  .condition-group input[type="radio"]:checked + label {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+  }
+
+  /* Status stamp */
+  .status-group {
+    display: flex;
+    gap: 12px;
+  }
+
+  .status-group input[type="radio"] { display: none; }
+
+  .status-group label {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 8px 20px;
+    border: 2px solid var(--rule);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: #aaa;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  #status-out:checked ~ .status-group label[for="status-out"] {
+    border-color: var(--stamp-red);
+    color: var(--stamp-red);
+    background: #fff5f5;
+    box-shadow: inset 0 0 0 1px var(--stamp-red);
+  }
+
+  #status-in:checked ~ .status-group label[for="status-in"] {
+    border-color: var(--stamp-green);
+    color: var(--stamp-green);
+    background: #f1f8f1;
+    box-shadow: inset 0 0 0 1px var(--stamp-green);
+  }
+
+  /* Submit row */
+  .submit-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 24px;
+    border-top: 2px solid var(--ink);
+    margin-top: 8px;
+  }
+
+  .submit-note {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #aaa;
+    letter-spacing: 0.05em;
+  }
+
+  .btn-submit {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    padding: 12px 32px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-radius: 2px;
+  }
+
+  .btn-submit:hover { background: var(--accent); }
+
+  .btn-clear {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: transparent;
+    color: #aaa;
+    border: 1.5px solid var(--rule);
+    padding: 11px 20px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s;
+  }
+
+  .btn-clear:hover { border-color: #888; color: #555; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--ink);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    padding: 14px 24px;
+    border-radius: 2px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 560px) {
+    .field-grid.two, .field-grid.three { grid-template-columns: 1fr; }
+    .book::before { left: 48px; }
+    .book-header, .form-body { padding-left: 64px; }
+    .row-number { width: 48px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="book">
+  <div class="book-header">
+    <div class="book-header-left">
+      <h1>CTU Daanbantayan — Equipment Office</h1>
+      <h2>Borrowing Logbook</h2>
+    </div>
+    <div class="book-id">
+      <div id="log-date"></div>
+      <div id="log-ref"></div>
+    </div>
+  </div>
+
+  <form class="form-body" id="logForm">
+
+    <!-- SECTION 1: Transaction -->
+    <div class="section">
+      <span class="row-number">01</span>
+      <div class="section-label">Transaction</div>
+
+      <!-- Status radios placed before the group for CSS sibling trick -->
+      <input type="radio" name="status" id="status-out" value="OUT" checked>
+      <input type="radio" name="status" id="status-in"  value="IN">
+
+      <div style="display:flex; gap:16px; align-items:center; margin-bottom:16px;">
+        <div style="font-size:11px;font-weight:500;color:#888;letter-spacing:.05em;text-transform:uppercase;">Status</div>
+        <div class="status-group">
+          <label for="status-out">Borrowed Out</label>
+          <label for="status-in">Returned In</label>
+        </div>
+      </div>
+
+      <div class="field-grid two">
+        <div class="field">
+          <label>Date Borrowed</label>
+          <input type="date" id="date-borrowed" required>
+        </div>
+        <div class="field">
+          <label>Time Borrowed</label>
+          <input type="time" id="time-borrowed" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: Borrower -->
+    <div class="section">
+      <span class="row-number">02</span>
+      <div class="section-label">Borrower</div>
+      <div class="field-grid two">
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" placeholder="Last, First MI." required>
+        </div>
+        <div class="field">
+          <label>ID Number</label>
+          <input type="text" placeholder="e.g. 2021-00123" required>
+        </div>
+        <div class="field">
+          <label>Department / Course</label>
+          <input type="text" placeholder="e.g. BSIT — 3A">
+        </div>
+        <div class="field">
+          <label>Contact Number</label>
+          <input type="tel" placeholder="09XX XXX XXXX">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: Item -->
+    <div class="section">
+      <span class="row-number">03</span>
+      <div class="section-label">Item</div>
+      <div class="field-grid three">
+        <div class="field">
+          <label>Item Name</label>
+          <select required>
+            <option value="" disabled selected>Select item</option>
+            <option>Calculator (Scientific)</option>
+            <option>Calculator (Basic)</option>
+            <option>HDMI Cable</option>
+            <option>Extension Cord</option>
+            <option>Measuring Tape</option>
+            <option>Vernier Caliper</option>
+            <option>Projector Remote</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Item ID / Tag</label>
+          <input type="text" placeholder="e.g. CALC-07">
+        </div>
+        <div class="field">
+          <label>Quantity</label>
+          <input type="number" min="1" value="1" style="width:80px;">
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <div style="font-size:11px;font-weight:500;color:#888;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;">Condition at Checkout</div>
+        <div class="condition-group">
+          <input type="radio" name="condition" id="c-good" value="Good" checked>
+          <label for="c-good">Good</label>
+          <input type="radio" name="condition" id="c-fair" value="Fair">
+          <label for="c-fair">Fair</label>
+          <input type="radio" name="condition" id="c-damaged" value="Damaged">
+          <label for="c-damaged">Damaged</label>
+          <input type="radio" name="condition" id="c-incomplete" value="Incomplete">
+          <label for="c-incomplete">Incomplete</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: Return -->
+    <div class="section">
+      <span class="row-number">04</span>
+      <div class="section-label">Expected Return</div>
+      <div class="field-grid two">
+        <div class="field">
+          <label>Return Date</label>
+          <input type="date" id="date-return" required>
+        </div>
+        <div class="field">
+          <label>Return Time</label>
+          <input type="time" id="time-return">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: Remarks -->
+    <div class="section">
+      <span class="row-number">05</span>
+      <div class="section-label">Remarks</div>
+      <div class="field-grid one">
+        <div class="field">
+          <label>Notes</label>
+          <textarea placeholder="Any notes about the item condition, special instructions, or return arrangements..."></textarea>
+        </div>
+        <div class="field">
+          <label>Received by (Staff)</label>
+          <input type="text" placeholder="Staff name or signature">
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-row">
+      <div class="submit-note">REF# <span id="ref-display">—</span></div>
+      <div style="display:flex;gap:10px;">
+        <button type="button" class="btn-clear" onclick="clearForm()">Clear</button>
+        <button type="submit" class="btn-submit">Log Entry →</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<div class="toast" id="toast">✓ Entry logged successfully</div>
+
+<script>
+  // Auto-fill date, time, ref number
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const dateStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+  const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const refNum  = `LOG-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${Math.floor(Math.random()*9000)+1000}`;
+
+  document.getElementById('date-borrowed').value = dateStr;
+  document.getElementById('time-borrowed').value = timeStr;
+  document.getElementById('date-return').value   = dateStr;
+  document.getElementById('log-date').textContent = now.toLocaleDateString('en-PH',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+  document.getElementById('log-ref').textContent  = refNum;
+  document.getElementById('ref-display').textContent = refNum;
+
+  // Form submit
+  document.getElementById('logForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2800);
+  });
+
+  function clearForm() {
+    document.getElementById('logForm').reset();
+    document.getElementById('date-borrowed').value = dateStr;
+    document.getElementById('time-borrowed').value = timeStr;
+    document.getElementById('date-return').value   = dateStr;
+  }
+</script>
+</body>
+</html>
