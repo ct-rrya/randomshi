@@ -1,644 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>INTERCEPTOR</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --g:#00ff41;--g2:#00cc33;--g3:#008f11;--g4:#003a0f;
-  --y:#f0c040;--r:#ff3333;--gr:#3a4a3a;--bg:#050a05;
-  --c:#00ffff;--w:#cccccc;
-}
-html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;cursor:none}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>random.exe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── MATRIX RAIN CANVAS ── */
-#matrix-canvas{
-  position:fixed;inset:0;z-index:0;opacity:0.18;
-  pointer-events:none;
-}
+    :root {
+      --bg: #0a0a0f;
+      --grid: rgba(255,255,255,0.02);
+      --green: #39ff14;
+      --dim-green: #1a7a06;
+      --red: #ff2d55;
+      --white: #e8e8e8;
+      --ghost: rgba(57,255,20,0.06);
+      --card-bg: #0d0d14;
+      --card-border: rgba(57,255,20,0.25);
+      --card-hover: rgba(57,255,20,0.12);
+    }
 
-/* ── SCANLINES ── */
-body::before{
-  content:'';position:fixed;inset:0;z-index:999;pointer-events:none;
-  background:repeating-linear-gradient(to bottom,transparent 0,transparent 2px,rgba(0,0,0,0.12) 2px,rgba(0,0,0,0.12) 4px);
-}
-body::after{
-  content:'';position:fixed;inset:0;z-index:998;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,0.75) 100%);
-}
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Share Tech Mono', monospace;
+      overflow-x: hidden;
+    }
 
-/* ── MAIN LAYOUT ── */
-#screen{
-  position:relative;z-index:10;
-  width:100vw;height:100vh;
-  display:grid;
-  grid-template-rows:auto 1fr auto;
-  grid-template-columns:1fr 320px;
-  grid-template-areas:
-    "topbar topbar"
-    "main   side"
-    "status status";
-  gap:0;
-  font-family:'Share Tech Mono',monospace;
-  font-size:clamp(10px,1.2vw,13px);
-  color:var(--g);
-  padding:0;
-}
+    /* CRT scanline overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
 
-/* ── TOP BAR ── */
-#topbar{
-  grid-area:topbar;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:8px 20px;
-  border-bottom:1px solid var(--g3);
-  background:rgba(0,10,0,0.8);
-  font-family:'VT323',monospace;
-  font-size:clamp(14px,1.6vw,18px);
-  color:var(--g3);
-}
-#topbar .hi{color:var(--g);text-shadow:0 0 8px var(--g);}
-#topbar .warn{color:var(--y);animation:blink2 1.2s step-end infinite;}
-.dot{
-  display:inline-block;width:8px;height:8px;border-radius:50%;
-  background:var(--g);box-shadow:0 0 6px var(--g);
-  animation:blink2 0.7s ease-in-out infinite;
-  margin-right:6px;vertical-align:middle;
-}
+    /* Dot grid background */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(57,255,20,0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-/* ── MAIN TERMINAL ── */
-#main{
-  grid-area:main;
-  padding:14px 18px;
-  overflow:hidden;
-  display:flex;flex-direction:column;
-  border-right:1px solid var(--g4);
-  position:relative;
-}
-#output{
-  flex:1;overflow:hidden;
-  display:flex;flex-direction:column;
-  gap:0;
-}
-.line{
-  display:block;white-space:pre;
-  opacity:0;
-  min-height:1.5em;
-  line-height:1.5;
-  transition:opacity 0.06s ease;
-}
-.line.vis{opacity:1;}
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px 80px;
+    }
 
-/* ── SIDE PANEL ── */
-#side{
-  grid-area:side;
-  padding:14px 12px;
-  display:flex;flex-direction:column;gap:12px;
-  overflow:hidden;
-  background:rgba(0,5,0,0.6);
-}
-.panel{
-  border:1px solid var(--g4);
-  padding:8px 10px;
-  background:rgba(0,15,0,0.4);
-}
-.panel-title{
-  font-family:'VT323',monospace;
-  font-size:clamp(13px,1.5vw,17px);
-  color:var(--g3);
-  border-bottom:1px solid var(--g4);
-  padding-bottom:4px;margin-bottom:6px;
-  letter-spacing:0.08em;
-}
-.panel-row{
-  display:flex;justify-content:space-between;
-  font-size:clamp(9px,1vw,11px);
-  color:var(--gr);
-  margin:2px 0;
-}
-.panel-row .val{color:var(--g2);}
-.panel-row .val.hot{color:var(--y);}
-.panel-row .val.danger{color:var(--r);animation:blink2 0.6s step-end infinite;}
+    /* ── HEADER ── */
+    .header {
+      text-align: center;
+      margin-bottom: 64px;
+      animation: fadeDown 0.8s ease both;
+    }
 
-/* mini bar */
-.mini-bar{
-  height:3px;background:var(--g4);margin-top:3px;
-  position:relative;overflow:hidden;
-}
-.mini-bar-fill{
-  height:100%;background:var(--g2);
-  transition:width 1s ease;
-  box-shadow:0 0 4px var(--g2);
-}
+    .title-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 18px;
+    }
 
-/* ── STATUS BAR ── */
-#status{
-  grid-area:status;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:5px 20px;
-  border-top:1px solid var(--g4);
-  background:rgba(0,10,0,0.9);
-  font-size:clamp(9px,1vw,11px);
-  color:var(--g3);
-  font-family:'VT323',monospace;
-  font-size:clamp(12px,1.3vw,15px);
-}
-#status .s-hi{color:var(--g);}
-#status .s-warn{color:var(--y);}
-#status .s-danger{color:var(--r);}
-#progress-bar{
-  width:180px;height:6px;background:var(--g4);
-  border:1px solid var(--g3);position:relative;overflow:hidden;
-}
-#progress-fill{
-  height:100%;width:0%;background:var(--g2);
-  box-shadow:0 0 6px var(--g2);
-  transition:width 0.5s linear;
-}
+    .title {
+      font-family: 'VT323', monospace;
+      font-size: clamp(64px, 12vw, 120px);
+      color: var(--green);
+      letter-spacing: 4px;
+      line-height: 1;
+      text-shadow:
+        0 0 12px rgba(57,255,20,0.8),
+        0 0 40px rgba(57,255,20,0.3),
+        0 0 80px rgba(57,255,20,0.1);
+      position: relative;
+    }
 
-/* enter prompt */
-#enter-prompt{
-  position:fixed;bottom:50px;left:50%;transform:translateX(-50%);
-  font-family:'VT323',monospace;
-  font-size:clamp(18px,2.5vw,28px);
-  color:var(--y);letter-spacing:0.1em;
-  text-align:center;opacity:0;
-  text-shadow:0 0 12px var(--y);
-  pointer-events:none;z-index:100;
-  animation:pulseY 1.2s ease-in-out infinite;
-}
-#enter-prompt.show{opacity:1;}
+    /* Glitch effect */
+    .title::before,
+    .title::after {
+      content: 'random.exe';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+    }
+    .title::before {
+      color: #ff2d55;
+      clip-path: polygon(0 20%, 100% 20%, 100% 35%, 0 35%);
+      animation: glitch-r 4s infinite steps(1);
+    }
+    .title::after {
+      color: #00f5ff;
+      clip-path: polygon(0 60%, 100% 60%, 100% 75%, 0 75%);
+      animation: glitch-b 4s 0.5s infinite steps(1);
+    }
 
-/* ── TERMINATED OVERLAY ── */
-#term-overlay{
-  position:fixed;inset:0;z-index:500;
-  background:rgba(0,0,0,0);
-  display:flex;align-items:center;justify-content:center;
-  pointer-events:none;
-  transition:background 0.8s;
-}
-#term-overlay.show{background:rgba(0,0,0,0.95);pointer-events:all;}
-#term-box{
-  font-family:'VT323',monospace;
-  font-size:clamp(14px,2vw,22px);
-  color:var(--r);
-  border:2px solid var(--r);
-  padding:40px 60px;text-align:center;
-  opacity:0;transform:scale(0.85);
-  transition:opacity 0.6s 0.4s,transform 0.6s 0.4s;
-  background:rgba(5,0,0,0.99);
-  box-shadow:0 0 80px rgba(255,30,30,0.4),inset 0 0 40px rgba(255,0,0,0.05);
-  line-height:2;min-width:clamp(280px,55vw,600px);
-}
-#term-overlay.show #term-box{opacity:1;transform:scale(1);}
-#term-box .th{
-  color:var(--r);font-size:clamp(22px,3.5vw,42px);
-  letter-spacing:0.1em;display:block;margin-bottom:10px;
-  text-shadow:0 0 24px rgba(255,50,50,0.9);
-  animation:glitch 0.18s steps(1) infinite;
-}
-#term-box .td{color:#773333;}
-#term-box .tf{color:#444;font-size:0.75em;margin-top:14px;display:block;}
+    .cursor {
+      display: inline-block;
+      width: clamp(8px, 1.2vw, 14px);
+      height: clamp(52px, 9vw, 92px);
+      background: var(--green);
+      margin-left: 6px;
+      vertical-align: bottom;
+      animation: blink 1s step-end infinite;
+      box-shadow: 0 0 10px var(--green);
+    }
 
-/* colour classes */
-.cg {color:var(--g);}
-.cg2{color:var(--g2);}
-.cg3{color:var(--g3);}
-.cy {color:var(--y);}
-.cr {color:var(--r);}
-.cc {color:var(--c);}
-.cw {color:var(--w);}
-.cgr{color:var(--gr);}
-.box{font-family:'VT323',monospace;font-size:clamp(13px,1.6vw,18px);letter-spacing:0.02em;}
+    .subtitle {
+      font-family: 'Silkscreen', monospace;
+      font-size: clamp(11px, 2vw, 14px);
+      color: rgba(232,232,232,0.55);
+      letter-spacing: 2px;
+      line-height: 1.8;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 18px 24px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.02);
+      position: relative;
+    }
 
-/* animations */
-@keyframes blink2{0%,100%{opacity:1}50%{opacity:0}}
-@keyframes pulseY{0%,100%{opacity:0.4}50%{opacity:1}}
-@keyframes glitch{
-  0%  {text-shadow:3px 0 rgba(255,0,0,.8),-2px 0 rgba(0,255,65,.4);}
-  25% {text-shadow:-3px 0 rgba(255,0,0,.8), 2px 0 rgba(0,255,65,.4);}
-  50% {text-shadow:2px 2px rgba(255,0,0,.6),0 0 0;}
-  75% {text-shadow:-1px -2px rgba(255,0,0,.8),1px 0 rgba(0,255,65,.3);}
-  100%{text-shadow:3px 0 rgba(255,0,0,.8),-2px 0 rgba(0,255,65,.4);}
-}
-.glitch-txt{animation:glitch 0.2s steps(1) infinite;}
-</style>
+    .subtitle::before {
+      content: '// WARNING';
+      position: absolute;
+      top: -10px;
+      left: 16px;
+      font-size: 10px;
+      color: var(--red);
+      background: var(--bg);
+      padding: 0 6px;
+      letter-spacing: 3px;
+    }
+
+    .subtitle em {
+      color: var(--red);
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      width: 100%;
+      max-width: 900px;
+      animation: fadeUp 0.9s 0.3s ease both;
+    }
+
+    .btn-box {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 20px 18px 18px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--white);
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+      overflow: hidden;
+      outline: none;
+    }
+
+    .btn-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--card-hover), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .btn-box:hover {
+      background: rgba(13,13,20,0.95);
+      border-color: var(--green);
+      transform: translateY(-3px);
+      box-shadow: 0 0 20px rgba(57,255,20,0.15), inset 0 0 30px rgba(57,255,20,0.03);
+    }
+
+    .btn-box:hover::before { opacity: 1; }
+
+    .btn-box:active { transform: translateY(0px); }
+
+    .btn-num {
+      font-family: 'VT323', monospace;
+      font-size: 11px;
+      color: var(--dim-green);
+      letter-spacing: 3px;
+      line-height: 1;
+    }
+
+    .btn-label {
+      font-family: 'VT323', monospace;
+      font-size: 26px;
+      color: var(--green);
+      letter-spacing: 1px;
+      line-height: 1.1;
+      text-shadow: 0 0 8px rgba(57,255,20,0.4);
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-box:hover .btn-label::after {
+      content: ' _';
+      animation: blink 0.7s step-end infinite;
+    }
+
+    .btn-arrow {
+      font-size: 12px;
+      color: rgba(57,255,20,0.4);
+      letter-spacing: 2px;
+      margin-top: 6px;
+      transition: color 0.2s, letter-spacing 0.2s;
+    }
+
+    .btn-box:hover .btn-arrow {
+      color: var(--green);
+      letter-spacing: 4px;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 56px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 3px;
+      text-align: center;
+      animation: fadeUp 1s 0.6s ease both;
+    }
+
+    /* ── KEYFRAMES ── */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    @keyframes glitch-r {
+      0%, 90%, 100% { transform: translateX(0); opacity: 0; }
+      92% { transform: translateX(-4px); opacity: 0.7; }
+      94% { transform: translateX(4px); opacity: 0.5; }
+      96% { transform: translateX(-2px); opacity: 0.7; }
+      98% { transform: translateX(0); opacity: 0; }
+    }
+
+    @keyframes glitch-b {
+      0%, 88%, 100% { transform: translateX(0); opacity: 0; }
+      90% { transform: translateX(3px); opacity: 0.6; }
+      92% { transform: translateX(-3px); opacity: 0.4; }
+      94% { transform: translateX(1px); opacity: 0.6; }
+      96% { transform: translateX(0); opacity: 0; }
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Stagger cards */
+    .btn-box:nth-child(1)  { animation: fadeUp 0.5s 0.30s ease both; }
+    .btn-box:nth-child(2)  { animation: fadeUp 0.5s 0.38s ease both; }
+    .btn-box:nth-child(3)  { animation: fadeUp 0.5s 0.46s ease both; }
+    .btn-box:nth-child(4)  { animation: fadeUp 0.5s 0.54s ease both; }
+    .btn-box:nth-child(5)  { animation: fadeUp 0.5s 0.62s ease both; }
+    .btn-box:nth-child(6)  { animation: fadeUp 0.5s 0.70s ease both; }
+    .btn-box:nth-child(7)  { animation: fadeUp 0.5s 0.78s ease both; }
+    .btn-box:nth-child(8)  { animation: fadeUp 0.5s 0.86s ease both; }
+    .btn-box:nth-child(9)  { animation: fadeUp 0.5s 0.94s ease both; }
+    .btn-box:nth-child(10) { animation: fadeUp 0.5s 1.02s ease both; }
+
+    /* Noise overlay on hover for extra texture */
+    .btn-box::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 120px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .btn-box:hover::after { opacity: 1; }
+
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    }
+  </style>
 </head>
 <body>
+  <div class="page">
 
-<!-- Matrix rain -->
-<canvas id="matrix-canvas"></canvas>
+    <header class="header">
+      <div class="title-wrap">
+        <h1 class="title">random.exe</h1><span class="cursor"></span>
+      </div>
+      <p class="subtitle">
+        A curated collection of absolutely <em>unhinged</em> rabbit holes,
+        half-finished ideas, and digital miscellany I probably shouldn't have made public.
+        <br/><br/>
+        <em>proceed at your own risk.</em>
+      </p>
+    </header>
 
-<div id="screen">
+    <nav class="grid" id="grid"></nav>
 
-  <!-- TOP BAR -->
-  <div id="topbar">
-    <div><span class="dot"></span><span class="hi">INTERCEPTOR v2.1.4</span> &nbsp;|&nbsp; root@kali</div>
-    <div id="clock-top">--:--:--</div>
-    <div><span class="warn">⚠ CAPTURE ACTIVE</span> &nbsp;|&nbsp; wlan0 &nbsp;|&nbsp; ch.6</div>
+    <footer class="footer">
+      [[ no refunds. no explanations. no warranty. ]]
+    </footer>
+
   </div>
 
-  <!-- MAIN OUTPUT -->
-  <div id="main">
-    <div id="output"></div>
-  </div>
+  <script>
+    const pages = [
+      { label: "Fake Hacker Terminal", href: "hacker.html" },
+      { label: "Fake Facebook Login.", href: "facebook.html" },
+      { label: "Art Appreciation", href: "art.html" },
+      { label: "PAGE 04", href: "#" },
+      { label: "PAGE 05", href: "#" },
+      { label: "PAGE 06", href: "#" },
+      { label: "PAGE 07", href: "#" },
+      { label: "PAGE 08", href: "#" },
+      { label: "PAGE 09", href: "#" },
+      { label: "PAGE 10", href: "#" },
+    ];
 
-  <!-- SIDE PANELS -->
-  <div id="side">
-    <div class="panel">
-      <div class="panel-title">◈ NETWORK STATS</div>
-      <div class="panel-row"><span>SSID</span><span class="val">FREE_CAFE_WIFI</span></div>
-      <div class="panel-row"><span>BSSID</span><span class="val" id="bssid">D4:6E:0E:--:--:--</span></div>
-      <div class="panel-row"><span>CHANNEL</span><span class="val">6 (2.4GHz)</span></div>
-      <div class="panel-row"><span>SIGNAL</span><span class="val hot" id="signal">-62 dBm</span></div>
-      <div class="panel-row"><span>CLIENTS</span><span class="val hot" id="clients">3</span></div>
-      <div class="panel-row"><span>ARP POISON</span><span class="val danger">ACTIVE</span></div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">◈ PACKET CAPTURE</div>
-      <div class="panel-row"><span>CAPTURED</span><span class="val" id="pkt-count">0</span></div>
-      <div class="panel-row"><span>HTTP</span><span class="val" id="pkt-http">0</span></div>
-      <div class="panel-row"><span>HTTPS</span><span class="val" id="pkt-https">0</span></div>
-      <div class="panel-row"><span>POST DATA</span><span class="val hot" id="pkt-post">0</span></div>
-      <div class="panel-row"><span>DATA RATE</span><span class="val" id="data-rate">0 KB/s</span></div>
-      <div class="mini-bar"><div class="mini-bar-fill" id="bar-fill" style="width:0%"></div></div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">◈ TARGET PROFILE</div>
-      <div class="panel-row"><span>IP</span><span class="val">192.168.1.105</span></div>
-      <div class="panel-row"><span>MAC</span><span class="val" id="mac">--:--:--:--</span></div>
-      <div class="panel-row"><span>OS</span><span class="val">Android 14</span></div>
-      <div class="panel-row"><span>BROWSER</span><span class="val">Chrome/120</span></div>
-      <div class="panel-row"><span>STATUS</span><span class="val danger" id="target-status">TRACKING</span></div>
-    </div>
-    <div class="panel">
-      <div class="panel-title">◈ ENTROPY / CPU</div>
-      <div class="panel-row"><span>CPU</span><span class="val" id="cpu">12%</span></div>
-      <div class="panel-row"><span>MEM</span><span class="val" id="mem">341 MB</span></div>
-      <div class="panel-row"><span>ENTROPY</span><span class="val hot" id="entropy">HIGH</span></div>
-      <div class="mini-bar"><div class="mini-bar-fill" id="bar-cpu" style="width:12%"></div></div>
-    </div>
-  </div>
+    const grid = document.getElementById("grid");
 
-  <!-- STATUS BAR -->
-  <div id="status">
-    <span id="status-msg"><span class="s-hi">PHASE 1</span> — ARP SPOOFING</span>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span id="pkt-total-status">PKT: 0</span>
-      <div id="progress-bar"><div id="progress-fill"></div></div>
-    </div>
-    <span id="timer-status">ELAPSED: 00:00</span>
-  </div>
-
-</div>
-
-<!-- ENTER PROMPT -->
-<div id="enter-prompt">[ PRESS ENTER OR CLICK TO CONTINUE ]</div>
-
-<!-- TERMINATED OVERLAY -->
-<div id="term-overlay">
-  <div id="term-box">
-    <span class="th">SESSION TERMINATED</span>
-    ╔══════════════════════════════════╗<br>
-    <span class="td">
-    ║  Access revoked by account owner ║<br>
-    ║  All tokens invalidated          ║<br>
-    ║  Connection forcibly dropped     ║<br>
-    ║  Session cookie destroyed        ║<br>
-    </span>
-    ╚══════════════════════════════════╝<br>
-    <span class="td">[*] Capture session ended. Logs wiped.</span>
-    <span class="tf">— FOR FILMING PURPOSES ONLY — LOST IN TRANSMISSION —</span>
-  </div>
-</div>
-
-<script>
-// ══════════════════════════════════════════════════
-// MATRIX RAIN
-// ══════════════════════════════════════════════════
-(function(){
-  const canvas = document.getElementById('matrix-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, cols, drops;
-  const chars = '0123456789ABCDEF><|{}[]!@#$%^&*アイウエオカキクケコサシスセソ';
-
-  function init(){
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    const fs = 14;
-    cols = Math.floor(W / fs);
-    drops = Array(cols).fill(1);
-  }
-  init();
-  window.addEventListener('resize', init);
-
-  function draw(){
-    ctx.fillStyle = 'rgba(5,10,5,0.06)';
-    ctx.fillRect(0, 0, W, H);
-    ctx.font = '14px Share Tech Mono';
-    for(let i = 0; i < cols; i++){
-      const ch = chars[Math.floor(Math.random() * chars.length)];
-      const bright = Math.random() > 0.95;
-      ctx.fillStyle = bright ? '#00ff41' : (Math.random() > 0.7 ? '#00cc33' : '#005511');
-      ctx.fillText(ch, i * 14, drops[i] * 14);
-      if(drops[i] * 14 > H && Math.random() > 0.975) drops[i] = 0;
-      drops[i]++;
-    }
-  }
-  setInterval(draw, 45);
-})();
-
-// ══════════════════════════════════════════════════
-// CLOCK
-// ══════════════════════════════════════════════════
-const clockEl = document.getElementById('clock-top');
-function tick(){ clockEl.textContent = new Date().toTimeString().slice(0,8); }
-tick(); setInterval(tick,1000);
-
-// ══════════════════════════════════════════════════
-// ELAPSED TIMER
-// ══════════════════════════════════════════════════
-const timerEl = document.getElementById('timer-status');
-let elapsed = 0;
-const timerInt = setInterval(()=>{
-  elapsed++;
-  const m = String(Math.floor(elapsed/60)).padStart(2,'0');
-  const s = String(elapsed%60).padStart(2,'0');
-  timerEl.textContent = `ELAPSED: ${m}:${s}`;
-},1000);
-
-// ══════════════════════════════════════════════════
-// SIDE PANEL LIVE UPDATES
-// ══════════════════════════════════════════════════
-let pkts=0, http=0, https=0, post=0;
-function rand(a,b){return Math.floor(Math.random()*(b-a))+a;}
-function randHex(n){return [...Array(n)].map(()=>rand(0,256).toString(16).padStart(2,'0').toUpperCase()).join(':');}
-
-setInterval(()=>{
-  const add = rand(2,9);
-  pkts += add; http += rand(1,4); https += rand(0,3); post += (Math.random()>0.85?1:0);
-  const rate = rand(8,95);
-  document.getElementById('pkt-count').textContent = pkts;
-  document.getElementById('pkt-http').textContent = http;
-  document.getElementById('pkt-https').textContent = https;
-  document.getElementById('pkt-post').textContent = post;
-  document.getElementById('data-rate').textContent = rate+' KB/s';
-  document.getElementById('bar-fill').style.width = Math.min(rate,100)+'%';
-  document.getElementById('pkt-total-status').textContent = 'PKT: '+pkts;
-  document.getElementById('signal').textContent = '-'+rand(55,75)+' dBm';
-  document.getElementById('cpu').textContent = rand(14,72)+'%';
-  document.getElementById('bar-cpu').style.width = rand(14,72)+'%';
-  document.getElementById('mem').textContent = rand(280,480)+' MB';
-  if(Math.random()>0.8) document.getElementById('mac').textContent = randHex(4);
-  if(Math.random()>0.9) document.getElementById('bssid').textContent = 'D4:6E:0E:'+randHex(3).split(':').join(':');
-}, 900);
-
-// ══════════════════════════════════════════════════
-// OUTPUT ENGINE
-// ══════════════════════════════════════════════════
-const output = document.getElementById('output');
-const enterProm = document.getElementById('enter-prompt');
-const termOver  = document.getElementById('term-overlay');
-const statusMsg = document.getElementById('status-msg');
-const progressFill = document.getElementById('progress-fill');
-
-let phase = 1; // 1=running 2=waiting 3=terminated
-let totalLines = 0;
-
-function addLine(text, cls){
-  const el = document.createElement('span');
-  el.className = 'line '+(cls||'');
-  el.textContent = (text===''||text===undefined) ? '\u00A0' : text;
-  // keep only last ~40 lines visible
-  output.appendChild(el);
-  while(output.children.length > 42){
-    output.removeChild(output.firstChild);
-  }
-  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('vis')));
-  totalLines++;
-  progressFill.style.width = Math.min((totalLines / 95)*100, 98)+'%';
-  return el;
-}
-
-function tw(el, text, spd, done){
-  el.textContent='';
-  let i=0;
-  function t(){
-    if(i<text.length){
-      el.textContent+=text[i++];
-      setTimeout(t, spd+rand(-spd*0.3,spd*0.5));
-    } else { if(done) done(); }
-  }
-  t();
-}
-
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-
-// ══════════════════════════════════════════════════
-// SCRIPT — ~60 seconds of content
-// ══════════════════════════════════════════════════
-async function runScript(){
-
-  // ── PHASE 1: BOOT / INIT ─────────────────────────
-  statusMsg.innerHTML='<span class="s-hi">PHASE 1</span> — INITIALIZING';
-
-  const boot=[
-    ['root@kali:~# uname -a','cg',0],
-    ['Linux kali 6.6.9-amd64 #1 SMP PREEMPT x86_64 GNU/Linux','cg3',300],
-    ['root@kali:~# ifconfig wlan0 | grep inet','cg',500],
-    ['        inet 192.168.1.201  netmask 255.255.255.0  broadcast 192.168.1.255','cg3',300],
-    ['root@kali:~# python3 mitm_capture.py --iface wlan0 --target 192.168.1.105','cg',600],
-    ['','',200],
-    ['[*] Loading modules: scapy, netfilterqueue, OpenSSL...','cg2',700],
-    ['[*] Binding raw socket on wlan0...','cg2',400],
-    ['[*] ARP cache table — scanning subnet 192.168.1.0/24...','cg2',500],
-    ['','',200],
-  ];
-  for(const [txt,cls,delay] of boot){
-    await sleep(delay);
-    const el=addLine(txt,cls);
-    if(delay>400 && txt!==''){
-      await new Promise(r=>tw(el,txt,22,r)); el.textContent=txt;
-    }
-  }
-
-  // ARP scan results
-  const hosts=[
-    ['192.168.1.1  ','D4:6E:0E:12:3A:BC','Router / Gateway'],
-    ['192.168.1.101','A1:B2:C3:D4:E5:F6','iPhone 14 Pro'],
-    ['192.168.1.105','7F:8A:9B:0C:1D:2E','Android (TARGET)'],
-    ['192.168.1.108','3C:4D:5E:6F:7A:8B','MacBook Pro'],
-  ];
-  addLine('[*] Hosts discovered:','cy');
-  await sleep(300);
-  for(const [ip,mac,desc] of hosts){
-    await sleep(280);
-    addLine(`    ${ip}   ${mac}   — ${desc}`, ip.includes('105')?'cy':'cg3');
-  }
-  await sleep(400);
-  addLine('[*] Target selected: 192.168.1.105','cy');
-  await sleep(300);
-  addLine('[*] Gateway:         192.168.1.1','cg3');
-  await sleep(500);
-
-  // ── PHASE 2: ARP SPOOF ───────────────────────────
-  statusMsg.innerHTML='<span class="s-hi">PHASE 2</span> — ARP POISONING';
-  await sleep(200);
-  addLine('','');
-  addLine('[*] Starting ARP poison — intercepting between target and gateway...','cg2');
-  await sleep(400);
-
-  const arpLines=[
-    ['[>>] Sending ARP reply: 192.168.1.105 is-at AA:BB:CC:DD:EE:FF (gateway impersonate)','cg3'],
-    ['[>>] Sending ARP reply: 192.168.1.1   is-at AA:BB:CC:DD:EE:FF (target impersonate)','cg3'],
-    ['[OK] ARP cache poisoned on target','cg2'],
-    ['[OK] ARP cache poisoned on gateway','cg2'],
-    ['[*] IP forwarding enabled: /proc/sys/net/ipv4/ip_forward = 1','cg3'],
-    ['[*] Traffic now routing through this machine...','cg2'],
-  ];
-  for(const [txt,cls] of arpLines){
-    await sleep(rand(300,600));
-    const el=addLine(txt,cls);
-  }
-
-  await sleep(500);
-  addLine('','');
-  statusMsg.innerHTML='<span class="s-hi">PHASE 3</span> — PACKET INTERCEPT';
-
-  // ── PHASE 3: PACKET FLOOD ─────────────────────────
-  addLine('[*] Intercepting live traffic... CTRL+C to abort','cy');
-  await sleep(400);
-  addLine('','');
-
-  const pktPool=[
-    ['[>>] Pkt#0001  192.168.1.105 → 31.13.92.36    TCP  HTTP  GET /login.php','cgr'],
-    ['[>>] Pkt#0002  192.168.1.105 → 31.13.92.36    TCP  HTTP  POST /ajax/pagelet','cgr'],
-    ['[>>] Pkt#0003  192.168.1.105 → 31.13.92.36    TCP  HTTP  GET /home.php','cgr'],
-    ['[>>] Pkt#0004  192.168.1.108 → 142.250.4.100  TCP  HTTPS [ENCRYPTED]','cg4'],
-    ['[>>] Pkt#0005  192.168.1.101 → 8.8.8.8        UDP  DNS   query: facebook.com','cgr'],
-    ['[>>] Pkt#0006  192.168.1.105 → 31.13.92.36    TCP  HTTP  POST /login/device-based','cy'],
-    ['[>>] Pkt#0007  192.168.1.105 → 31.13.92.36    TCP  HTTP  GET /checkpoint','cgr'],
-    ['[>>] Pkt#0008  192.168.1.108 → 104.244.42.65  TCP  HTTPS [ENCRYPTED]','cg4'],
-    ['[>>] Pkt#0009  192.168.1.105 → 31.13.92.36    TCP  HTTP  GET /settings/security','cgr'],
-    ['[>>] Pkt#0010  192.168.1.101 → 142.250.4.139  TCP  HTTPS [ENCRYPTED]','cg4'],
-    ['[>>] Pkt#0011  192.168.1.105 → 31.13.92.36    TCP  HTTP  POST /ajax/notifications','cy'],
-    ['[>>] Pkt#0012  192.168.1.105 → 31.13.92.36    TCP  HTTP  GET /messages','cgr'],
-    ['[>>] Pkt#0013  192.168.1.108 → 31.13.92.36    TCP  HTTPS [ENCRYPTED]','cg4'],
-    ['[>>] Pkt#0014  192.168.1.105 → 31.13.92.36    TCP  HTTP  POST /login (CREDENTIAL FIELD DETECTED)','cy'],
-    ['[>>] Pkt#0015  192.168.1.105 → 157.240.22.35  TCP  HTTP  GET /favicon.ico','cgr'],
-    ['[>>] Pkt#0016  192.168.1.105 → 31.13.92.36    TCP  HTTP  POST /ajax/bulk-route','cgr'],
-    ['[>>] Pkt#0017  192.168.1.105 → 31.13.92.36    TCP  HTTP  GET /home [session cookie found]','cy'],
-    ['[>>] Pkt#0018  192.168.1.108 → 216.58.197.36  TCP  HTTPS [ENCRYPTED]','cg4'],
-    ['[>>] Pkt#0019  192.168.1.105 → 31.13.92.36    TCP  HTTP  POST /ajax/send-message','cy'],
-    ['[>>] Pkt#0020  192.168.1.105 → 31.13.92.36    TCP  HTTP  GET /profile/bliza.tayo.2024','cgr'],
-  ];
-
-  for(const [txt,cls] of pktPool){
-    await sleep(rand(500,1200));
-    addLine(txt,cls);
-  }
-
-  // ── PHASE 4: CREDENTIAL PARSE ─────────────────────
-  await sleep(600);
-  addLine('','');
-  statusMsg.innerHTML='<span class="s-hi">PHASE 4</span> — CREDENTIAL EXTRACTION';
-  addLine('[!!] POST body detected — running credential parser...','cy');
-  await sleep(500);
-  addLine('[!!] HTTP (unencrypted) login form intercepted','cr');
-  await sleep(300);
-  addLine('[*]  Decoding URL-encoded POST body...','cg2');
-  await sleep(400);
-  addLine('[*]  Parsing fields: username, password, remember_me, lsd_token','cg2');
-  await sleep(500);
-  addLine('[*]  Cross-referencing with session cookie store...','cg2');
-  await sleep(600);
-  addLine('','');
-  addLine('[!!] CREDENTIALS PARSED SUCCESSFULLY','cy');
-  await sleep(300);
-  addLine('','');
-
-  // credential box
-  const box=[
-    ['╔══════════════════════════════════════════════════╗','cy box'],
-    ['║            CREDENTIALS CAPTURED                  ║','cy box'],
-    ['╠══════════════════════════════════════════════════╣','cy box'],
-    ['║  USERNAME : bliza_tayo@gmail.com                 ║','cg  box'],
-    ['║  PASSWORD : ••••••••••••• (MD5 hashed)           ║','cg  box'],
-    ['║  SESSION  : eyJhbGciOiJIUzI1NiJ9.bliza...        ║','cg  box'],
-    ['║  CSRF     : lsd_AVo8zCp3w_K5Y...                 ║','cg  box'],
-    ['╠══════════════════════════════════════════════════╣','cy box'],
-    ['║  SOURCE IP: 192.168.1.105                        ║','cgr box'],
-    ['║  USER-AGT : Mozilla/5.0 (Android 14; Chrome/120) ║','cgr box'],
-    ['║  PLATFORM : Facebook Web (m.facebook.com)        ║','cgr box'],
-    ['╠══════════════════════════════════════════════════╣','cy box'],
-    ['║  STATUS   : SESSION HIJACK READY ◀◀◀             ║','cr  box glitch-txt'],
-    ['╚══════════════════════════════════════════════════╝','cy box'],
-  ];
-  for(const [txt,cls] of box){
-    await sleep(90);
-    addLine(txt,cls);
-  }
-
-  // ── PHASE 5: SESSION HIJACK ───────────────────────
-  await sleep(600);
-  addLine('','');
-  statusMsg.innerHTML='<span class="s-hi">PHASE 5</span> — SESSION CLONING';
-  addLine('[*] Injecting session token into local browser profile...','cg2');
-  await sleep(500);
-  addLine('[*] Cookie set: c_user=100087342, xs=session_token_hash','cg2');
-  await sleep(400);
-  addLine('[*] Spoofing user-agent to match target device...','cg2');
-  await sleep(400);
-  addLine('[OK] Authentication bypass complete — logged in as bliza_tayo','cg');
-  await sleep(300);
-  addLine('[OK] Session active — full account access obtained','cg');
-  await sleep(400);
-  addLine('','');
-  addLine('[>>] Enumerating messages... 847 threads found','cg3');
-  await sleep(350);
-  addLine('[>>] Enumerating friends... 312 contacts indexed','cg3');
-  await sleep(350);
-  addLine('[>>] Drafting outgoing messages via session API...','cy');
-  await sleep(350);
-  addLine('[>>] Message sent as bliza_tayo → contact_0001 [OK]','cy');
-  await sleep(300);
-  addLine('[>>] Message sent as bliza_tayo → contact_0002 [OK]','cy');
-  await sleep(300);
-  addLine('[>>] Message sent as bliza_tayo → contact_0003 [OK]','cy');
-  await sleep(500);
-  addLine('','');
-  document.getElementById('target-status').textContent='COMPROMISED';
-
-  // done — wait for enter
-  statusMsg.innerHTML='<span class="s-warn">WAITING</span> — CAPTURE PAUSED';
-  progressFill.style.width='98%';
-  phase=2;
-  enterProm.classList.add('show');
-}
-
-// ══════════════════════════════════════════════════
-// ENTER / CLICK
-// ══════════════════════════════════════════════════
-function showTerminated(){
-  if(phase!==2) return;
-  phase=3;
-  enterProm.classList.remove('show');
-  clearInterval(timerInt);
-  statusMsg.innerHTML='<span class="s-danger">SESSION TERMINATED</span>';
-  progressFill.style.width='100%';
-  progressFill.style.background='var(--r)';
-  termOver.classList.add('show');
-}
-
-document.addEventListener('keydown', e=>{ if(e.key==='Enter') showTerminated(); });
-document.addEventListener('click', ()=>showTerminated());
-
-// ══════════════════════════════════════════════════
-// GO
-// ══════════════════════════════════════════════════
-runScript();
-</script>
+    pages.forEach((p, i) => {
+      const a = document.createElement("a");
+      a.href = p.href;
+      a.className = "btn-box";
+      a.innerHTML = `
+        <span class="btn-num">[ ${String(i + 1).padStart(2, "0")} ]</span>
+        <span class="btn-label">${p.label}</span>
+        <span class="btn-arrow">→ OPEN</span>
+      `;
+      grid.appendChild(a);
+    });
+  </script>
 </body>
 </html>

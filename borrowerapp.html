@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GearBook</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #080c10;
+    --surface: #0f1520;
+    --card:    #131d2e;
+    --card2:   #0e1828;
+    --blue:    #1565c0;
+    --blue-b:  #1e88e5;
+    --blue-dim: rgba(21,101,192,0.15);
+    --gold:    #f59e0b;
+    --green:   #22c55e;
+    --red:     #ef4444;
+    --text:    #e8f0fe;
+    --muted:   #5a7a9a;
+    --border:  rgba(21,101,192,0.15);
+  }
+
+  body {
+    background: #050810;
+    font-family: 'Syne', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .phone {
+    width: 375px;
+    height: 812px;
+    background: var(--bg);
+    border-radius: 44px;
+    border: 2px solid rgba(21,101,192,0.2);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 60px rgba(21,101,192,0.06);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .notch {
+    width: 120px; height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    margin: 0 auto;
+    flex-shrink: 0;
+  }
+
+  .statusbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 24px 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 24px;
+    scrollbar-width: none;
+  }
+  .content::-webkit-scrollbar { display: none; }
+
+  /* HEADER */
+  .header {
+    padding: 14px 20px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .app-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .app-name span { color: var(--blue-b); }
+
+  .header-right { display: flex; gap: 8px; }
+
+  .icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; cursor: pointer;
+  }
+
+  /* USER CHIP */
+  .user-chip {
+    margin: 0 16px 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-b) 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: white;
+    flex-shrink: 0;
+  }
+
+  .user-info { flex: 1; }
+
+  .user-name {
+    font-size: 13px; font-weight: 700;
+    color: var(--text);
+  }
+
+  .user-id {
+    font-size: 10px; color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .credit-badge {
+    background: rgba(34,197,94,0.12);
+    border: 1px solid rgba(34,197,94,0.25);
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--green);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 0 16px 14px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .stat-icon { font-size: 18px; }
+
+  .stat-val {
+    font-size: 20px; font-weight: 800;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    line-height: 1;
+  }
+
+  .stat-lbl {
+    font-size: 9px; font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ACTIVE BORROW BANNER */
+  .active-banner {
+    margin: 0 16px 14px;
+    background: linear-gradient(135deg, #0a1f3d 0%, #0d2545 100%);
+    border: 1px solid rgba(21,101,192,0.35);
+    border-radius: 16px;
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .active-banner::before {
+    content: '';
+    position: absolute;
+    top: -20px; right: -20px;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, rgba(30,136,229,0.2) 0%, transparent 70%);
+  }
+
+  .banner-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .banner-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--blue-b);
+  }
+
+  .due-chip {
+    background: rgba(245,158,11,0.12);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 10px; font-weight: 700;
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .banner-item-name {
+    font-size: 16px; font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .banner-meta {
+    font-size: 11px; color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .return-btn {
+    margin-top: 12px;
+    width: 100%;
+    padding: 10px;
+    background: rgba(30,136,229,0.15);
+    border: 1px solid rgba(30,136,229,0.35);
+    border-radius: 10px;
+    color: var(--blue-b);
+    font-size: 12px; font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+  }
+
+  /* SECTION TITLE */
+  .section-title {
+    padding: 0 20px 10px;
+    font-size: 11px; font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .section-title .filter-btn {
+    font-size: 11px; color: var(--blue-b);
+    text-transform: none; letter-spacing: 0;
+    cursor: pointer;
+  }
+
+  /* CATEGORY TABS */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+    white-space: nowrap; cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: var(--card);
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+
+  .tab.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: white;
+  }
+
+  /* ITEM CARDS */
+  .items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 16px;
+  }
+
+  .item-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .item-card:hover { border-color: rgba(21,101,192,0.35); }
+
+  .item-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px; border-radius: 3px 0 0 3px;
+  }
+
+  .item-card.available::before { background: var(--green); }
+  .item-card.borrowed::before { background: var(--red); }
+  .item-card.maintenance::before { background: var(--gold); }
+
+  .item-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--card2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+
+  .item-info { flex: 1; min-width: 0; }
+
+  .item-name {
+    font-size: 13px; font-weight: 700;
+    color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .item-meta {
+    font-size: 10px; color: var(--muted);
+    margin-top: 2px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
+  .status-badge {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  .status-badge.available {
+    background: rgba(34,197,94,0.12);
+    color: var(--green);
+    border: 1px solid rgba(34,197,94,0.2);
+  }
+
+  .status-badge.borrowed {
+    background: rgba(239,68,68,0.12);
+    color: var(--red);
+    border: 1px solid rgba(239,68,68,0.2);
+  }
+
+  .status-badge.maintenance {
+    background: rgba(245,158,11,0.12);
+    color: var(--gold);
+    border: 1px solid rgba(245,158,11,0.2);
+  }
+
+  .borrow-btn {
+    padding: 4px 10px;
+    background: var(--blue);
+    border-radius: 6px;
+    font-size: 10px; font-weight: 700;
+    color: white; cursor: pointer;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: 0.04em;
+  }
+
+  .borrow-btn:disabled {
+    background: var(--card2);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    flex-shrink: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 10px 0 20px;
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+    cursor: pointer; opacity: 0.35;
+    transition: opacity 0.2s;
+  }
+
+  .nav-item.active { opacity: 1; }
+  .nav-item:hover { opacity: 0.6; }
+  .nav-icon { font-size: 20px; }
+
+  .nav-label {
+    font-size: 10px; font-weight: 700;
+    color: var(--text); letter-spacing: 0.04em;
+  }
+
+  .nav-item.active .nav-label { color: var(--blue-b); }
+
+  /* LIVE DOT */
+  .live-dot {
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 4px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="notch"></div>
+
+  <div class="statusbar">
+    <span>9:41</span>
+    <span>●●●● WiFi 🔋</span>
+  </div>
+
+  <div class="content">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="app-name">Gear<span>Book</span></div>
+      <div class="header-right">
+        <div class="icon-btn">🔔</div>
+        <div class="icon-btn">📋</div>
+      </div>
+    </div>
+
+    <!-- USER CHIP -->
+    <div class="user-chip">
+      <div class="avatar">R</div>
+      <div class="user-info">
+        <div class="user-name">Rrya Edano</div>
+        <div class="user-id">ID: 2021-00342 · BSIT 3A</div>
+      </div>
+      <div class="credit-badge">95 pts</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-icon">✅</span>
+        <span class="stat-val">18</span>
+        <span class="stat-lbl">Available</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🔴</span>
+        <span class="stat-val">7</span>
+        <span class="stat-lbl">Borrowed</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🔧</span>
+        <span class="stat-val">2</span>
+        <span class="stat-lbl">Repair</span>
+      </div>
+    </div>
+
+    <!-- ACTIVE BORROW -->
+    <div class="active-banner">
+      <div class="banner-top">
+        <span class="banner-label"><span class="live-dot"></span>Currently Borrowed</span>
+        <span class="due-chip">Due 3:00 PM</span>
+      </div>
+      <div class="banner-item-name">Scientific Calculator #04</div>
+      <div class="banner-meta">Borrowed 10:24 AM · Locker B-02 · 2h 36m elapsed</div>
+      <button class="return-btn">↩ Mark as Returned</button>
+    </div>
+
+    <!-- ITEMS LIST -->
+    <div class="section-title">
+      Equipment
+      <span class="filter-btn">⊞ Filter</span>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active">All</div>
+      <div class="tab">Calculators</div>
+      <div class="tab">Cables</div>
+      <div class="tab">Tools</div>
+      <div class="tab">Extension</div>
+    </div>
+
+    <div class="items">
+
+      <div class="item-card available">
+        <div class="item-icon">🧮</div>
+        <div class="item-info">
+          <div class="item-name">Scientific Calculator #02</div>
+          <div class="item-meta">Locker A-01 · last returned 8:50 AM</div>
+        </div>
+        <div class="item-right">
+          <span class="status-badge available">Available</span>
+          <button class="borrow-btn">Get Now</button>
+        </div>
+      </div>
+
+      <div class="item-card borrowed">
+        <div class="item-icon">🧮</div>
+        <div class="item-info">
+          <div class="item-name">Scientific Calculator #03</div>
+          <div class="item-meta">Borrowed by J. Santos · due 2:00 PM</div>
+        </div>
+        <div class="item-right">
+          <span class="status-badge borrowed">Borrowed</span>
+          <button class="borrow-btn" disabled>Reserve</button>
+        </div>
+      </div>
+
+      <div class="item-card available">
+        <div class="item-icon">🔌</div>
+        <div class="item-info">
+          <div class="item-name">HDMI Cable #01</div>
+          <div class="item-meta">Locker C-03 · last returned 7:30 AM</div>
+        </div>
+        <div class="item-right">
+          <span class="status-badge available">Available</span>
+          <button class="borrow-btn">Get Now</button>
+        </div>
+      </div>
+
+      <div class="item-card available">
+        <div class="item-icon">🔌</div>
+        <div class="item-info">
+          <div class="item-name">Extension Cord #02</div>
+          <div class="item-meta">Locker C-04 · last returned 9:10 AM</div>
+        </div>
+        <div class="item-right">
+          <span class="status-badge available">Available</span>
+          <button class="borrow-btn">Get Now</button>
+        </div>
+      </div>
+
+      <div class="item-card maintenance">
+        <div class="item-icon">📐</div>
+        <div class="item-info">
+          <div class="item-name">T-Square Ruler #01</div>
+          <div class="item-meta">Under repair since yesterday</div>
+        </div>
+        <div class="item-right">
+          <span class="status-badge maintenance">Repair</span>
+          <button class="borrow-btn" disabled>Unavail.</button>
+        </div>
+      </div>
+
+      <div class="item-card borrowed">
+        <div class="item-icon">📏</div>
+        <div class="item-info">
+          <div class="item-name">Steel Measuring Tape #03</div>
+          <div class="item-meta">Borrowed by M. Cruz · due 4:00 PM</div>
+        </div>
+        <div class="item-right">
+          <span class="status-badge borrowed">Borrowed</span>
+          <button class="borrow-btn" disabled>Reserve</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item active">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">🔍</span>
+      <span class="nav-label">Browse</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">📅</span>
+      <span class="nav-label">Reserve</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">🕐</span>
+      <span class="nav-label">History</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">Profile</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
