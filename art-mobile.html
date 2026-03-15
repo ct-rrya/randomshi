@@ -1,2614 +1,974 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>Capturing the Moment & Beyond</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
-  --imp: #7aa8c4;
-  --imp-light: #b8d4e8;
-  --imp-dim: rgba(74,124,158,.18);
-  --post: #c4a882;
-  --post-dim: rgba(139,99,64,.18);
-  --fauv: #e8301a;
-  --fauv-dim: rgba(232,48,26,.18);
-  --white: #fff;
-  --muted: rgba(255,255,255,.55);
-  --faint: rgba(255,255,255,.2);
-  --card-bg: rgba(255,255,255,.055);
-  --card-border: rgba(255,255,255,.1);
-  --radius: 14px;
-  --safe-bottom: env(safe-area-inset-bottom, 16px);
+  --imp1:#b8d4e8;--imp2:#7aa8c4;--imp3:#4a7c9e;
+  --post1:#c4a882;--post2:#8b6340;
+  --fauv1:#e8301a;--fauv2:#f5a623;--fauv3:#1db85c;
 }
-
-html{scroll-snap-type:y mandatory;overflow-y:scroll;height:100%}
+html{scroll-behavior:smooth;}
 body{
-  font-family:'DM Sans',sans-serif;
-  background:#000;
-  color:#fff;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior:none;
+  background:#060d14;
+  color:#f0ece4;
+  font-family:'Nunito',sans-serif;
+  font-weight:300;
+  overflow-x:hidden;
 }
 
-/* ── SECTION ── */
-.section{
-  scroll-snap-align:start;
-  scroll-snap-stop:always;
-  min-height:100svh;
-  display:flex;
-  flex-direction:column;
-  position:relative;
+/* ── PROGRESS BAR ── */
+#progress{
+  position:fixed;top:0;left:0;height:3px;z-index:999;
+  background:linear-gradient(90deg,var(--imp2),var(--post2),var(--fauv1));
+  width:0%;transition:width .3s ease;
+}
+
+/* ── TOP NAV ── */
+#topnav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:12px 20px 0;
+  background:linear-gradient(to bottom,rgba(6,13,20,.95) 60%,transparent);
+}
+.nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:10px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.nav-brand{
+  font-family:'Cormorant Garamond',serif;
+  font-size:.95rem;font-weight:600;color:rgba(255,255,255,.7);
+  letter-spacing:.04em;
+}
+.nav-menu-btn{
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  color:#fff;font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+/* Section jump pills */
+.nav-pills{
+  display:flex;gap:6px;padding:8px 0 12px;overflow-x:auto;
+  scrollbar-width:none;
+}
+.nav-pills::-webkit-scrollbar{display:none;}
+.nav-pill{
+  flex-shrink:0;padding:5px 14px;border-radius:20px;
+  font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);
+  background:rgba(255,255,255,.05);cursor:pointer;text-decoration:none;
+  transition:all .2s;white-space:nowrap;
+}
+.nav-pill:hover,.nav-pill.active{color:#fff;background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3);}
+.nav-pill.imp{border-color:rgba(74,124,158,.4);color:var(--imp1);}
+.nav-pill.post{border-color:rgba(139,99,64,.4);color:var(--post1);}
+.nav-pill.fauv{border-color:rgba(232,48,26,.4);color:#f09080;}
+
+/* ── SECTIONS ── */
+section{
+  padding:90px 22px 60px;
+  position:relative;min-height:50vh;
   overflow:hidden;
 }
+section::before{
+  content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  opacity:.025;pointer-events:none;z-index:0;
+}
+section>*{position:relative;z-index:1;}
 
-.section::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-  pointer-events:none;
-  z-index:0;
-}
-.section>*{position:relative;z-index:1}
+.sec-title{background:radial-gradient(ellipse at 30% 20%,#1a3a52,#060d14 70%);}
+.sec-before{background:radial-gradient(ellipse at 80% 30%,#1a1208,#060d14 70%);}
+.sec-imp{background:radial-gradient(ellipse at 60% 20%,#0d2035,#060d14 70%);}
+.sec-post{background:radial-gradient(ellipse at 30% 60%,#1a0f05,#060d14 70%);}
+.sec-fauv{background:radial-gradient(ellipse at 70% 20%,#1a0500,#060d14 70%);}
+.sec-impact{background:radial-gradient(ellipse at 50% 40%,#0a0f1a,#060d14 70%);}
 
-/* BACKGROUNDS */
-.bg-cover   {background:radial-gradient(ellipse at 25% 40%,#1a3a52,#050e18 60%,#000)}
-.bg-imp     {background:radial-gradient(ellipse at 60% 20%,#1e3d58,#0d2035 60%,#050e18)}
-.bg-post    {background:radial-gradient(ellipse at 40% 70%,#2a1800,#1a0f05 60%,#080400)}
-.bg-fauv    {background:radial-gradient(ellipse at 70% 20%,#2a0500,#0a0000 60%,#000)}
-.bg-end     {background:linear-gradient(160deg,#050e18,#1a0f05 50%,#0a0000)}
-
-/* ── TOP STRIP ── */
-.top-strip{
-  position:sticky;
-  top:0;
-  z-index:100;
-  padding:10px 18px 8px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border-bottom:1px solid rgba(255,255,255,.07);
-  background:rgba(0,0,0,.45);
-}
-.strip-chapter{
-  font-size:10px;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  font-weight:600;
-  color:var(--muted);
-}
-.strip-progress{
-  display:flex;
-  align-items:center;
-  gap:4px;
-}
-.prog-dot{
-  width:5px;height:5px;
-  border-radius:50%;
-  background:rgba(255,255,255,.2);
-  transition:background .3s,transform .3s;
-}
-.prog-dot.active{background:#fff;transform:scale(1.3)}
-.prog-dot.done{background:rgba(255,255,255,.45)}
-
-/* ── CONTENT WRAPPER ── */
-.content{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  padding:24px 20px 100px;
-  gap:20px;
-}
-.content.center{
-  justify-content:center;
-  align-items:center;
+/* ── CHAPTER DIVIDERS ── */
+.chapter-divider{
+  padding:70px 22px 50px;
   text-align:center;
-  padding:32px 24px 100px;
+  position:relative;
 }
-
-/* ── CHAPTER BADGE ── */
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  font-size:10px;
-  letter-spacing:.2em;
-  text-transform:uppercase;
-  font-weight:600;
-  padding:6px 14px;
-  border-radius:20px;
-  width:fit-content;
+.chapter-divider::before{
+  content:'';position:absolute;inset:0;opacity:.06;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
 }
-.badge.imp{background:rgba(74,124,158,.22);color:var(--imp-light);border:1px solid rgba(74,124,158,.35)}
-.badge.post{background:rgba(139,99,64,.22);color:var(--post);border:1px solid rgba(139,99,64,.35)}
-.badge.fauv{background:rgba(232,48,26,.22);color:#f09080;border:1px solid rgba(232,48,26,.35)}
-.badge.neutral{background:rgba(255,255,255,.08);color:var(--muted);border:1px solid rgba(255,255,255,.15)}
+.chapter-divider>*{position:relative;z-index:1;}
+.cd-imp{background:radial-gradient(ellipse at 50% 50%,#1e3d58,#060d14 70%);}
+.cd-post{background:radial-gradient(ellipse at 50% 50%,#2a1800,#060d14 70%);}
+.cd-fauv{background:radial-gradient(ellipse at 50% 50%,#2a0500,#060d14 70%);}
+.cd-impact{background:radial-gradient(ellipse at 50% 50%,#050e18,#060d14 70%);}
 
 /* ── TYPOGRAPHY ── */
 .display{
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(2.6rem,11vw,4.4rem);
-  font-weight:700;
-  line-height:1.05;
-  color:#fff;
+  font-weight:700;line-height:1.05;color:#fff;
 }
-.display em{font-style:italic;opacity:.82}
-.display.xl{font-size:clamp(3.2rem,14vw,5.8rem)}
-.display.sm{font-size:clamp(2rem,8vw,3rem)}
-.display.xs{font-size:clamp(1.7rem,6.5vw,2.4rem)}
+.display.hero{font-size:clamp(3rem,14vw,5.5rem);}
+.display.section{font-size:clamp(2.4rem,10vw,4rem);}
+.display.card{font-size:clamp(1.6rem,7vw,2.6rem);}
+.display em{font-style:italic;opacity:.85;}
 
-.subtitle{
-  font-size:16px;
-  color:rgba(255,255,255,.62);
-  line-height:1.72;
-  font-weight:300;
+.chapter-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;
+  padding:6px 14px;border-radius:20px;margin-bottom:14px;
 }
-.body{
-  font-size:15px;
-  color:rgba(255,255,255,.78);
-  line-height:1.8;
-  font-weight:300;
+.ch-intro{background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);}
+.ch-imp{background:rgba(74,124,158,.2);color:var(--imp1);border:1px solid rgba(74,124,158,.35);}
+.ch-post{background:rgba(139,99,64,.2);color:var(--post1);border:1px solid rgba(139,99,64,.35);}
+.ch-fauv{background:rgba(232,48,26,.2);color:#f09080;border:1px solid rgba(232,48,26,.35);}
+
+.body-text{
+  font-size:1rem;line-height:1.8;
+  color:rgba(255,255,255,.75);font-weight:300;
 }
-.body strong{color:#fff;font-weight:500}
-.label-sm{
-  font-size:11px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,.35);
-  font-weight:600;
+.label-small{
+  font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.35);font-weight:600;
 }
 
-/* ── CARD ── */
-.card{
-  background:var(--card-bg);
-  border:1px solid var(--card-border);
-  border-radius:var(--radius);
-  padding:18px 16px;
+/* ── DIVIDER LINE ── */
+.hr{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);margin:32px 0;}
+
+/* ── ARTWORK CARD ── */
+.art-card{
+  border-radius:8px;overflow:hidden;
+  box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06);
+  margin-bottom:16px;cursor:zoom-in;
+  transition:transform .25s,box-shadow .25s;
+  position:relative;
 }
-.card-icon{font-size:1.6rem;margin-bottom:10px}
-.card-title{
+.art-card:active{transform:scale(.98);}
+.art-card img{width:100%;display:block;object-fit:cover;background:#0a1520;}
+.art-card.portrait img{max-height:380px;object-position:top;}
+.art-card.landscape img{max-height:240px;}
+.art-card.square img{max-height:300px;}
+.art-caption{
+  padding:12px 14px 14px;
+  background:linear-gradient(transparent,rgba(0,0,0,.9));
+  position:absolute;bottom:0;left:0;right:0;
+}
+.art-caption .title{
   font-family:'Cormorant Garamond',serif;
-  font-size:1.18rem;
-  font-weight:700;
-  color:#fff;
-  margin-bottom:8px;
+  font-size:.95rem;font-style:italic;color:#fff;font-weight:600;
 }
-.card-desc{
-  font-size:14px;
-  color:rgba(255,255,255,.65);
-  line-height:1.68;
+.art-caption .credit{font-size:.7rem;color:rgba(255,255,255,.45);margin-top:2px;}
+.art-card::after{
+  content:'🔍';
+  position:absolute;top:10px;right:10px;
+  background:rgba(0,0,0,.55);
+  padding:4px 8px;border-radius:10px;
+  font-size:.75rem;opacity:0;transition:opacity .2s;
 }
+.art-card:hover::after{opacity:1;}
+
+/* ── ART ROW (2 per row) ── */
+.art-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+
+/* ── HAYSTACK GRID ── */
+.haystack-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0;}
+.haystack-grid .art-card img{height:160px;}
+
+/* ── CHAR CARDS ── */
+.char-card{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:10px;padding:20px 18px;
+  margin-bottom:12px;
+  transition:background .2s;
+}
+.char-card:active{background:rgba(255,255,255,.08);}
+.char-card .icon{font-size:1.7rem;margin-bottom:10px;}
+.char-card .ctitle{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.15rem;font-weight:700;color:#fff;margin-bottom:6px;
+}
+.char-card .cdesc{font-size:.9rem;line-height:1.65;color:rgba(255,255,255,.65);}
+.char-card.imp-card{border-color:rgba(74,124,158,.25);}
+.char-card.post-card{border-color:rgba(139,99,64,.25);}
+.char-card.fauv-card{border-color:rgba(232,48,26,.25);}
 
 /* ── QUOTE ── */
-.quote{
-  border-left:3px solid var(--imp);
-  background:rgba(255,255,255,.04);
-  border-radius:0 10px 10px 0;
-  padding:16px 18px;
+.quote-block{
+  border-left:3px solid;
+  padding:18px 20px;
+  border-radius:0 8px 8px 0;
+  background:rgba(255,255,255,.03);
+  margin:24px 0;
 }
-.quote blockquote{
+.quote-block blockquote{
   font-family:'Cormorant Garamond',serif;
-  font-size:1.08rem;
-  font-style:italic;
-  color:rgba(255,255,255,.9);
-  line-height:1.62;
+  font-size:1.15rem;font-style:italic;
+  color:rgba(255,255,255,.9);line-height:1.6;
 }
-.quote cite{
-  display:block;
-  margin-top:10px;
-  font-size:11.5px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  font-weight:600;
+.quote-block cite{
+  display:block;margin-top:10px;font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;font-weight:600;
 }
 
-/* ── ART FRAME ── */
-.art-wrap{
-  border-radius:var(--radius);
-  overflow:hidden;
-  position:relative;
-  box-shadow:0 16px 48px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.08);
-  cursor:zoom-in;
-  transition:transform .2s;
-  -webkit-transform:translateZ(0);
-}
-.art-wrap:active{transform:scale(.98)}
-.art-wrap img{
-  width:100%;
-  display:block;
-  object-fit:cover;
-  aspect-ratio:16/9;
-}
-.art-wrap .art-cap{
-  position:absolute;
-  bottom:0;left:0;right:0;
-  padding:10px 12px;
-  background:linear-gradient(transparent,rgba(0,0,0,.88));
-}
-.art-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:.96rem;
-  font-style:italic;
-  color:#fff;
-  font-weight:600;
-}
-.art-credit{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
-.expand-hint{
-  position:absolute;
-  top:10px;right:10px;
-  background:rgba(0,0,0,.55);
-  color:rgba(255,255,255,.75);
-  font-size:10px;
-  padding:3px 9px;
-  border-radius:10px;
-  font-family:'DM Sans',sans-serif;
-}
-
-/* ── PILLS ── */
-.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
-.pill{
-  padding:5px 14px;
-  border-radius:18px;
-  font-size:12px;
-  font-weight:600;
-  background:rgba(255,255,255,.07);
-  color:rgba(255,255,255,.72);
-  border:1px solid rgba(255,255,255,.12);
-  letter-spacing:.03em;
-}
-
-/* ── TIMELINE CARDS (vertical) ── */
-.tl-list{display:flex;flex-direction:column;gap:12px;width:100%}
-.tl-item{
-  display:flex;
-  gap:14px;
-  align-items:flex-start;
-}
-.tl-line-wrap{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  flex-shrink:0;
-  padding-top:4px;
-}
-.tl-dot{
-  width:32px;height:32px;
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1rem;
-  flex-shrink:0;
-  border:1px solid rgba(255,255,255,.15);
-  background:rgba(255,255,255,.06);
-}
-.tl-vline{width:1px;flex:1;min-height:12px;background:rgba(255,255,255,.1);margin:4px 0}
-.tl-body{flex:1;padding-bottom:4px}
-.tl-period{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;font-weight:600}
-.tl-name{
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.22rem;
-  font-weight:700;
-  margin-bottom:4px;
-}
-.tl-desc{font-size:13.5px;color:rgba(255,255,255,.6);line-height:1.62}
-
-/* ── COMPARE ── */
-.compare{display:flex;flex-direction:column;gap:12px;width:100%}
+/* ── COMPARE CARDS ── */
 .compare-card{
-  background:var(--card-bg);
-  border:1px solid var(--card-border);
-  border-radius:var(--radius);
-  padding:16px;
-}
-.compare-h{
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.08rem;
-  font-weight:700;
-  color:#fff;
+  background:rgba(255,255,255,.04);border-radius:10px;
+  padding:20px;border:1px solid rgba(255,255,255,.08);
   margin-bottom:12px;
 }
-.compare-row{
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  margin-bottom:9px;
+.compare-card h4{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:12px;
 }
-.c-dot{
-  width:6px;height:6px;
-  border-radius:50%;
-  flex-shrink:0;
-  margin-top:7px;
+.bullet-row{
+  display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;
 }
-.c-text{font-size:13.5px;color:rgba(255,255,255,.65);line-height:1.6}
+.bullet-dot{
+  width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:7px;
+}
+.bullet-text{font-size:.9rem;line-height:1.6;color:rgba(255,255,255,.65);}
 
-/* ── COLOR BAR ── */
-.color-bar{
-  display:flex;
-  width:100%;
-  height:10px;
-  border-radius:5px;
-  overflow:hidden;
+/* ── PILLS ── */
+.pill-wrap{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;}
+.pill{
+  padding:6px 14px;border-radius:20px;font-size:.75rem;font-weight:600;
+  background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);
+  border:1px solid rgba(255,255,255,.12);letter-spacing:.04em;
 }
-.cb{flex:1}
+
+/* ── TIMELINE ── */
+.timeline-mobile{display:flex;flex-direction:column;gap:0;}
+.tl-item{
+  display:flex;gap:16px;
+  padding-bottom:28px;position:relative;
+}
+.tl-item:not(:last-child)::before{
+  content:'';position:absolute;left:19px;top:40px;bottom:0;
+  width:2px;background:rgba(255,255,255,.1);
+}
+.tl-dot{
+  width:40px;height:40px;border-radius:50%;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;border:2px solid;
+}
+.tl-content{flex:1;padding-top:6px;}
+.tl-content h4{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:4px;
+}
+.tl-content p{font-size:.87rem;line-height:1.6;color:rgba(255,255,255,.55);}
+
+/* ── CAROUSEL ── */
+.carousel{position:relative;border-radius:10px;overflow:hidden;margin:20px 0;box-shadow:0 12px 40px rgba(0,0,0,.6);}
+.carousel-track{display:flex;transition:transform .45s cubic-bezier(.77,0,.18,1);}
+.carousel-item{flex:0 0 100%;}
+.carousel-item img{width:100%;object-fit:cover;background:#0a1520;}
+.carousel-item img.tall{height:320px;}
+.carousel-caption{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:12px 14px 14px;
+  background:linear-gradient(transparent,rgba(0,0,0,.9));
+}
+.carousel-btn{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.2);
+  color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;
+  font-size:.9rem;display:flex;align-items:center;justify-content:center;z-index:10;
+}
+.carousel-btn.prev{left:8px;}
+.carousel-btn.next{right:8px;}
+.carousel-dots{
+  display:flex;justify-content:center;gap:6px;padding:10px 0 4px;
+}
+.cdot{
+  width:6px;height:6px;border-radius:50%;cursor:pointer;
+  background:rgba(255,255,255,.25);transition:background .2s;
+}
+.cdot.active{background:#c4a882;}
+
+/* ── FAUV COLOR BAR ── */
+.fauv-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin:16px 0;}
+.fauv-c{flex:1;}
+
+/* ── SECTION ACCENT LINE ── */
+.accent-line{height:3px;border-radius:2px;margin:20px 0;background:var(--imp2);}
+.accent-line.post{background:var(--post2);}
+.accent-line.fauv{background:var(--fauv1);}
+
+/* ── HERO SECTION ── */
+.hero-section{
+  padding:110px 22px 60px;
+  background:radial-gradient(ellipse 80% 70% at 30% 40%,#1a3a52,#060d14 65%);
+  text-align:center;
+}
 
 /* ── WILD TEXT ── */
-.wild{
+.wild-text{
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(3.5rem,18vw,7rem);
-  font-weight:700;
-  line-height:1;
+  font-size:clamp(3rem,16vw,6rem);font-weight:700;line-height:1;
   background:linear-gradient(135deg,#e8301a,#f5a623,#1db85c,#9b2de8,#e8301a);
   background-size:300%;
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation:wild 3s linear infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:colorShift 3s linear infinite;
+  margin-bottom:8px;
 }
-@keyframes wild{from{background-position:0%}to{background-position:300%}}
+@keyframes colorShift{0%{background-position:0%;}100%{background-position:300%;}}
 
-/* ── SPLASH ── */
-.splash{
-  position:absolute;
-  border-radius:50%;
-  animation:spl 2s ease-in-out infinite alternate;
-}
-@keyframes spl{
-  from{opacity:.12;transform:scale(1)}
-  to{opacity:.28;transform:scale(1.12)}
-}
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease;}
+.revealed{opacity:1;transform:translateY(0);}
 
-/* ── SECTION NUMBER ── */
-.sec-num{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(7rem,30vw,14rem);
-  font-weight:700;
-  line-height:1;
-  opacity:.06;
-  color:#fff;
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  pointer-events:none;
-  white-space:nowrap;
-}
-
-/* ── DIVIDER SECTION ── */
-.divider-content{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:40px 24px 100px;
-  gap:16px;
-  position:relative;
-}
-.div-line{
-  position:absolute;
-  bottom:0;left:0;right:0;
-  height:3px;
-  z-index:2;
-}
-
-/* ── BOTTOM NAV ── */
-#nav{
-  position:fixed;
-  bottom:0;left:0;right:0;
-  z-index:200;
-  padding:12px 20px calc(12px + var(--safe-bottom));
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  background:rgba(0,0,0,.5);
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.nav-btn{
-  width:42px;height:42px;
-  border-radius:50%;
+/* ── BACK TO TOP ── */
+#back-top{
+  position:fixed;bottom:24px;right:20px;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,.1);backdrop-filter:blur(12px);
   border:1px solid rgba(255,255,255,.15);
-  background:rgba(255,255,255,.08);
-  color:#fff;
-  font-size:1.1rem;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:background .18s,transform .15s;
-  -webkit-user-select:none;user-select:none;
+  color:#fff;font-size:1.1rem;cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  z-index:200;transition:opacity .3s;
 }
-.nav-btn:active{background:rgba(255,255,255,.22);transform:scale(.94)}
-.nav-counter{
-  font-size:12px;
-  font-weight:600;
-  color:var(--muted);
-  letter-spacing:.14em;
-}
-
-/* ── PROGRESS BAR ── */
-#prog-bar{
-  position:fixed;
-  top:0;left:0;
-  height:2.5px;
-  background:linear-gradient(90deg,var(--imp),var(--post),var(--fauv));
-  transition:width .4s ease;
-  z-index:300;
-}
+#back-top.show{display:flex;}
 
 /* ── LIGHTBOX ── */
-#lb{
-  position:fixed;
-  inset:0;z-index:999;
+#lightbox{
+  position:fixed;inset:0;z-index:999;
   background:rgba(0,0,0,0);
   display:flex;align-items:center;justify-content:center;
-  pointer-events:none;
-  transition:background .3s;
+  pointer-events:none;transition:background .3s;
 }
-#lb.open{background:rgba(0,0,0,.96);pointer-events:all}
+#lightbox.open{background:rgba(0,0,0,.95);pointer-events:all;}
 #lb-wrap{
-  position:relative;
-  padding:0 12px;
-  width:100%;
-  opacity:0;
-  transform:scale(.88);
-  transition:opacity .3s,transform .32s cubic-bezier(.34,1.4,.64,1);
+  max-width:96vw;max-height:90vh;
+  transform:scale(.85);opacity:0;
+  transition:transform .3s cubic-bezier(.34,1.46,.64,1),opacity .25s;
 }
-#lb.open #lb-wrap{opacity:1;transform:scale(1)}
-#lb img{
-  width:100%;
-  max-height:65svh;
-  object-fit:contain;
-  border-radius:10px;
-  display:block;
-}
-#lb-cap{
-  text-align:center;
-  margin-top:14px;
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.05rem;
-  font-style:italic;
-  color:rgba(255,255,255,.85);
-}
-#lb-credit{
-  text-align:center;
-  margin-top:4px;
-  font-size:11px;
-  color:rgba(255,255,255,.42);
-  text-transform:uppercase;
-  letter-spacing:.1em;
-}
+#lightbox.open #lb-wrap{transform:scale(1);opacity:1;}
+#lb-img{max-width:96vw;max-height:78vh;object-fit:contain;border-radius:6px;display:block;box-shadow:0 20px 80px rgba(0,0,0,.9);}
+#lb-caption-text{text-align:center;margin-top:12px;font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:rgba(255,255,255,.8);}
+#lb-credit-text{text-align:center;font-size:.7rem;color:rgba(255,255,255,.35);letter-spacing:.08em;margin-top:4px;}
 #lb-close{
-  position:fixed;
-  top:calc(env(safe-area-inset-top,0px) + 16px);
-  right:16px;
-  background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.18);
-  color:#fff;
-  width:40px;height:40px;
-  border-radius:50%;
-  font-size:1.2rem;
+  position:fixed;top:16px;right:16px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  color:#fff;font-size:1.2rem;width:40px;height:40px;border-radius:50%;
+  cursor:pointer;z-index:1000;
   display:none;align-items:center;justify-content:center;
-  z-index:1000;cursor:pointer;
 }
-#lb.open #lb-close{display:flex}
-#lb-nav{
-  position:fixed;
-  bottom:calc(var(--safe-bottom) + 60px);
-  left:0;right:0;
-  display:none;
-  justify-content:space-between;
-  padding:0 16px;
-  z-index:1000;
-}
-#lb.open #lb-nav{display:flex}
-.lb-nb{
-  background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.18);
-  color:#fff;
-  width:44px;height:44px;
-  border-radius:50%;
-  font-size:1.3rem;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;
+#lightbox.open #lb-close{display:flex;}
+
+/* ── SECTION DIVIDERS ── */
+.big-divider{
+  text-align:center;
+  padding:70px 22px 50px;
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  margin:0;
 }
 
-/* ── ANIMATIONS ── */
-.fade-up{
-  opacity:0;
-  transform:translateY(22px);
-  transition:opacity .55s ease, transform .55s ease;
-}
-.fade-up.visible{opacity:1;transform:translateY(0)}
-.fade-up:nth-child(2){transition-delay:.08s}
-.fade-up:nth-child(3){transition-delay:.16s}
-.fade-up:nth-child(4){transition-delay:.24s}
-.fade-up:nth-child(5){transition-delay:.32s}
-.fade-up:nth-child(6){transition-delay:.40s}
-.fade-up:nth-child(7){transition-delay:.48s}
-.fade-up:nth-child(8){transition-delay:.56s}
+/* ── ACADEMIC RULE ROWS ── */
+.rule-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;}
+.rule-dot{width:6px;height:6px;border-radius:50%;background:#c4a882;flex-shrink:0;margin-top:8px;}
+.rule-text{font-size:.92rem;line-height:1.55;color:rgba(255,255,255,.7);}
+.rule-text strong{color:#c4a882;}
 
-/* ── DIVIDER ACCENT LINE ── */
-.accent-line{
-  width:48px;height:2px;
-  border-radius:1px;
-  margin:4px 0;
+/* ── LEGACY CARD ── */
+.legacy-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;padding:20px;margin-bottom:12px;
 }
+.legacy-card .l-icon{font-size:1.6rem;margin-bottom:8px;}
+.legacy-card .l-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:6px;}
+.legacy-card .l-text{font-size:.9rem;line-height:1.65;color:rgba(255,255,255,.6);}
 </style>
 </head>
 <body>
 
-<div id="prog-bar" style="width:0%"></div>
+<div id="progress"></div>
 
-<!-- ══════════════════════════════════════════
-     SECTION 0 — COVER
-══════════════════════════════════════════ -->
-<section class="section bg-cover" data-chapter="Intro" data-i="0">
-  <div class="content center" style="justify-content:center;gap:18px;">
-    <div class="badge neutral fade-up">Group 2 · Arts Appreciation</div>
-    <div class="display xl fade-up">Capturing the <em>Moment</em></div>
-    <p class="display fade-up" style="font-size:clamp(1.2rem,5vw,1.8rem);opacity:.45;margin-top:-8px;">& Beyond</p>
-    <p class="subtitle fade-up" style="margin-top:8px;max-width:340px;">A journey through France's revolutionary art movements — from shimmering light to raw, untamed color.</p>
-    <div class="pills fade-up" style="justify-content:center;margin-top:12px;">
-      <span class="pill" style="background:rgba(74,124,158,.28);border-color:rgba(74,124,158,.45);color:var(--imp-light);">Impressionism</span>
-      <span class="pill" style="background:rgba(139,99,64,.28);border-color:rgba(139,99,64,.45);color:var(--post);">Post-Impressionism</span>
-      <span class="pill" style="background:rgba(232,48,26,.28);border-color:rgba(232,48,26,.45);color:#f09080;">Fauvism</span>
-    </div>
-    <div class="fade-up" style="margin-top:16px;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.38">
-      <div style="width:1px;height:40px;background:rgba(255,255,255,.3);animation:bob 1.8s ease-in-out infinite"></div>
-      <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;">Scroll to begin</span>
-    </div>
+<!-- NAV -->
+<nav id="topnav">
+  <div class="nav-inner">
+    <span class="nav-brand">Capturing the Moment and Beyond</span>
+  </div>
+  <div class="nav-pills">
+    <a class="nav-pill" href="#before">Before</a>
+    <a class="nav-pill imp" href="#impressionism">Impressionism</a>
+    <a class="nav-pill post" href="#post">Post-Imp.</a>
+    <a class="nav-pill fauv" href="#fauvism">Fauvism</a>
+    <a class="nav-pill" href="#impact">Legacy</a>
+  </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero-section" id="top">
+  <div class="chapter-tag ch-intro">Group 2 · Arts Appreciation</div>
+  <div class="display hero">Capturing the<br><em>Moment</em></div>
+  <div class="display" style="font-size:clamp(1.4rem,8vw,2.8rem);opacity:.45;margin-top:-6px;">& Beyond</div>
+  <p class="body-text" style="margin-top:20px;max-width:340px;margin-left:auto;margin-right:auto;text-align:center;">
+    A journey through three art movements that changed how humans see, feel, and dream.
+  </p>
+  <div class="pill-wrap" style="justify-content:center;margin-top:22px;">
+    <span class="pill" style="background:rgba(74,124,158,.25);color:var(--imp1);border-color:rgba(74,124,158,.4);">Impressionism</span>
+    <span class="pill" style="background:rgba(139,99,64,.25);color:var(--post1);border-color:rgba(139,99,64,.4);">Post-Impressionism</span>
+    <span class="pill" style="background:rgba(232,48,26,.25);color:#f09080;border-color:rgba(232,48,26,.4);">Fauvism</span>
   </div>
 </section>
 
-<style>@keyframes bob{0%,100%{opacity:.3;transform:scaleY(1)}50%{opacity:.7;transform:scaleY(1.15)}}</style>
-
-<!-- ══════════════════════════════════════════
-     SECTION 1 — JOURNEY OVERVIEW
-══════════════════════════════════════════ -->
-<section class="section bg-cover" data-chapter="Overview" data-i="1">
-  <div class="top-strip">
-    <span class="strip-chapter">The Journey</span>
-    <div class="strip-progress" id="prog-dots-1"></div>
-  </div>
-  <div class="content" style="gap:18px;padding-top:20px;">
-    <div class="label-sm fade-up">The Evolution</div>
-    <div class="display sm fade-up">Our Journey Today</div>
-
-    <div class="tl-list fade-up">
-      <div class="tl-item">
-        <div class="tl-line-wrap">
-          <div class="tl-dot">☁️</div>
-          <div class="tl-vline"></div>
-        </div>
-        <div class="tl-body">
-          <div class="tl-period">c. 1860s–1880s</div>
-          <div class="tl-name" style="color:var(--imp-light)">Impressionism</div>
-          <div class="tl-desc">Light, atmosphere, the fleeting moment</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-line-wrap">
-          <div class="tl-dot">🧩</div>
-          <div class="tl-vline"></div>
-        </div>
-        <div class="tl-body">
-          <div class="tl-period">c. 1886–1910s</div>
-          <div class="tl-name" style="color:var(--post)">Post-Impressionism</div>
-          <div class="tl-desc">Structure, emotion, personal expression</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-line-wrap">
-          <div class="tl-dot">🔥</div>
-        </div>
-        <div class="tl-body">
-          <div class="tl-period">c. 1905–1908</div>
-          <div class="tl-name" style="color:#f09080">Fauvism</div>
-          <div class="tl-desc">Pure color as pure emotion</div>
-        </div>
+<!-- ══════════ TIMELINE OVERVIEW ══════════ -->
+<section class="sec-title" style="padding-top:50px;">
+  <div class="label-small reveal">The Evolution</div>
+  <div class="display card reveal" style="margin-top:6px;margin-bottom:24px;">Our Journey Today</div>
+  <div class="timeline-mobile">
+    <div class="tl-item reveal">
+      <div class="tl-dot" style="border-color:rgba(74,124,158,.5);background:rgba(74,124,158,.1);">☁️</div>
+      <div class="tl-content">
+        <h4 style="color:var(--imp1);">Impressionism</h4>
+        <p>c. 1860s–1880s · Light, atmosphere, the fleeting moment · Monet, Renoir, Degas</p>
       </div>
     </div>
-
-    <p class="body fade-up" style="margin-top:4px;">Each movement built on — and rebelled against — what came before. Art went from chasing sunlight to unleashing the full fury of human feeling.</p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 2 — IMP DIVIDER
-══════════════════════════════════════════ -->
-<section class="section bg-imp" data-chapter="Impressionism" data-i="2">
-  <div class="sec-num">I</div>
-  <div class="divider-content">
-    <div class="badge imp fade-up">Movement 01</div>
-    <div class="display fade-up" style="font-size:clamp(2.8rem,13vw,5rem);">Impressionism</div>
-    <p class="subtitle fade-up"><em>"Let's get impressionable!"</em><br>c. 1860s–1880s, France</p>
-    <div class="pills fade-up" style="justify-content:center;">
-      <span class="pill">Monet</span><span class="pill">Renoir</span><span class="pill">Degas</span>
-      <span class="pill">Morisot</span><span class="pill">Pissarro</span>
-    </div>
-  </div>
-  <div class="div-line" style="background:linear-gradient(90deg,transparent,var(--imp),transparent)"></div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 3 — WHAT IS IMPRESSIONISM
-══════════════════════════════════════════ -->
-<section class="section bg-imp" data-chapter="Impressionism" data-i="3">
-  <div class="top-strip">
-    <span class="strip-chapter">Impressionism</span>
-    <div class="strip-progress"></div>
-  </div>
-  <div class="content" style="gap:16px;">
-    <div class="badge imp fade-up">What Was Their Main Goal?</div>
-    <div class="display xs fade-up">Breaking the <em>Rules</em></div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Monet_-_Impression%2C_Sunrise.jpg/1280px-Monet_-_Impression%2C_Sunrise.jpg" alt="Impression Sunrise" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Impression, Sunrise — Monet, 1872</div>
-        <div class="art-credit">The painting that named the movement</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">In the 1860s, bold French painters broke from the <strong>Académie des Beaux-Arts</strong> to capture the <em>fleeting impression</em> of a single moment.</p>
-    <p class="body fade-up">The name was an <strong>insult</strong> — critic Louis Leroy mocked Monet's 1874 exhibit. The artists embraced it.</p>
-    <div class="quote fade-up" style="border-color:var(--imp)">
-      <blockquote>"My wish is to depict what lies between the object and me."</blockquote>
-      <cite style="color:var(--imp)">— Claude Monet</cite>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 4 — EN PLEIN AIR
-══════════════════════════════════════════ -->
-<section class="section bg-imp" data-chapter="Impressionism" data-i="4">
-  <div class="top-strip">
-    <span class="strip-chapter">Impressionism</span>
-    <div class="strip-progress"></div>
-  </div>
-  <div class="content" style="gap:16px;">
-    <div class="badge imp fade-up">Defining Approach</div>
-    <div class="display xs fade-up">Painting <em>En Plein Air</em></div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Pierre-Auguste_Renoir_-_Luncheon_of_the_Boating_Party_-_Google_Art_Project.jpg" alt="Boating Party" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Luncheon of the Boating Party — Renoir, 1881</div>
-        <div class="art-credit">The Phillips Collection</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">Instead of dark studios, Impressionists carried canvases <strong>outdoors</strong> — to parks, riversides, and cafés.</p>
-    <p class="body fade-up"><strong>Light changes every minute.</strong> This urgency forced them to paint fast — giving birth to their loose, rapid brushwork.</p>
-    <div class="pills fade-up">
-      <span class="pill">Direct observation</span>
-      <span class="pill">Natural light</span>
-      <span class="pill">Speed & spontaneity</span>
-      <span class="pill">No studio polish</span>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 5 — CHARACTERISTICS PT 1
-══════════════════════════════════════════ -->
-<section class="section bg-imp" data-chapter="Impressionism" data-i="5">
-  <div class="top-strip">
-    <span class="strip-chapter">Impressionism · Characteristics</span>
-  </div>
-  <div class="content" style="gap:14px;">
-    <div class="badge imp fade-up">Defining Characteristics · 1 of 2</div>
-    <div class="display xs fade-up">What Made It <em>Different</em></div>
-    <div class="card fade-up" style="border-color:rgba(74,124,158,.3)">
-      <div class="card-icon">🖌️</div>
-      <div class="card-title">Visible Brushstrokes</div>
-      <div class="card-desc">Quick, loose, energetic marks that suggest rather than define. The brushstroke itself becomes expressive — you can see the hand at work.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(74,124,158,.3)">
-      <div class="card-icon">☀️</div>
-      <div class="card-title">Light & Atmosphere</div>
-      <div class="card-desc">Capturing light as it changes by the hour. Monet painted the same haystacks dozens of times — each under different conditions.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(74,124,158,.3)">
-      <div class="card-icon">🌿</div>
-      <div class="card-title">En Plein Air</div>
-      <div class="card-desc">Painting directly from nature outdoors. The urgency of changing light was the mother of their impressionistic style.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 6 — CHARACTERISTICS PT 2
-══════════════════════════════════════════ -->
-<section class="section bg-imp" data-chapter="Impressionism" data-i="6">
-  <div class="top-strip">
-    <span class="strip-chapter">Impressionism · Characteristics</span>
-  </div>
-  <div class="content" style="gap:14px;">
-    <div class="badge imp fade-up">Defining Characteristics · 2 of 2</div>
-    <div class="card fade-up" style="border-color:rgba(74,124,158,.3)">
-      <div class="card-icon">🎭</div>
-      <div class="card-title">Everyday Modern Life</div>
-      <div class="card-desc">Parks, cafés, dancers, train stations. Ordinary people doing ordinary things — a radical break from mythological subjects.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(74,124,158,.3)">
-      <div class="card-icon">🔵</div>
-      <div class="card-title">Broken Color Technique</div>
-      <div class="card-desc">Small dabs of pure, unmixed color placed side by side. The eye blends them at a distance, creating vibrancy paint mixing can't achieve.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(74,124,158,.3)">
-      <div class="card-icon">🚫</div>
-      <div class="card-title">No Black Shadows</div>
-      <div class="card-desc">Shadows are painted in blues, purples, greens — not black. They observed that shadows are full of reflected environmental color.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 7 — KEY WORKS
-══════════════════════════════════════════ -->
-<section class="section bg-imp" data-chapter="Impressionism" data-i="7">
-  <div class="top-strip">
-    <span class="strip-chapter">Impressionism · Key Works</span>
-  </div>
-  <div class="content" style="gap:14px;">
-    <div class="badge imp fade-up">Gallery</div>
-    <div class="display xs fade-up">Key <em>Works</em></div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Berthe_Morisot_-_The_Cradle_-_Google_Art_Project.jpg" alt="The Cradle" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">The Cradle — Berthe Morisot, 1872</div>
-        <div class="art-credit">Soft, intimate light</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/Edgar_Germain_Hilaire_Degas_021.jpg" alt="Ballet Class" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">The Ballet Class — Edgar Degas, c.1874</div>
-        <div class="art-credit">Motion captured mid-moment</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/1280px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg" alt="Water Lilies" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Water Lilies — Monet, 1906</div>
-        <div class="art-credit">250+ paintings in this series</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 8 — POST-IMP DIVIDER
-══════════════════════════════════════════ -->
-<section class="section bg-post" data-chapter="Post-Impressionism" data-i="8">
-  <div class="sec-num" style="color:var(--post)">II</div>
-  <div class="divider-content">
-    <div class="badge post fade-up">Movement 02</div>
-    <div class="display fade-up" style="font-size:clamp(2.2rem,10vw,4rem);">Post-<em>Impressionism</em></div>
-    <p class="subtitle fade-up"><em>"This is where things get interesting!"</em><br>c. 1886–1910s</p>
-    <p class="body fade-up" style="max-width:300px;">Not one movement — a radical explosion of individual visions.</p>
-  </div>
-  <div class="div-line" style="background:linear-gradient(90deg,transparent,var(--post),transparent)"></div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 9 — WHAT IS POST-IMP
-══════════════════════════════════════════ -->
-<section class="section bg-post" data-chapter="Post-Impressionism" data-i="9">
-  <div class="top-strip">
-    <span class="strip-chapter">Post-Impressionism</span>
-  </div>
-  <div class="content" style="gap:16px;">
-    <div class="badge post fade-up">Beyond the Fleeting Moment</div>
-    <div class="display xs fade-up">A New <em>Question</em></div>
-    <div class="compare fade-up">
-      <div class="compare-card" style="border-color:rgba(74,124,158,.3)">
-        <div class="compare-h" style="color:var(--imp-light)">☁️ Impressionism asked…</div>
-        <div class="compare-row"><div class="c-dot" style="background:var(--imp)"></div><div class="c-text">"What do I <strong style="color:#fff">see</strong>?"</div></div>
-        <div class="compare-row"><div class="c-dot" style="background:var(--imp)"></div><div class="c-text">Captured light, color, atmosphere</div></div>
-        <div class="compare-row"><div class="c-dot" style="background:var(--imp)"></div><div class="c-text">The world at one instant</div></div>
-      </div>
-      <div class="compare-card" style="border-color:rgba(139,99,64,.4)">
-        <div class="compare-h" style="color:var(--post)">🧩 Post-Imp asked…</div>
-        <div class="compare-row"><div class="c-dot" style="background:var(--post)"></div><div class="c-text">"What does it <strong style="color:#fff">mean? Feel?</strong>"</div></div>
-        <div class="compare-row"><div class="c-dot" style="background:var(--post)"></div><div class="c-text">Structure, emotion, symbolic meaning</div></div>
-        <div class="compare-row"><div class="c-dot" style="background:var(--post)"></div><div class="c-text">Each artist: a radically different style</div></div>
+    <div class="tl-item reveal">
+      <div class="tl-dot" style="border-color:rgba(139,99,64,.5);background:rgba(139,99,64,.1);">🧩</div>
+      <div class="tl-content">
+        <h4 style="color:var(--post1);">Post-Impressionism</h4>
+        <p>c. 1886–1910s · Structure, emotion, personal expression · Cézanne, Van Gogh, Gauguin</p>
       </div>
     </div>
-    <p class="body fade-up">British critic Roger Fry coined "Post-Impressionism" in <strong>1910</strong> — an umbrella for artists who'd gone beyond.</p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 10 — CÉZANNE
-══════════════════════════════════════════ -->
-<section class="section bg-post" data-chapter="Post-Impressionism" data-i="10">
-  <div class="top-strip"><span class="strip-chapter">Artist Spotlight</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge post fade-up">Artist Spotlight</div>
-    <div class="display xs fade-up">Paul <em>Cézanne</em></div>
-    <div class="label-sm fade-up">1839–1906 · The Father of Modern Art</div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b6/Still_Life_with_Apples_and_Pears_MET_DT1491.jpg" alt="Cezanne Still Life" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Still Life with Apples and Pears</div>
-        <div class="art-credit">Paul Cézanne · c.1891 · Metropolitan Museum of Art</div>
+    <div class="tl-item reveal">
+      <div class="tl-dot" style="border-color:rgba(232,48,26,.5);background:rgba(232,48,26,.1);">🔥</div>
+      <div class="tl-content">
+        <h4 style="color:#f09080;">Fauvism</h4>
+        <p>c. 1905–1908 · Pure color as pure emotion · Matisse, Derain, Vlaminck</p>
       </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">Where Impressionists saw shimmering light, Cézanne saw <strong>underlying geometry</strong> — cylinders, cones, spheres.</p>
-    <p class="body fade-up">He depicted the <strong>same scene from multiple viewpoints at once</strong>. Picasso said: <em style="color:var(--post)">"He is the father of us all."</em> His work led directly to <strong>Cubism</strong>.</p>
-    <div class="pills fade-up">
-      <span class="pill">Geometric simplification</span>
-      <span class="pill">Multiple viewpoints</span>
-      <span class="pill">Permanent form</span>
     </div>
   </div>
+  <p class="body-text reveal" style="margin-top:8px;">Each movement built on — and rebelled against — what came before.</p>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SECTION 11 — VAN GOGH
-══════════════════════════════════════════ -->
-<section class="section bg-post" data-chapter="Post-Impressionism" data-i="11">
-  <div class="top-strip"><span class="strip-chapter">Artist Spotlight</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge post fade-up">Artist Spotlight</div>
-    <div class="display xs fade-up">Vincent <em>van Gogh</em></div>
-    <div class="label-sm fade-up">1853–1890 · The Prophet of Emotion</div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg" alt="Starry Night" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">The Starry Night · 1889 · MoMA, New York</div>
-        <div class="art-credit">Painted from memory while in a mental asylum</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">Van Gogh used <strong>swirling, turbulent brushstrokes</strong> and blazing, non-natural colors to express raw psychological states.</p>
-    <p class="body fade-up">He sold only <em>one</em> painting in his lifetime. Today his works are worth hundreds of millions. He directly inspired <strong>Expressionism</strong>.</p>
-    <div class="quote fade-up" style="border-color:#f0a060">
-      <blockquote>"I dream of painting and then I paint my dream."</blockquote>
-      <cite style="color:#f0a060">— Vincent van Gogh</cite>
-    </div>
-  </div>
-</section>
+<!-- ══════════ BEFORE ══════════ -->
+<div class="big-divider sec-before" id="before">
+  <div class="chapter-tag ch-intro reveal">Context · Before Impressionism</div>
+  <div class="display section reveal">What Art <em>Looked Like</em> Before</div>
+</div>
 
-<!-- ══════════════════════════════════════════
-     SECTION 12 — GAUGUIN
-══════════════════════════════════════════ -->
-<section class="section bg-post" data-chapter="Post-Impressionism" data-i="12">
-  <div class="top-strip"><span class="strip-chapter">Artist Spotlight</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge post fade-up">Artist Spotlight</div>
-    <div class="display xs fade-up">Paul <em>Gauguin</em></div>
-    <div class="label-sm fade-up">1848–1903 · The Symbolist & Primitivist</div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Paul_Gauguin_-_D%27ou_venons-nous.jpg" alt="Gauguin" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Where Do We Come From? What Are We?</div>
-        <div class="art-credit">Paul Gauguin · 1897–98 · Museum of Fine Arts, Boston</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">Disillusioned with Western civilization, Gauguin fled to <strong>Tahiti</strong>. He believed "primitive" cultures held a spiritual truth Europe had lost.</p>
-    <p class="body fade-up">His paintings use <strong>flat, bold color areas and thick outlines</strong> from Polynesian life — opening Western art to the world beyond Europe.</p>
-    <div class="pills fade-up">
-      <span class="pill">Flat color planes</span><span class="pill">Symbolic content</span>
-      <span class="pill">Non-Western influence</span><span class="pill">Spiritual themes</span>
-    </div>
-  </div>
-</section>
+<section class="sec-before" style="padding-top:40px;">
+  <p class="body-text reveal">
+    For centuries, European painting was ruled by the <strong style="color:#fff;">Académie des Beaux-Arts</strong> and its annual <strong style="color:#fff;">Paris Salon</strong> — the only gateway to a painter's career.
+  </p>
+  <div class="hr"></div>
+  <div class="label-small reveal" style="margin-bottom:14px;">Their Rules</div>
+  <div class="rule-row reveal"><div class="rule-dot"></div><div class="rule-text"><strong>Grand Subjects Only</strong> — history, mythology, religion. Everyday life was beneath serious art.</div></div>
+  <div class="rule-row reveal"><div class="rule-dot"></div><div class="rule-text"><strong>Invisible Brushwork</strong> — paint blended to a porcelain finish. Never see a single stroke.</div></div>
+  <div class="rule-row reveal"><div class="rule-dot"></div><div class="rule-text"><strong>Studio Painting</strong> — composed from sketches indoors, far from nature and changing light.</div></div>
+  <div class="rule-row reveal"><div class="rule-dot"></div><div class="rule-text"><strong>Idealized Reality</strong> — figures beautified, stripped of all imperfection.</div></div>
+  <div class="rule-row reveal"><div class="rule-dot"></div><div class="rule-text"><strong>Strict Genre Hierarchy</strong> — history painting at the top, still lifes at the bottom.</div></div>
+  <div class="hr"></div>
+  <div class="label-small reveal" style="margin-bottom:12px;">Academic Art — The Gold Standard</div>
 
-<!-- ══════════════════════════════════════════
-     SECTION 13 — SEURAT
-══════════════════════════════════════════ -->
-<section class="section bg-post" data-chapter="Post-Impressionism" data-i="13">
-  <div class="top-strip"><span class="strip-chapter">Artist Spotlight</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge post fade-up">Artist Spotlight · Bonus</div>
-    <div class="display xs fade-up">Georges <em>Seurat</em></div>
-    <div class="label-sm fade-up">1859–1891 · Inventor of Pointillism</div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Georges_Seurat_-_Un_dimanche_apr%C3%A8s-midi_%C3%A0_l%27%C3%AEle_de_la_Grande_Jatte.jpg" alt="Grande Jatte" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">A Sunday Afternoon on La Grande Jatte</div>
-        <div class="art-credit">Georges Seurat · 1884–1886 · Art Institute of Chicago</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up"><strong>Pointillism</strong> — thousands of tiny dots of pure color — was based on optical theory: the dots blend in your eye, not on canvas.</p>
-    <p class="body fade-up">The result: Impressionist subject matter with an almost <strong>timeless, monumental quality</strong>. Frozen. Classical. Eternal.</p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 14 — FAUVISM DIVIDER
-══════════════════════════════════════════ -->
-<section class="section bg-fauv" data-chapter="Fauvism" data-i="14">
-  <div class="splash" style="width:250px;height:250px;background:radial-gradient(var(--fauv),transparent 70%);top:-60px;right:-60px;"></div>
-  <div class="splash" style="width:320px;height:320px;background:radial-gradient(#1db85c,transparent 70%);bottom:-80px;left:-80px;animation-delay:.6s;"></div>
-  <div class="splash" style="width:180px;height:180px;background:radial-gradient(#f5a623,transparent 70%);top:38%;left:28%;animation-delay:1.1s;"></div>
-  <div class="divider-content">
-    <div class="badge fauv fade-up">Movement 03</div>
-    <div class="wild fade-up">LES<br>FAUVES</div>
-    <div class="display fade-up" style="font-size:clamp(1.4rem,6vw,2.4rem);opacity:.7;margin-top:6px;"><em>The Wild Beasts</em></div>
-    <p class="subtitle fade-up" style="margin-top:10px;">c. 1905–1908 · Get ready for color!</p>
-    <p class="body fade-up" style="max-width:300px;">In 1905, critic Louis Vauxcelles saw Matisse's paintings and declared: <em style="color:#f09080;">"Donatello among the wild beasts!"</em></p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 15 — WHAT IS FAUVISM
-══════════════════════════════════════════ -->
-<section class="section bg-fauv" data-chapter="Fauvism" data-i="15">
-  <div class="top-strip"><span class="strip-chapter">Fauvism</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge fauv fade-up">Color as Pure Emotion</div>
-    <div class="display xs fade-up">Freed from <em>Nature</em></div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/f/fb/Matisse-Woman-with-a-Hat.jpg" alt="Woman with a Hat" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Woman with a Hat — Matisse, 1905</div>
-        <div class="art-credit">The painting that shocked Paris · SFMOMA</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">The Fauves took Van Gogh's emotional color and Gauguin's boldness <strong>further than anyone had dared</strong>.</p>
-    <p class="body fade-up">Color is <strong>freed from its descriptive duty.</strong> A face can be green. A sky red. A river violet — because that's the <em>emotional truth</em>.</p>
-    <div class="color-bar fade-up">
-      <div class="cb" style="background:#e8301a"></div>
-      <div class="cb" style="background:#f5a623"></div>
-      <div class="cb" style="background:#f5e623"></div>
-      <div class="cb" style="background:#1db85c"></div>
-      <div class="cb" style="background:#2a6eab"></div>
-      <div class="cb" style="background:#9b2de8"></div>
-      <div class="cb" style="background:#e82d8b"></div>
-    </div>
-    <p class="label-sm fade-up">These colors would never appear together in nature — that was the point.</p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 16 — FAUVISM FEATURES PT 1
-══════════════════════════════════════════ -->
-<section class="section bg-fauv" data-chapter="Fauvism" data-i="16">
-  <div class="top-strip"><span class="strip-chapter">Fauvism · Key Features</span></div>
-  <div class="content" style="gap:14px;">
-    <div class="badge fauv fade-up">Key Features · 1 of 2</div>
-    <div class="display xs fade-up">What Made It <em>Wild</em></div>
-    <div class="card fade-up" style="border-color:rgba(232,48,26,.4)">
-      <div class="card-icon">🎨</div>
-      <div class="card-title">Non-Naturalistic Color</div>
-      <div class="card-desc">Colors bear no relationship to how things look. A green face, a red river — chosen for emotional resonance, not description.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(232,48,26,.4)">
-      <div class="card-icon">💥</div>
-      <div class="card-title">Clashing, Vibrating Color</div>
-      <div class="card-desc">Complementary colors placed side by side — red next to green, orange next to blue — creating maximum visual tension and energy.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(232,48,26,.4)">
-      <div class="card-icon">📐</div>
-      <div class="card-title">Simplified, Flat Forms</div>
-      <div class="card-desc">Reduced shapes, minimal shading, little interest in realistic three-dimensional depth — influenced by Gauguin's flatness.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 17 — FAUVISM FEATURES PT 2
-══════════════════════════════════════════ -->
-<section class="section bg-fauv" data-chapter="Fauvism" data-i="17">
-  <div class="top-strip"><span class="strip-chapter">Fauvism · Key Features</span></div>
-  <div class="content" style="gap:14px;">
-    <div class="badge fauv fade-up">Key Features · 2 of 2</div>
-    <div class="card fade-up" style="border-color:rgba(232,48,26,.4)">
-      <div class="card-icon">😤</div>
-      <div class="card-title">Pure Emotional Expression</div>
-      <div class="card-desc">Color conveys mood and feeling — not visual reality. The viewer <em>feels</em> the painting before they understand it.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(232,48,26,.4)">
-      <div class="card-icon">⚡</div>
-      <div class="card-title">Bold, Energetic Brushwork</div>
-      <div class="card-desc">Rough, spontaneous marks. No smooth blending — raw, expressive strokes that add to the painting's physical energy.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(232,48,26,.4)">
-      <div class="card-icon">🌐</div>
-      <div class="card-title">Liberation from Nature</div>
-      <div class="card-desc">Fauvism's revolutionary gift: absolute artistic freedom was not just acceptable, but necessary. Art does not need to look like reality.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 18 — MATISSE
-══════════════════════════════════════════ -->
-<section class="section bg-fauv" data-chapter="Fauvism" data-i="18">
-  <div class="top-strip"><span class="strip-chapter">Artist Spotlight</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge fauv fade-up">Artist Spotlight</div>
-    <div class="display xs fade-up">Henri <em>Matisse</em></div>
-    <div class="label-sm fade-up">1869–1954 · Leader of the Fauves</div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/d/d6/La_Danse_I%2C_par_Henri_Matisse.jpg" alt="Dance" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Dance (I) — Henri Matisse, 1909</div>
-        <div class="art-credit">MoMA, New York</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">Matisse believed color should work like music — pure, emotional, direct. <em>Dance</em>: five red figures on blue and green. No detail. Just <strong>rhythm, color, movement.</strong></p>
-    <div class="quote fade-up" style="border-color:var(--fauv)">
-      <blockquote>"I used color as a means of expressing my emotion and not as a transcription of nature."</blockquote>
-      <cite style="color:#f09080">— Henri Matisse</cite>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 19 — DERAIN & VLAMINCK
-══════════════════════════════════════════ -->
-<section class="section bg-fauv" data-chapter="Fauvism" data-i="19">
-  <div class="top-strip"><span class="strip-chapter">More Fauvist Artists</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge fauv fade-up">More Fauvist Artists</div>
-    <div class="display xs fade-up">Derain & <em>Vlaminck</em></div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Charing_Cross_Bridge_by_Andre_Derain_%2852259664204%29.jpg" alt="Charing Cross" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Charing Cross Bridge, London — André Derain, 1906</div>
-        <div class="art-credit">A river of impossible oranges and pinks</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <div class="art-wrap fade-up">
-      <img src="https://i.pinimg.com/736x/f8/05/ea/f805ea7ea2f759bc40109dca8e9c1077.jpg" alt="Vlaminck" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Restaurant de la Machine à Bougival — Vlaminck, c.1905</div>
-        <div class="art-credit">Musée d'Orsay</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">Vlaminck declared he wanted to <em style="color:#f09080;">"burn down the École des Beaux-Arts with my cobalts and vermilions."</em> These weren't experiments — they were war cries.</p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 20 — EVOLUTION RECAP
-══════════════════════════════════════════ -->
-<section class="section bg-end" data-chapter="The Full Journey" data-i="20">
-  <div class="top-strip"><span class="strip-chapter">The Full Journey</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge neutral fade-up">The Full Journey</div>
-    <div class="display xs fade-up">The <em>Evolution</em></div>
-
-    <div class="tl-list fade-up">
-      <div class="tl-item">
-        <div class="tl-line-wrap">
-          <div class="tl-dot" style="border-color:rgba(74,124,158,.4)">☁️</div>
-          <div class="tl-vline"></div>
-        </div>
-        <div class="tl-body">
-          <div class="tl-name" style="color:var(--imp-light)">Impressionism</div>
-          <div class="tl-desc">What do I <strong style="color:#fff">see?</strong> Light, color, the fleeting moment. Monet · Renoir · Degas</div>
+  <!-- Carousel for before paintings -->
+  <div class="carousel reveal" id="car-before">
+    <div class="carousel-track" id="car-before-track">
+      <div class="carousel-item">
+        <img class="tall" src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Thomas_Couture_-_Romans_during_the_Decadence_-_Google_Art_Project.jpg" alt="Romans during the Decadence"/>
+        <div class="carousel-caption">
+          <div class="art-caption" style="position:static;padding:0;background:none;margin-top:8px;"><div class="title">Romans during the Decadence</div><div class="credit">Thomas Couture · 1847 · Salon's top prize winner</div></div>
         </div>
       </div>
-      <div class="tl-item">
-        <div class="tl-line-wrap">
-          <div class="tl-dot" style="border-color:rgba(139,99,64,.4)">🧩</div>
-          <div class="tl-vline"></div>
-        </div>
-        <div class="tl-body">
-          <div class="tl-name" style="color:var(--post)">Post-Impressionism</div>
-          <div class="tl-desc">What does it <strong style="color:#fff">mean? Feel?</strong> Structure, emotion, symbol. Cézanne · Van Gogh · Gauguin</div>
+      <div class="carousel-item">
+        <img class="tall" src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Death_of_Marat_by_David.jpg" alt="Death of Marat"/>
+        <div class="carousel-caption">
+          <div class="art-caption" style="position:static;padding:0;background:none;margin-top:8px;"><div class="title">The Death of Marat</div><div class="credit">Jacques-Louis David · 1793 · Neoclassical perfection</div></div>
         </div>
       </div>
-      <div class="tl-item">
-        <div class="tl-line-wrap">
-          <div class="tl-dot" style="border-color:rgba(232,48,26,.4)">🔥</div>
+      <div class="carousel-item">
+        <img class="tall" src="https://upload.wikimedia.org/wikipedia/commons/b/bb/William-Adolphe_Bouguereau_%281825-1905%29_-_The_Birth_of_Venus_%281879%29.jpg" alt="Birth of Venus" style="object-position:top;"/>
+        <div class="carousel-caption">
+          <div class="art-caption" style="position:static;padding:0;background:none;margin-top:8px;"><div class="title">The Birth of Venus</div><div class="credit">Bouguereau · 1879 · Zero visible brushwork</div></div>
         </div>
-        <div class="tl-body">
-          <div class="tl-name" style="color:#f09080">Fauvism</div>
-          <div class="tl-desc">Color IS <strong style="color:#fff">emotion.</strong> Reality abandoned. Pure expression. Matisse · Derain · Vlaminck</div>
+      </div>
+      <div class="carousel-item">
+        <img class="tall" src="https://upload.wikimedia.org/wikipedia/commons/5/5d/Eug%C3%A8ne_Delacroix_-_Le_28_Juillet._La_Libert%C3%A9_guidant_le_peuple.jpg" alt="Liberty Leading the People"/>
+        <div class="carousel-caption">
+          <div class="art-caption" style="position:static;padding:0;background:none;margin-top:8px;"><div class="title">Liberty Leading the People</div><div class="credit">Delacroix · 1830 · Grand historical drama</div></div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img class="tall" src="https://upload.wikimedia.org/wikipedia/commons/f/f4/Jean_Auguste_Dominique_Ingres_-_The_Grand_Odalisque_-_WGA11841.jpg" alt="Grand Odalisque"/>
+        <div class="carousel-caption">
+          <div class="art-caption" style="position:static;padding:0;background:none;margin-top:8px;"><div class="title">The Grand Odalisque</div><div class="credit">Ingres · 1814 · Smooth, impossibly perfect form</div></div>
         </div>
       </div>
     </div>
+    <button class="carousel-btn prev" onclick="carNav('before',-1)">&#8592;</button>
+    <button class="carousel-btn next" onclick="carNav('before',1)">&#8594;</button>
+  </div>
+  <div class="carousel-dots" id="car-before-dots">
+    <div class="cdot active" onclick="carGo('before',0)"></div>
+    <div class="cdot" onclick="carGo('before',1)"></div>
+    <div class="cdot" onclick="carGo('before',2)"></div>
+    <div class="cdot" onclick="carGo('before',3)"></div>
+    <div class="cdot" onclick="carGo('before',4)"></div>
+  </div>
+  <div class="quote-block reveal" style="border-color:#c4a862;">
+    <blockquote>"The closer to reality, the better. The more invisible the hand, the more skilled the artist."</blockquote>
+    <cite style="color:#c4a862;">— The Academic tradition, for over 200 years</cite>
+  </div>
+</section>
 
-    <div class="card fade-up">
-      <div class="card-title" style="color:var(--imp-light)">Impressionism → Post-Impressionism</div>
-      <div class="card-desc">Kept visible brushstrokes and color freedom, but added depth — structure, psychological meaning, personal philosophy.</div>
+<!-- ══════════ IMPRESSIONISM ══════════ -->
+<div class="big-divider cd-imp" id="impressionism">
+  <div class="chapter-tag ch-imp reveal">Movement 01</div>
+  <div class="display section reveal">Impressionism</div>
+  <p class="body-text reveal" style="margin-top:10px;"><em>"Let's get impressionable!"</em> · c. 1860s–1880s</p>
+  <div class="pill-wrap reveal" style="justify-content:center;">
+    <span class="pill">Monet</span><span class="pill">Renoir</span><span class="pill">Degas</span><span class="pill">Morisot</span>
+  </div>
+  <div style="height:3px;background:linear-gradient(90deg,transparent,var(--imp2),transparent);margin-top:28px;"></div>
+</div>
+
+<section class="sec-imp">
+  <div class="chapter-tag ch-imp reveal">What Was Their Main Goal?</div>
+  <div class="display card reveal">The <em>Fleeting</em> Moment</div>
+  <div class="accent-line reveal"></div>
+  <p class="body-text reveal">
+    In the 1860s, a bold group broke away from the rigid traditions of the <strong style="color:#fff;">Académie des Beaux-Arts</strong>. Instead of polished historical scenes, they wanted to capture something radical: the <em>fleeting impression</em> of a single moment.
+  </p>
+  <p class="body-text reveal" style="margin-top:14px;">
+    The name "Impressionism" was born as an <strong style="color:#fff;">insult</strong>. After Monet exhibited <em>Impression, Sunrise</em> in 1874, critic Louis Leroy mockingly called them "Impressionists." The artists embraced it.
+  </p>
+  <div class="art-card reveal" onclick="openLb(this)">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Monet_-_Impression%2C_Sunrise.jpg/1280px-Monet_-_Impression%2C_Sunrise.jpg" alt="Impression Sunrise" class="landscape" style="max-height:280px;"/>
+    <div class="art-caption"><div class="title">Impression, Sunrise</div><div class="credit">Claude Monet · 1872 · The painting that named the movement</div></div>
+  </div>
+  <div class="quote-block reveal" style="border-color:var(--imp2);">
+    <blockquote>"My wish is to depict what lies between the object and me."</blockquote>
+    <cite style="color:var(--imp2);">— Claude Monet</cite>
+  </div>
+</section>
+
+<section class="sec-imp" style="padding-top:0;">
+  <div class="chapter-tag ch-imp reveal">Defining Approach</div>
+  <div class="display card reveal">Painting <em>En Plein Air</em></div>
+  <div class="accent-line reveal"></div>
+  <p class="body-text reveal">Rather than working from sketches in a dark studio, Impressionists carried their canvases <strong style="color:#fff;">outdoors</strong> — to parks, riversides, cafés, and gardens.</p>
+  <p class="body-text reveal" style="margin-top:12px;"><strong style="color:#fff;">Light changes every minute.</strong> The same view at dawn looked different by noon. This urgency forced them to paint quickly — giving birth to loose, rapid brushwork.</p>
+  <div class="art-card reveal" onclick="openLb(this)">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Pierre-Auguste_Renoir_-_Luncheon_of_the_Boating_Party_-_Google_Art_Project.jpg" alt="Luncheon Boating Party" style="max-height:280px;"/>
+    <div class="art-caption"><div class="title">Luncheon of the Boating Party</div><div class="credit">Pierre-Auguste Renoir · 1881 · The Phillips Collection</div></div>
+  </div>
+  <div class="pill-wrap reveal">
+    <span class="pill">Direct observation</span><span class="pill">Natural light</span><span class="pill">Speed & spontaneity</span><span class="pill">No studio polish</span>
+  </div>
+</section>
+
+<section class="sec-imp" style="padding-top:0;">
+  <div class="chapter-tag ch-imp reveal">Impressionism · Characteristics</div>
+  <div class="display card reveal">Defining <em>Characteristics</em></div>
+  <div class="label-small reveal" style="margin:8px 0 16px;">Part 1 of 2</div>
+  <div class="char-card imp-card reveal"><div class="icon">🖌️</div><div class="ctitle">Visible Brushstrokes</div><div class="cdesc">Quick, loose, energetic marks that suggest rather than define. The brushstroke itself becomes expressive — you can see the painter's hand at work.</div></div>
+  <div class="char-card imp-card reveal"><div class="icon">☀️</div><div class="ctitle">Light & Atmosphere</div><div class="cdesc">Capturing how light changes at different hours of the day. Monet painted the same haystacks dozens of times — each under different light conditions.</div></div>
+  <div class="char-card imp-card reveal"><div class="icon">🌿</div><div class="ctitle">En Plein Air</div><div class="cdesc">Painting directly from nature, outdoors. The need to capture quickly before the light changed was the mother of their loose, impressionistic style.</div></div>
+  <div class="label-small reveal" style="margin:24px 0 16px;">Part 2 of 2</div>
+  <div class="char-card imp-card reveal"><div class="icon">🎭</div><div class="ctitle">Everyday Modern Life</div><div class="cdesc">Parks, cafés, dancers, train stations. Ordinary people doing ordinary things — a radical departure from mythological and historical subjects.</div></div>
+  <div class="char-card imp-card reveal"><div class="icon">🔵</div><div class="ctitle">Broken Color Technique</div><div class="cdesc">Small dabs of pure, unmixed color placed side by side. The eye blends them optically from a distance, creating a vibrancy that pre-mixed paint can't achieve.</div></div>
+  <div class="char-card imp-card reveal"><div class="icon">🚫</div><div class="ctitle">No Black Shadows</div><div class="cdesc">Shadows are painted in color — blues, purples, greens — not black or grey. Shadows are full of reflected color from the environment.</div></div>
+</section>
+
+<!-- Brushstrokes Before & After -->
+<section class="sec-imp" style="padding-top:0;">
+  <div class="chapter-tag ch-imp reveal">Characteristic Deep-Dive</div>
+  <div class="display card reveal">Brushstrokes: <em>Before & After</em></div>
+  <div class="accent-line reveal"></div>
+  <div class="label-small reveal" style="margin-bottom:10px;">⚖️ Academic — Invisible Brushwork</div>
+  <div class="art-card reveal" onclick="openLb(this)">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/William-Adolphe_Bouguereau_%281825-1905%29_-_Return_from_the_Harvest_%281878%29.jpg" alt="Bouguereau" style="max-height:260px;"/>
+    <div class="art-caption"><div class="title">Le Retour de la Moisson</div><div class="credit">Bouguereau · 1878 · Mirror-smooth, no trace of the brush</div></div>
+  </div>
+  <p class="body-text reveal" style="font-size:.9rem;margin-bottom:20px;">The Académie demanded paint blended to a porcelain finish. You should never see a brushstroke. Form, outline, and classical precision above all.</p>
+  <div class="label-small reveal" style="margin-bottom:10px;">✨ Impressionism — Brushstroke as Expression</div>
+  <div class="art-card reveal" onclick="openLb(this)">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/1280px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg" alt="Water Lilies" style="max-height:260px;"/>
+    <div class="art-caption"><div class="title">Water Lilies</div><div class="credit">Monet · 1906 · Every stroke is visible, suggestive, alive</div></div>
+  </div>
+  <p class="body-text reveal" style="font-size:.9rem;">Monet's loose dabs pulse with energy. The stroke <em>is</em> the water, the light, the motion.</p>
+</section>
+
+<!-- Haystacks -->
+<section class="sec-imp" style="padding-top:0;">
+  <div class="chapter-tag ch-imp reveal">Characteristic Deep-Dive</div>
+  <div class="display card reveal">The Obsession with <em>Light</em></div>
+  <p class="body-text reveal" style="margin-top:10px;margin-bottom:16px;">Monet painted the <strong style="color:#fff;">same two haystacks 25+ times.</strong> Same subject — completely different paintings. The light was the subject, not the haystacks.</p>
+  <div class="haystack-grid reveal">
+    <div class="art-card" onclick="openLb(this)">
+      <img src="https://steemitimages.com/DQmYUFAgd4rEd7WZMp5u49wAaveeXUN4CoNcXA775xT7q7c/image.png" alt="End of Summer"/>
+      <div class="art-caption"><div class="title">End of Summer</div><div class="credit">Monet · 1891 · Warm golden afternoon</div></div>
     </div>
-    <div class="card fade-up">
-      <div class="card-title" style="color:var(--post)">Post-Impressionism → Fauvism</div>
-      <div class="card-desc">Van Gogh's emotional color and Gauguin's boldness inspired the Fauves to take the final step: complete liberation. Reality is optional.</div>
+    <div class="art-card" onclick="openLb(this)">
+      <img src="https://steemitimages.com/DQmQeKQRbgqnhTTzYGW7AJYcdMwSiaoXAqGJPodGUQx91iU/image.png" alt="Morning Effect"/>
+      <div class="art-caption"><div class="title">Morning Effect</div><div class="credit">Monet · 1891 · Soft cool dawn</div></div>
+    </div>
+    <div class="art-card" onclick="openLb(this)">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/62/Claude_Monet_%28French%2C_Paris_1840%E2%80%931926_Giverny%29_-_Haystacks_%28Effect_of_Snow_and_Sun%29_-_Google_Art_Project.jpg" alt="Snow and Sun"/>
+      <div class="art-caption"><div class="title">Effect of Snow & Sun</div><div class="credit">Monet · 1891 · Cold blue shadows</div></div>
+    </div>
+    <div class="art-card" onclick="openLb(this)">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Claude_Monet_-_Grainstack%2C_Sun_in_the_Mist_-_Google_Art_Project.jpg" alt="Sun in Mist"/>
+      <div class="art-caption"><div class="title">Sun in the Mist</div><div class="credit">Monet · 1891 · Hazy orange glow</div></div>
+    </div>
+  </div>
+  <p class="body-text reveal" style="text-align:center;margin-top:6px;">Monet wasn't painting haystacks. He was painting <strong style="color:#fff;font-style:italic;">time itself.</strong></p>
+</section>
+
+<!-- Gallery of Impressionism -->
+<section class="sec-imp" style="padding-top:0;">
+  <div class="chapter-tag ch-imp reveal">Key Works</div>
+  <div class="display card reveal">Gallery of <em>Impressionism</em></div>
+  <div class="accent-line reveal"></div>
+  <div class="art-card reveal" onclick="openLb(this)">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Berthe_Morisot_-_The_Cradle_-_Google_Art_Project.jpg" alt="The Cradle" class="portrait" style="max-height:360px;"/>
+    <div class="art-caption"><div class="title">The Cradle</div><div class="credit">Berthe Morisot · 1872 · Soft, intimate light</div></div>
+  </div>
+  <p class="body-text reveal" style="font-size:.9rem;margin-bottom:20px;">Morisot gave Impressionism something different: complete, quiet intimacy. A mother watching her sleeping baby — the kind of scene never before considered worthy of fine art.</p>
+  <div class="art-card reveal" onclick="openLb(this)">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/Edgar_Germain_Hilaire_Degas_021.jpg" alt="Ballet Class" style="max-height:320px;"/>
+    <div class="art-caption"><div class="title">The Ballet Class</div><div class="credit">Edgar Degas · c.1874 · Motion captured mid-moment</div></div>
+  </div>
+  <p class="body-text reveal" style="font-size:.9rem;margin-bottom:20px;">A ballet rehearsal — not a performance. Degas placed us at the back corner of the room, like we snuck in. Completely candid. He made you feel like a witness, not an audience.</p>
+  <div class="art-card reveal" onclick="openLb(this)">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/1280px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg" alt="Water Lilies" style="max-height:280px;"/>
+    <div class="art-caption"><div class="title">Water Lilies</div><div class="credit">Claude Monet · 1906 · 250+ paintings in this series</div></div>
+  </div>
+  <p class="body-text reveal" style="font-size:.9rem;">250 paintings of the same pond. By the time Monet painted these final series, he was going blind. His failing vision accidentally pushed him toward something revolutionary — abstraction.</p>
+</section>
+
+<!-- ══════════ POST-IMPRESSIONISM ══════════ -->
+<div class="big-divider cd-post" id="post">
+  <div class="chapter-tag ch-post reveal">Movement 02</div>
+  <div class="display section reveal">Post-<em>Impressionism</em></div>
+  <p class="body-text reveal" style="margin-top:10px;"><em>"This is where things get interesting!"</em> · c. 1886–1910s</p>
+  <p class="body-text reveal" style="margin-top:10px;max-width:320px;margin-left:auto;margin-right:auto;font-size:.9rem;">Not one movement — but a radical explosion of individual visions.</p>
+  <div style="height:3px;background:linear-gradient(90deg,transparent,var(--post2),transparent);margin-top:28px;"></div>
+</div>
+
+<section class="sec-post">
+  <div class="chapter-tag ch-post reveal">Beyond the Fleeting Moment</div>
+  <div class="display card reveal">What Changed?</div>
+  <div class="accent-line post reveal"></div>
+  <div class="compare-card reveal" style="border-color:rgba(74,124,158,.3);">
+    <h4 style="color:var(--imp1);">☁️ Impressionism asked...</h4>
+    <div class="bullet-row"><div class="bullet-dot" style="background:var(--imp2);"></div><div class="bullet-text">"What do I <strong style="color:#fff;">see</strong>?"</div></div>
+    <div class="bullet-row"><div class="bullet-dot" style="background:var(--imp2);"></div><div class="bullet-text">Captured the visual surface — light, color, atmosphere</div></div>
+    <div class="bullet-row"><div class="bullet-dot" style="background:var(--imp2);"></div><div class="bullet-text">The world as the eye perceives it at one instant</div></div>
+  </div>
+  <div class="compare-card reveal" style="border-color:rgba(139,99,64,.4);">
+    <h4 style="color:var(--post1);">🧩 Post-Impressionism asked...</h4>
+    <div class="bullet-row"><div class="bullet-dot" style="background:var(--post2);"></div><div class="bullet-text">"What does it <strong style="color:#fff;">mean? How does it feel?</strong>"</div></div>
+    <div class="bullet-row"><div class="bullet-dot" style="background:var(--post2);"></div><div class="bullet-text">Explored structure, emotion, symbolic meaning, permanence</div></div>
+    <div class="bullet-row"><div class="bullet-dot" style="background:var(--post2);"></div><div class="bullet-text">Each artist developed a radically different personal style</div></div>
+  </div>
+  <p class="body-text reveal" style="margin-top:4px;font-size:.9rem;">British critic Roger Fry coined "Post-Impressionism" in <strong style="color:#fff;">1910</strong> as an umbrella term for these wildly different artists who all had one thing in common: they'd gone beyond Impressionism.</p>
+</section>
+
+<!-- Cézanne -->
+<section class="sec-post" style="padding-top:0;">
+  <div class="chapter-tag ch-post reveal">Artist Spotlight</div>
+  <div class="display card reveal">Paul <em>Cézanne</em></div>
+  <div class="label-small reveal" style="margin:6px 0 14px;">1839–1906 · "The Father of Modern Art"</div>
+  <p class="body-text reveal">Cézanne was obsessed with what lay <em>beneath</em> the surface. Where Impressionists saw shimmering light, Cézanne saw <strong style="color:#fff;">underlying geometry</strong> — cylinders, cones, spheres. He depicted scenes from <strong style="color:#fff;">multiple viewpoints simultaneously.</strong></p>
+  <div class="art-row" style="margin-top:16px;">
+    <div class="art-card reveal" onclick="openLb(this)">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b6/Still_Life_with_Apples_and_Pears_MET_DT1491.jpg" alt="Cezanne Still Life" style="height:180px;"/>
+      <div class="art-caption"><div class="title">Still Life with Apples and Pears</div><div class="credit">Cézanne · c.1891 · Met Museum</div></div>
+    </div>
+    <div class="art-card reveal" onclick="openLb(this)">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/3/32/Paul_C%C3%A9zanne_-_Self-Portrait_-_Google_Art_Project.jpg" alt="Cezanne Self Portrait" style="height:180px;object-position:top;"/>
+      <div class="art-caption"><div class="title">Self-Portrait</div><div class="credit">Paul Cézanne · c.1875</div></div>
+    </div>
+  </div>
+  <p class="body-text reveal" style="font-size:.9rem;margin-top:4px;">Picasso said: <em style="color:var(--post1);">"He is the father of us all."</em> Cézanne's work directly led to <strong style="color:#fff;">Cubism</strong>.</p>
+  <div class="pill-wrap reveal"><span class="pill">Geometric simplification</span><span class="pill">Multiple viewpoints</span><span class="pill">Solid, permanent form</span></div>
+</section>
+
+<!-- Van Gogh -->
+<section class="sec-post" style="padding-top:0;">
+  <div class="chapter-tag ch-post reveal">Artist Spotlight</div>
+  <div class="display card reveal">Vincent <em>van Gogh</em></div>
+  <div class="label-small reveal" style="margin:6px 0 14px;">1853–1890 · "The Prophet of Emotion"</div>
+  <div class="art-card reveal" onclick="openLb(this)">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg" alt="Starry Night" style="max-height:280px;"/>
+    <div class="art-caption"><div class="title">The Starry Night</div><div class="credit">Vincent van Gogh · 1889 · MoMA, New York</div></div>
+  </div>
+  <p class="body-text reveal" style="margin-top:12px;">Van Gogh used <strong style="color:#fff;">swirling, turbulent brushstrokes</strong> and blazing colors to express raw psychological states. <em>The Starry Night</em> was painted from memory while in a mental asylum — the churning sky is not a description. It <em>is</em> the feeling.</p>
+  <p class="body-text reveal" style="margin-top:10px;">He sold only <em>one</em> painting in his lifetime. Today his works are worth hundreds of millions.</p>
+  <div class="quote-block reveal" style="border-color:#f0a060;">
+    <blockquote>"I dream of painting and then I paint my dream."</blockquote>
+    <cite style="color:#f0a060;">— Vincent van Gogh</cite>
+  </div>
+</section>
+
+<!-- Gauguin -->
+<section class="sec-post" style="padding-top:0;">
+  <div class="chapter-tag ch-post reveal">Artist Spotlight</div>
+  <div class="display card reveal">Paul <em>Gauguin</em></div>
+  <div class="label-small reveal" style="margin:6px 0 14px;">1848–1903 · "The Symbolist & Primitivist"</div>
+  <p class="body-text reveal">Disillusioned with Western civilization, Gauguin fled to <strong style="color:#fff;">Tahiti</strong> in search of a more authentic existence. His paintings use <strong style="color:#fff;">flat, bold color areas, thick dark outlines, and symbolic figures</strong> from Polynesian life.</p>
+  <div class="art-card reveal" onclick="openLb(this)" style="margin-top:16px;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Paul_Gauguin_-_D%27ou_venons-nous.jpg" alt="Gauguin" style="max-height:240px;"/>
+    <div class="art-caption"><div class="title">Where Do We Come From? What Are We? Where Are We Going?</div><div class="credit">Paul Gauguin · 1897–98 · Museum of Fine Arts, Boston</div></div>
+  </div>
+  <div class="pill-wrap reveal"><span class="pill">Flat color planes</span><span class="pill">Symbolic content</span><span class="pill">Non-Western influence</span><span class="pill">Spiritual themes</span></div>
+</section>
+
+<!-- Seurat -->
+<section class="sec-post" style="padding-top:0;">
+  <div class="chapter-tag ch-post reveal">Artist Spotlight (Bonus)</div>
+  <div class="display card reveal">Georges <em>Seurat</em></div>
+  <div class="label-small reveal" style="margin:6px 0 14px;">1859–1891 · Inventor of Pointillism</div>
+  <div class="art-card reveal" onclick="openLb(this)">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Georges_Seurat_-_Un_dimanche_apr%C3%A8s-midi_%C3%A0_l%27%C3%AEle_de_la_Grande_Jatte.jpg" alt="Grande Jatte" style="max-height:260px;"/>
+    <div class="art-caption"><div class="title">A Sunday Afternoon on the Island of La Grande Jatte</div><div class="credit">Georges Seurat · 1884–1886 · Art Institute of Chicago</div></div>
+  </div>
+  <p class="body-text reveal" style="margin-top:12px;"><strong style="color:#fff;">Pointillism</strong> — thousands of tiny dots of pure color — blends in the viewer's eye, not on the canvas. This painting took <strong style="color:#fff;">two years</strong> to complete. Every centimeter — dots. The figures feel frozen, monumental, eternal.</p>
+</section>
+
+<!-- ══════════ FAUVISM ══════════ -->
+<div class="big-divider cd-fauv" id="fauvism">
+  <div class="chapter-tag ch-fauv reveal">Movement 03</div>
+  <div class="wild-text reveal">LES FAUVES</div>
+  <div class="display" style="font-size:clamp(1.2rem,6vw,2rem);opacity:.7;margin-top:6px;"><em>The Wild Beasts</em></div>
+  <p class="body-text reveal" style="margin-top:14px;max-width:320px;margin-left:auto;margin-right:auto;font-size:.9rem;">In 1905, critic Louis Vauxcelles saw Matisse's paintings and declared: <em style="color:#f09080;">"Donatello among the wild beasts!"</em> The name stuck.</p>
+  <div style="height:3px;background:linear-gradient(90deg,transparent,var(--fauv1),transparent);margin-top:28px;"></div>
+</div>
+
+<section class="sec-fauv">
+  <div class="chapter-tag ch-fauv reveal">Core Idea</div>
+  <div class="display card reveal">Color as Pure <em>Emotion</em></div>
+  <div class="accent-line fauv reveal"></div>
+  <div class="art-card reveal" onclick="openLb(this)">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/f/fb/Matisse-Woman-with-a-Hat.jpg" alt="Woman with a Hat" class="portrait" style="max-height:360px;"/>
+    <div class="art-caption"><div class="title">Woman with a Hat</div><div class="credit">Henri Matisse · 1905 · The painting that shocked Paris · SFMOMA</div></div>
+  </div>
+  <p class="body-text reveal" style="margin-top:14px;">In a Fauvist painting, color is <strong style="color:#fff;">completely freed from its descriptive duty.</strong> A face can be green. A sky can be red. Why? Because that's the <em>emotional truth</em> of the moment.</p>
+  <p class="body-text reveal" style="margin-top:12px;">This was the <strong style="color:#fff;">first major modern movement</strong> to fully liberate color from nature. Color no longer serves form — color <em>is</em> the art.</p>
+  <div class="fauv-bar reveal">
+    <div class="fauv-c" style="background:#e8301a;"></div>
+    <div class="fauv-c" style="background:#f5a623;"></div>
+    <div class="fauv-c" style="background:#f5e623;"></div>
+    <div class="fauv-c" style="background:#1db85c;"></div>
+    <div class="fauv-c" style="background:#2a6eab;"></div>
+    <div class="fauv-c" style="background:#9b2de8;"></div>
+    <div class="fauv-c" style="background:#e82d8b;"></div>
+  </div>
+  <p class="label-small reveal">These colors would never appear together in nature — that was the point.</p>
+</section>
+
+<section class="sec-fauv" style="padding-top:0;">
+  <div class="chapter-tag ch-fauv reveal">Key Features · Part 1 of 2</div>
+  <div class="char-card fauv-card reveal"><div class="icon">🎨</div><div class="ctitle">Non-Naturalistic Color</div><div class="cdesc">Colors bear no relationship to how objects actually look. A green face, a red river — chosen for emotional resonance, not description.</div></div>
+  <div class="char-card fauv-card reveal"><div class="icon">💥</div><div class="ctitle">Clashing, Vibrating Color</div><div class="cdesc">Complementary colors side by side — red next to green, orange next to blue — creating maximum visual tension and energy. The painting almost hums.</div></div>
+  <div class="char-card fauv-card reveal"><div class="icon">📐</div><div class="ctitle">Simplified, Flat Forms</div><div class="cdesc">Influenced by Gauguin's flatness. Reduced shapes, minimal shading, little interest in realistic depth. Flatness lets color dominate entirely.</div></div>
+</section>
+
+<section class="sec-fauv" style="padding-top:0;">
+  <div class="chapter-tag ch-fauv reveal">Key Features · Part 2 of 2</div>
+  <div class="char-card fauv-card reveal"><div class="icon">😤</div><div class="ctitle">Pure Emotional Expression</div><div class="cdesc">Color is chosen to convey mood, feeling, and energy — not to describe visual reality. The viewer <em>feels</em> the painting before they understand it.</div></div>
+  <div class="char-card fauv-card reveal"><div class="icon">⚡</div><div class="ctitle">Bold, Energetic Brushwork</div><div class="cdesc">Rough, spontaneous marks. No smooth blending — raw, expressive strokes that add to the painting's physical energy.</div></div>
+  <div class="char-card fauv-card reveal"><div class="icon">🌐</div><div class="ctitle">Liberation from Nature</div><div class="cdesc">Art does not need to represent reality. This was Fauvism's revolutionary gift — absolute artistic freedom was not just acceptable, but necessary.</div></div>
+</section>
+
+<!-- Matisse -->
+<section class="sec-fauv" style="padding-top:0;">
+  <div class="chapter-tag ch-fauv reveal">Artist Spotlight</div>
+  <div class="display card reveal">Henri <em>Matisse</em></div>
+  <div class="label-small reveal" style="margin:6px 0 14px;">1869–1954 · Leader of the Fauves</div>
+  <p class="body-text reveal">Matisse believed color should work like music — pure, emotional, direct. His work feels joyful, liberated, alive.</p>
+  <div class="art-card reveal" onclick="openLb(this)" style="margin-top:14px;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d6/La_Danse_I%2C_par_Henri_Matisse.jpg" alt="Dance Matisse" style="max-height:240px;"/>
+    <div class="art-caption"><div class="title">Dance (I)</div><div class="credit">Henri Matisse · 1909 · MoMA, New York</div></div>
+  </div>
+  <p class="body-text reveal" style="margin-top:12px;font-size:.9rem;"><em>Dance</em> — five simplified red bodies on pure blue and green. No detail. No shading. Just <strong style="color:#fff;">rhythm, color, and movement.</strong></p>
+  <div class="quote-block reveal" style="border-color:var(--fauv1);margin-top:20px;">
+    <blockquote>"I used color as a means of expressing my emotion and not as a transcription of nature."</blockquote>
+    <cite style="color:#f09080;">— Henri Matisse</cite>
+  </div>
+</section>
+
+<!-- Derain & Vlaminck -->
+<section class="sec-fauv" style="padding-top:0;">
+  <div class="chapter-tag ch-fauv reveal">More Fauvist Artists</div>
+  <div class="display card reveal">Derain & <em>Vlaminck</em></div>
+  <div class="accent-line fauv reveal"></div>
+  <div class="art-card reveal" onclick="openLb(this)">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Charing_Cross_Bridge_by_Andre_Derain_%2852259664204%29.jpg" alt="Charing Cross Bridge" style="max-height:260px;"/>
+    <div class="art-caption"><div class="title">Charing Cross Bridge, London</div><div class="credit">André Derain · 1906 · A river of impossible oranges & pinks</div></div>
+  </div>
+  <p class="body-text reveal" style="font-size:.9rem;margin-bottom:16px;">Derain painted London — famously grey — in violent oranges and electric pinks. None of this is what London looks like. But you feel the city's energy more here than in any photograph.</p>
+  <div class="art-card reveal" onclick="openLb(this)">
+    <img src="https://i.pinimg.com/736x/f8/05/ea/f805ea7ea2f759bc40109dca8e9c1077.jpg" alt="Vlaminck Restaurant" style="max-height:260px;"/>
+    <div class="art-caption"><div class="title">Restaurant de la Machine à Bougival</div><div class="credit">Maurice de Vlaminck · c.1905 · Musée d'Orsay</div></div>
+  </div>
+  <p class="body-text reveal" style="font-size:.9rem;margin-top:10px;">Vlaminck declared he wanted to <em style="color:#f09080;">"burn down the École des Beaux-Arts with my cobalts and vermilions."</em> These weren't timid experiments — they were war cries.</p>
+</section>
+
+<!-- ══════════ IMPACT & LEGACY ══════════ -->
+<div class="big-divider cd-impact" id="impact">
+  <div class="chapter-tag ch-intro reveal">The Full Journey</div>
+  <div class="display section reveal">The <em>Evolution</em> in One View</div>
+</div>
+
+<section class="sec-impact">
+  <div class="timeline-mobile reveal">
+    <div class="tl-item">
+      <div class="tl-dot" style="border-color:rgba(74,124,158,.5);background:rgba(74,124,158,.1);">☁️</div>
+      <div class="tl-content">
+        <h4 style="color:var(--imp1);">Impressionism</h4>
+        <p>What do I <strong style="color:#fff;">see?</strong> Light, color, atmosphere, fleeting moment. Monet · Renoir · Degas</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="border-color:rgba(139,99,64,.5);background:rgba(139,99,64,.1);">🧩</div>
+      <div class="tl-content">
+        <h4 style="color:var(--post1);">Post-Impressionism</h4>
+        <p>What does it <strong style="color:#fff;">mean? Feel?</strong> Structure, emotion, symbol. Cézanne · Van Gogh · Gauguin</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="border-color:rgba(232,48,26,.5);background:rgba(232,48,26,.1);">🔥</div>
+      <div class="tl-content">
+        <h4 style="color:#f09080;">Fauvism</h4>
+        <p>Color IS <strong style="color:#fff;">emotion.</strong> Reality abandoned. Pure expression. Matisse · Derain · Vlaminck</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SECTION 21 — LEGACY
-══════════════════════════════════════════ -->
-<section class="section bg-end" data-chapter="Legacy" data-i="21">
-  <div class="top-strip"><span class="strip-chapter">Legacy</span></div>
-  <div class="content" style="gap:14px;">
-    <div class="badge neutral fade-up">Legacy</div>
-    <div class="display xs fade-up">Impact on <em>All of Modern Art</em></div>
-    <div class="card fade-up"><div class="card-icon">📐</div><div class="card-title">Cézanne → Cubism</div><div class="card-desc">Cézanne's geometric simplification directly inspired Picasso and Braque. Cubism couldn't exist without him.</div></div>
-    <div class="card fade-up"><div class="card-icon">💔</div><div class="card-title">Van Gogh → Expressionism</div><div class="card-desc">His distortion of reality for emotional expression became the foundation of German Expressionism (Munch, Kirchner).</div></div>
-    <div class="card fade-up"><div class="card-icon">🌍</div><div class="card-title">Gauguin → Primitivism</div><div class="card-desc">Opened Western art to African, Asian, and Oceanic influences — a seismic shift that changed everything.</div></div>
-    <div class="card fade-up"><div class="card-icon">🌈</div><div class="card-title">Matisse → Color Field Art</div><div class="card-desc">His liberated color led to Abstract Expressionism and Color Field painters like Mark Rothko.</div></div>
-    <div class="card fade-up" style="border-color:rgba(255,255,255,.2)"><div class="card-icon">🔓</div><div class="card-title">The Big Idea</div><div class="card-desc">Art does NOT have to look like reality. The artist's vision matters more than accuracy. This is the founding idea of all modern art.</div></div>
+<section class="sec-impact" style="padding-top:0;">
+  <div class="label-small reveal" style="margin-bottom:14px;">Legacy · Part 1 of 2</div>
+  <div class="legacy-card reveal"><div class="l-icon">📐</div><div class="l-title">Cézanne → Cubism</div><div class="l-text">Cézanne's geometric simplification directly inspired Picasso and Braque. Cubism couldn't have existed without him. Picasso called him "the father of us all."</div></div>
+  <div class="legacy-card reveal"><div class="l-icon">💔</div><div class="l-title">Van Gogh → Expressionism</div><div class="l-text">Van Gogh's distortion of reality to express inner states became the foundation of German Expressionism. Munch's The Scream is pure Van Gogh philosophy.</div></div>
+  <div class="legacy-card reveal"><div class="l-icon">🌍</div><div class="l-title">Gauguin → Primitivism</div><div class="l-text">Gauguin opened Western art to African, Asian, and Oceanic influences — a seismic shift that changed everything. Picasso was directly inspired by African masks.</div></div>
+  <div class="label-small reveal" style="margin:24px 0 14px;">Legacy · Part 2 of 2</div>
+  <div class="legacy-card reveal"><div class="l-icon">🌈</div><div class="l-title">Matisse → Color Field Art</div><div class="l-text">Matisse's liberated color led directly to Abstract Expressionism and Color Field painters like Mark Rothko. People stand in front of Rothko's canvases and cry.</div></div>
+  <div class="legacy-card reveal"><div class="l-icon">🎭</div><div class="l-title">All Three → Modern Design</div><div class="l-text">Every app icon, logo, movie poster, and website layout that uses bold color to create mood carries a piece of these movements. Flat forms. Expressive color. Simplified shapes.</div></div>
+  <div class="legacy-card reveal"><div class="l-icon">🔓</div><div class="l-title">The Big Idea</div><div class="l-text">Art does NOT have to look like reality. The artist's vision, feeling, and intention matter more than accuracy. This is the founding idea of all modern art.</div></div>
+</section>
+
+<!-- ══════════ CLOSING ══════════ -->
+<section class="sec-title" style="text-align:center;padding:80px 28px 100px;">
+  <div class="label-small reveal" style="margin-bottom:16px;">Group 2 · Arts Appreciation</div>
+  <div class="display" style="font-size:clamp(2rem,9vw,4rem);color:#fff;font-family:'Cormorant Garamond',serif;font-weight:700;line-height:1.1;" class="reveal">
+    Art is not a mirror.<br><em style="opacity:.8;">It is a window.</em>
+  </div>
+  <p class="body-text reveal" style="margin-top:20px;max-width:340px;margin-left:auto;margin-right:auto;">
+    These movements taught the world that art does not need to show us what we already see — it can reveal what we <em>feel, think, and dream.</em>
+  </p>
+  <div class="hr" style="margin:28px 0;"></div>
+  <div class="timeline-mobile" style="max-width:320px;margin:0 auto 28px;" class="reveal">
+    <div class="tl-item"><div class="tl-dot" style="border-color:rgba(74,124,158,.4);background:rgba(74,124,158,.08);">☁️</div><div class="tl-content"><h4 style="color:var(--imp1);">Impressionism</h4><p>The fleeting beauty of light</p></div></div>
+    <div class="tl-item"><div class="tl-dot" style="border-color:rgba(139,99,64,.4);background:rgba(139,99,64,.08);">🧩</div><div class="tl-content"><h4 style="color:var(--post1);">Post-Impressionism</h4><p>The depth of meaning</p></div></div>
+    <div class="tl-item" style="padding-bottom:0;"><div class="tl-dot" style="border-color:rgba(232,48,26,.4);background:rgba(232,48,26,.08);">🔥</div><div class="tl-content"><h4 style="color:#f09080;">Fauvism</h4><p>The freedom of pure feeling</p></div></div>
+  </div>
+  <div class="pill-wrap reveal" style="justify-content:center;">
+    <span class="pill">Monet</span><span class="pill">Renoir</span><span class="pill">Degas</span>
+    <span class="pill">Cézanne</span><span class="pill">Van Gogh</span><span class="pill">Gauguin</span>
+    <span class="pill">Matisse</span><span class="pill">Derain</span><span class="pill">Vlaminck</span>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SECTION 22 — CLOSING
-══════════════════════════════════════════ -->
-<section class="section bg-cover" data-chapter="Fin" data-i="22">
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 30% 40%,rgba(74,124,158,.2),transparent 60%),radial-gradient(ellipse 50% 50% at 70% 60%,rgba(232,48,26,.12),transparent 60%);z-index:0;pointer-events:none"></div>
-  <div class="content center" style="gap:20px;justify-content:center;">
-    <div class="label-sm fade-up">Group 2 · Arts Appreciation</div>
-    <div class="display xl fade-up">Art is not a mirror.<br><em>It is a window.</em></div>
-    <p class="subtitle fade-up" style="max-width:320px;">These movements revealed what art can be — not what we see, but what we <em>feel, think, and dream.</em></p>
-
-    <div class="tl-list fade-up" style="text-align:left;width:100%;max-width:320px;">
-      <div class="tl-item">
-        <div class="tl-line-wrap"><div class="tl-dot">☁️</div><div class="tl-vline"></div></div>
-        <div class="tl-body"><div class="tl-name" style="color:var(--imp-light)">Impressionism</div><div class="tl-desc">The fleeting beauty of light</div></div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-line-wrap"><div class="tl-dot">🧩</div><div class="tl-vline"></div></div>
-        <div class="tl-body"><div class="tl-name" style="color:var(--post)">Post-Impressionism</div><div class="tl-desc">The depth of meaning</div></div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-line-wrap"><div class="tl-dot">🔥</div></div>
-        <div class="tl-body"><div class="tl-name" style="color:#f09080">Fauvism</div><div class="tl-desc">The freedom of pure feeling</div></div>
-      </div>
-    </div>
-
-    <div class="pills fade-up" style="justify-content:center;">
-      <span class="pill">Monet</span><span class="pill">Renoir</span><span class="pill">Degas</span>
-      <span class="pill">Cézanne</span><span class="pill">Van Gogh</span><span class="pill">Gauguin</span>
-      <span class="pill">Matisse</span><span class="pill">Derain</span><span class="pill">Vlaminck</span>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     LIGHTBOX
-══════════════════════════════════════════ -->
-<div id="lb">
+<!-- LIGHTBOX -->
+<div id="lightbox">
   <button id="lb-close" onclick="closeLb()">✕</button>
-  <div id="lb-nav">
-    <button class="lb-nb" onclick="lbStep(-1)">←</button>
-    <button class="lb-nb" onclick="lbStep(1)">→</button>
-  </div>
   <div id="lb-wrap">
     <img id="lb-img" src="" alt=""/>
-    <div id="lb-cap"></div>
-    <div id="lb-cred"></div>
+    <div id="lb-caption-text"></div>
+    <div id="lb-credit-text"></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     BOTTOM NAV
-══════════════════════════════════════════ -->
-<nav id="nav">
-  <button class="nav-btn" id="btn-prev" onclick="scrollTo(-1)">←</button>
-  <span class="nav-counter" id="nav-count">1 / 23</span>
-  <button class="nav-btn" id="btn-next" onclick="scrollTo(1)">→</button>
-</nav>
+<!-- BACK TO TOP -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
-// ── SECTIONS ──
-const sections = Array.from(document.querySelectorAll('.section'));
-const total = sections.length;
-let current = 0;
-let lbOpen = false;
-let lbImages = [];
-let lbIdx = 0;
-
-// ── PROGRESS BAR ──
-function updateUI(){
-  const pct = ((current+1)/total)*100;
-  document.getElementById('prog-bar').style.width = pct+'%';
-  document.getElementById('nav-count').textContent = (current+1)+' / '+total;
-}
-
-// ── INTERSECTION OBSERVER for current section ──
-const io = new IntersectionObserver(entries=>{
+// ── SCROLL REVEAL ──
+const reveals = document.querySelectorAll('.reveal');
+const revObs = new IntersectionObserver(entries=>{
   entries.forEach(e=>{
-    if(e.isIntersecting && e.intersectionRatio>.5){
-      current = sections.indexOf(e.target);
-      updateUI();
-      // trigger fade-ups
-      e.target.querySelectorAll('.fade-up').forEach(el=>el.classList.add('visible'));
+    if(e.isIntersecting){
+      e.target.classList.add('revealed');
+      revObs.unobserve(e.target);
     }
   });
-},{threshold:.5});
-sections.forEach(s=>io.observe(s));
-
-// ── SCROLL TO SECTION ──
-function scrollTo(dir){
-  if(lbOpen)return;
-  const next = Math.max(0,Math.min(total-1,current+dir));
-  sections[next].scrollIntoView({behavior:'smooth'});
-}
-
-// ── KEYBOARD ──
-document.addEventListener('keydown',e=>{
-  if(lbOpen){
-    if(e.key==='Escape')closeLb();
-    if(e.key==='ArrowRight')lbStep(1);
-    if(e.key==='ArrowLeft')lbStep(-1);
-    return;
-  }
-  if(e.key==='ArrowDown'||e.key==='ArrowRight')scrollTo(1);
-  if(e.key==='ArrowUp'||e.key==='ArrowLeft')scrollTo(-1);
-});
-
-// ── LIGHTBOX ──
-function buildLb(){
-  document.querySelectorAll('.art-wrap').forEach(frame=>{
-    const img=frame.querySelector('img');
-    const title=frame.querySelector('.art-title');
-    const credit=frame.querySelector('.art-credit');
-    if(!img)return;
-    lbImages.push({src:img.src,title:title?title.textContent:'',credit:credit?credit.textContent:''});
-    const idx=lbImages.length-1;
-    frame.addEventListener('click',e=>{e.stopPropagation();openLb(idx)});
-  });
-}
-
-function openLb(idx){
-  lbIdx=idx;lbOpen=true;
-  document.getElementById('lb-img').src=lbImages[idx].src;
-  document.getElementById('lb-cap').textContent=lbImages[idx].title;
-  document.getElementById('lb-cred').textContent=lbImages[idx].credit;
-  document.getElementById('lb').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-
-function closeLb(){
-  lbOpen=false;
-  document.getElementById('lb').classList.remove('open');
-  document.body.style.overflow='';
-}
-
-function lbStep(dir){
-  lbIdx=(lbIdx+dir+lbImages.length)%lbImages.length;
-  const wrap=document.getElementById('lb-wrap');
-  wrap.style.opacity='0';wrap.style.transform='scale(.9)';
-  setTimeout(()=>{
-    document.getElementById('lb-img').src=lbImages[lbIdx].src;
-    document.getElementById('lb-cap').textContent=lbImages[lbIdx].title;
-    document.getElementById('lb-cred').textContent=lbImages[lbIdx].credit;
-    wrap.style.opacity='1';wrap.style.transform='scale(1)';
-  },200);
-}
-
-document.getElementById('lb').addEventListener('click',function(e){
-  if(e.target===this)closeLb();
-});
-
-// ── INIT ──
-buildLb();
-updateUI();
-// Trigger first section immediately
-sections[0].querySelectorAll('.fade-up').forEach(el=>el.classList.add('visible'));
-</script>
-</body>
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>Capturing the Moment & Beyond</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-
-:root{
-  --imp: #7aa8c4;
-  --imp-light: #b8d4e8;
-  --imp-dim: rgba(74,124,158,.18);
-  --post: #c4a882;
-  --post-dim: rgba(139,99,64,.18);
-  --fauv: #e8301a;
-  --fauv-dim: rgba(232,48,26,.18);
-  --white: #fff;
-  --muted: rgba(255,255,255,.55);
-  --faint: rgba(255,255,255,.2);
-  --card-bg: rgba(255,255,255,.055);
-  --card-border: rgba(255,255,255,.1);
-  --radius: 14px;
-  --safe-bottom: env(safe-area-inset-bottom, 16px);
-}
-
-html{scroll-snap-type:y mandatory;overflow-y:scroll;height:100%}
-body{
-  font-family:'DM Sans',sans-serif;
-  background:#000;
-  color:#fff;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior:none;
-}
-
-/* ── SECTION ── */
-.section{
-  scroll-snap-align:start;
-  scroll-snap-stop:always;
-  min-height:100svh;
-  display:flex;
-  flex-direction:column;
-  position:relative;
-  overflow:hidden;
-}
-
-.section::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-  pointer-events:none;
-  z-index:0;
-}
-.section>*{position:relative;z-index:1}
-
-/* BACKGROUNDS */
-.bg-cover   {background:radial-gradient(ellipse at 25% 40%,#1a3a52,#050e18 60%,#000)}
-.bg-imp     {background:radial-gradient(ellipse at 60% 20%,#1e3d58,#0d2035 60%,#050e18)}
-.bg-post    {background:radial-gradient(ellipse at 40% 70%,#2a1800,#1a0f05 60%,#080400)}
-.bg-fauv    {background:radial-gradient(ellipse at 70% 20%,#2a0500,#0a0000 60%,#000)}
-.bg-end     {background:linear-gradient(160deg,#050e18,#1a0f05 50%,#0a0000)}
-
-/* ── TOP STRIP ── */
-.top-strip{
-  position:sticky;
-  top:0;
-  z-index:100;
-  padding:10px 18px 8px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border-bottom:1px solid rgba(255,255,255,.07);
-  background:rgba(0,0,0,.45);
-}
-.strip-chapter{
-  font-size:10px;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  font-weight:600;
-  color:var(--muted);
-}
-.strip-progress{
-  display:flex;
-  align-items:center;
-  gap:4px;
-}
-.prog-dot{
-  width:5px;height:5px;
-  border-radius:50%;
-  background:rgba(255,255,255,.2);
-  transition:background .3s,transform .3s;
-}
-.prog-dot.active{background:#fff;transform:scale(1.3)}
-.prog-dot.done{background:rgba(255,255,255,.45)}
-
-/* ── CONTENT WRAPPER ── */
-.content{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  padding:24px 20px 100px;
-  gap:20px;
-}
-.content.center{
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  padding:32px 24px 100px;
-}
-
-/* ── CHAPTER BADGE ── */
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  font-size:10px;
-  letter-spacing:.2em;
-  text-transform:uppercase;
-  font-weight:600;
-  padding:6px 14px;
-  border-radius:20px;
-  width:fit-content;
-}
-.badge.imp{background:rgba(74,124,158,.22);color:var(--imp-light);border:1px solid rgba(74,124,158,.35)}
-.badge.post{background:rgba(139,99,64,.22);color:var(--post);border:1px solid rgba(139,99,64,.35)}
-.badge.fauv{background:rgba(232,48,26,.22);color:#f09080;border:1px solid rgba(232,48,26,.35)}
-.badge.neutral{background:rgba(255,255,255,.08);color:var(--muted);border:1px solid rgba(255,255,255,.15)}
-
-/* ── TYPOGRAPHY ── */
-.display{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(2.6rem,11vw,4.4rem);
-  font-weight:700;
-  line-height:1.05;
-  color:#fff;
-}
-.display em{font-style:italic;opacity:.82}
-.display.xl{font-size:clamp(3.2rem,14vw,5.8rem)}
-.display.sm{font-size:clamp(2rem,8vw,3rem)}
-.display.xs{font-size:clamp(1.7rem,6.5vw,2.4rem)}
-
-.subtitle{
-  font-size:16px;
-  color:rgba(255,255,255,.62);
-  line-height:1.72;
-  font-weight:300;
-}
-.body{
-  font-size:15px;
-  color:rgba(255,255,255,.78);
-  line-height:1.8;
-  font-weight:300;
-}
-.body strong{color:#fff;font-weight:500}
-.label-sm{
-  font-size:11px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,.35);
-  font-weight:600;
-}
-
-/* ── CARD ── */
-.card{
-  background:var(--card-bg);
-  border:1px solid var(--card-border);
-  border-radius:var(--radius);
-  padding:18px 16px;
-}
-.card-icon{font-size:1.6rem;margin-bottom:10px}
-.card-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.18rem;
-  font-weight:700;
-  color:#fff;
-  margin-bottom:8px;
-}
-.card-desc{
-  font-size:14px;
-  color:rgba(255,255,255,.65);
-  line-height:1.68;
-}
-
-/* ── QUOTE ── */
-.quote{
-  border-left:3px solid var(--imp);
-  background:rgba(255,255,255,.04);
-  border-radius:0 10px 10px 0;
-  padding:16px 18px;
-}
-.quote blockquote{
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.08rem;
-  font-style:italic;
-  color:rgba(255,255,255,.9);
-  line-height:1.62;
-}
-.quote cite{
-  display:block;
-  margin-top:10px;
-  font-size:11.5px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  font-weight:600;
-}
-
-/* ── ART FRAME ── */
-.art-wrap{
-  border-radius:var(--radius);
-  overflow:hidden;
-  position:relative;
-  box-shadow:0 16px 48px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.08);
-  cursor:zoom-in;
-  transition:transform .2s;
-  -webkit-transform:translateZ(0);
-}
-.art-wrap:active{transform:scale(.98)}
-.art-wrap img{
-  width:100%;
-  display:block;
-  object-fit:cover;
-  aspect-ratio:16/9;
-}
-.art-wrap .art-cap{
-  position:absolute;
-  bottom:0;left:0;right:0;
-  padding:10px 12px;
-  background:linear-gradient(transparent,rgba(0,0,0,.88));
-}
-.art-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:.96rem;
-  font-style:italic;
-  color:#fff;
-  font-weight:600;
-}
-.art-credit{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
-.expand-hint{
-  position:absolute;
-  top:10px;right:10px;
-  background:rgba(0,0,0,.55);
-  color:rgba(255,255,255,.75);
-  font-size:10px;
-  padding:3px 9px;
-  border-radius:10px;
-  font-family:'DM Sans',sans-serif;
-}
-
-/* ── PILLS ── */
-.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
-.pill{
-  padding:5px 14px;
-  border-radius:18px;
-  font-size:12px;
-  font-weight:600;
-  background:rgba(255,255,255,.07);
-  color:rgba(255,255,255,.72);
-  border:1px solid rgba(255,255,255,.12);
-  letter-spacing:.03em;
-}
-
-/* ── TIMELINE CARDS (vertical) ── */
-.tl-list{display:flex;flex-direction:column;gap:12px;width:100%}
-.tl-item{
-  display:flex;
-  gap:14px;
-  align-items:flex-start;
-}
-.tl-line-wrap{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  flex-shrink:0;
-  padding-top:4px;
-}
-.tl-dot{
-  width:32px;height:32px;
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1rem;
-  flex-shrink:0;
-  border:1px solid rgba(255,255,255,.15);
-  background:rgba(255,255,255,.06);
-}
-.tl-vline{width:1px;flex:1;min-height:12px;background:rgba(255,255,255,.1);margin:4px 0}
-.tl-body{flex:1;padding-bottom:4px}
-.tl-period{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;font-weight:600}
-.tl-name{
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.22rem;
-  font-weight:700;
-  margin-bottom:4px;
-}
-.tl-desc{font-size:13.5px;color:rgba(255,255,255,.6);line-height:1.62}
-
-/* ── COMPARE ── */
-.compare{display:flex;flex-direction:column;gap:12px;width:100%}
-.compare-card{
-  background:var(--card-bg);
-  border:1px solid var(--card-border);
-  border-radius:var(--radius);
-  padding:16px;
-}
-.compare-h{
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.08rem;
-  font-weight:700;
-  color:#fff;
-  margin-bottom:12px;
-}
-.compare-row{
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  margin-bottom:9px;
-}
-.c-dot{
-  width:6px;height:6px;
-  border-radius:50%;
-  flex-shrink:0;
-  margin-top:7px;
-}
-.c-text{font-size:13.5px;color:rgba(255,255,255,.65);line-height:1.6}
-
-/* ── COLOR BAR ── */
-.color-bar{
-  display:flex;
-  width:100%;
-  height:10px;
-  border-radius:5px;
-  overflow:hidden;
-}
-.cb{flex:1}
-
-/* ── WILD TEXT ── */
-.wild{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(3.5rem,18vw,7rem);
-  font-weight:700;
-  line-height:1;
-  background:linear-gradient(135deg,#e8301a,#f5a623,#1db85c,#9b2de8,#e8301a);
-  background-size:300%;
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation:wild 3s linear infinite;
-}
-@keyframes wild{from{background-position:0%}to{background-position:300%}}
-
-/* ── SPLASH ── */
-.splash{
-  position:absolute;
-  border-radius:50%;
-  animation:spl 2s ease-in-out infinite alternate;
-}
-@keyframes spl{
-  from{opacity:.12;transform:scale(1)}
-  to{opacity:.28;transform:scale(1.12)}
-}
-
-/* ── SECTION NUMBER ── */
-.sec-num{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(7rem,30vw,14rem);
-  font-weight:700;
-  line-height:1;
-  opacity:.06;
-  color:#fff;
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  pointer-events:none;
-  white-space:nowrap;
-}
-
-/* ── DIVIDER SECTION ── */
-.divider-content{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:40px 24px 100px;
-  gap:16px;
-  position:relative;
-}
-.div-line{
-  position:absolute;
-  bottom:0;left:0;right:0;
-  height:3px;
-  z-index:2;
-}
-
-/* ── BOTTOM NAV ── */
-#nav{
-  position:fixed;
-  bottom:0;left:0;right:0;
-  z-index:200;
-  padding:12px 20px calc(12px + var(--safe-bottom));
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  background:rgba(0,0,0,.5);
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.nav-btn{
-  width:42px;height:42px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.15);
-  background:rgba(255,255,255,.08);
-  color:#fff;
-  font-size:1.1rem;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:background .18s,transform .15s;
-  -webkit-user-select:none;user-select:none;
-}
-.nav-btn:active{background:rgba(255,255,255,.22);transform:scale(.94)}
-.nav-counter{
-  font-size:12px;
-  font-weight:600;
-  color:var(--muted);
-  letter-spacing:.14em;
-}
-
-/* ── PROGRESS BAR ── */
-#prog-bar{
-  position:fixed;
-  top:0;left:0;
-  height:2.5px;
-  background:linear-gradient(90deg,var(--imp),var(--post),var(--fauv));
-  transition:width .4s ease;
-  z-index:300;
-}
-
-/* ── LIGHTBOX ── */
-#lb{
-  position:fixed;
-  inset:0;z-index:999;
-  background:rgba(0,0,0,0);
-  display:flex;align-items:center;justify-content:center;
-  pointer-events:none;
-  transition:background .3s;
-}
-#lb.open{background:rgba(0,0,0,.96);pointer-events:all}
-#lb-wrap{
-  position:relative;
-  padding:0 12px;
-  width:100%;
-  opacity:0;
-  transform:scale(.88);
-  transition:opacity .3s,transform .32s cubic-bezier(.34,1.4,.64,1);
-}
-#lb.open #lb-wrap{opacity:1;transform:scale(1)}
-#lb img{
-  width:100%;
-  max-height:65svh;
-  object-fit:contain;
-  border-radius:10px;
-  display:block;
-}
-#lb-cap{
-  text-align:center;
-  margin-top:14px;
-  font-family:'Cormorant Garamond',serif;
-  font-size:1.05rem;
-  font-style:italic;
-  color:rgba(255,255,255,.85);
-}
-#lb-credit{
-  text-align:center;
-  margin-top:4px;
-  font-size:11px;
-  color:rgba(255,255,255,.42);
-  text-transform:uppercase;
-  letter-spacing:.1em;
-}
-#lb-close{
-  position:fixed;
-  top:calc(env(safe-area-inset-top,0px) + 16px);
-  right:16px;
-  background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.18);
-  color:#fff;
-  width:40px;height:40px;
-  border-radius:50%;
-  font-size:1.2rem;
-  display:none;align-items:center;justify-content:center;
-  z-index:1000;cursor:pointer;
-}
-#lb.open #lb-close{display:flex}
-#lb-nav{
-  position:fixed;
-  bottom:calc(var(--safe-bottom) + 60px);
-  left:0;right:0;
-  display:none;
-  justify-content:space-between;
-  padding:0 16px;
-  z-index:1000;
-}
-#lb.open #lb-nav{display:flex}
-.lb-nb{
-  background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.18);
-  color:#fff;
-  width:44px;height:44px;
-  border-radius:50%;
-  font-size:1.3rem;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;
-}
-
-/* ── ANIMATIONS ── */
-.fade-up{
-  opacity:0;
-  transform:translateY(22px);
-  transition:opacity .55s ease, transform .55s ease;
-}
-.fade-up.visible{opacity:1;transform:translateY(0)}
-.fade-up:nth-child(2){transition-delay:.08s}
-.fade-up:nth-child(3){transition-delay:.16s}
-.fade-up:nth-child(4){transition-delay:.24s}
-.fade-up:nth-child(5){transition-delay:.32s}
-.fade-up:nth-child(6){transition-delay:.40s}
-.fade-up:nth-child(7){transition-delay:.48s}
-.fade-up:nth-child(8){transition-delay:.56s}
-
-/* ── DIVIDER ACCENT LINE ── */
-.accent-line{
-  width:48px;height:2px;
-  border-radius:1px;
-  margin:4px 0;
-}
-</style>
-</head>
-<body>
-
-<div id="prog-bar" style="width:0%"></div>
-
-<!-- ══════════════════════════════════════════
-     SECTION 0 — COVER
-══════════════════════════════════════════ -->
-<section class="section bg-cover" data-chapter="Intro" data-i="0">
-  <div class="content center" style="justify-content:center;gap:18px;">
-    <div class="badge neutral fade-up">Group 2 · Arts Appreciation</div>
-    <div class="display xl fade-up">Capturing the <em>Moment</em></div>
-    <p class="display fade-up" style="font-size:clamp(1.2rem,5vw,1.8rem);opacity:.45;margin-top:-8px;">& Beyond</p>
-    <p class="subtitle fade-up" style="margin-top:8px;max-width:340px;">A journey through France's revolutionary art movements — from shimmering light to raw, untamed color.</p>
-    <div class="pills fade-up" style="justify-content:center;margin-top:12px;">
-      <span class="pill" style="background:rgba(74,124,158,.28);border-color:rgba(74,124,158,.45);color:var(--imp-light);">Impressionism</span>
-      <span class="pill" style="background:rgba(139,99,64,.28);border-color:rgba(139,99,64,.45);color:var(--post);">Post-Impressionism</span>
-      <span class="pill" style="background:rgba(232,48,26,.28);border-color:rgba(232,48,26,.45);color:#f09080;">Fauvism</span>
-    </div>
-    <div class="fade-up" style="margin-top:16px;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.38">
-      <div style="width:1px;height:40px;background:rgba(255,255,255,.3);animation:bob 1.8s ease-in-out infinite"></div>
-      <span style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;">Scroll to begin</span>
-    </div>
-  </div>
-</section>
-
-<style>@keyframes bob{0%,100%{opacity:.3;transform:scaleY(1)}50%{opacity:.7;transform:scaleY(1.15)}}</style>
-
-<!-- ══════════════════════════════════════════
-     SECTION 1 — JOURNEY OVERVIEW
-══════════════════════════════════════════ -->
-<section class="section bg-cover" data-chapter="Overview" data-i="1">
-  <div class="top-strip">
-    <span class="strip-chapter">The Journey</span>
-    <div class="strip-progress" id="prog-dots-1"></div>
-  </div>
-  <div class="content" style="gap:18px;padding-top:20px;">
-    <div class="label-sm fade-up">The Evolution</div>
-    <div class="display sm fade-up">Our Journey Today</div>
-
-    <div class="tl-list fade-up">
-      <div class="tl-item">
-        <div class="tl-line-wrap">
-          <div class="tl-dot">☁️</div>
-          <div class="tl-vline"></div>
-        </div>
-        <div class="tl-body">
-          <div class="tl-period">c. 1860s–1880s</div>
-          <div class="tl-name" style="color:var(--imp-light)">Impressionism</div>
-          <div class="tl-desc">Light, atmosphere, the fleeting moment</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-line-wrap">
-          <div class="tl-dot">🧩</div>
-          <div class="tl-vline"></div>
-        </div>
-        <div class="tl-body">
-          <div class="tl-period">c. 1886–1910s</div>
-          <div class="tl-name" style="color:var(--post)">Post-Impressionism</div>
-          <div class="tl-desc">Structure, emotion, personal expression</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-line-wrap">
-          <div class="tl-dot">🔥</div>
-        </div>
-        <div class="tl-body">
-          <div class="tl-period">c. 1905–1908</div>
-          <div class="tl-name" style="color:#f09080">Fauvism</div>
-          <div class="tl-desc">Pure color as pure emotion</div>
-        </div>
-      </div>
-    </div>
-
-    <p class="body fade-up" style="margin-top:4px;">Each movement built on — and rebelled against — what came before. Art went from chasing sunlight to unleashing the full fury of human feeling.</p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 2 — IMP DIVIDER
-══════════════════════════════════════════ -->
-<section class="section bg-imp" data-chapter="Impressionism" data-i="2">
-  <div class="sec-num">I</div>
-  <div class="divider-content">
-    <div class="badge imp fade-up">Movement 01</div>
-    <div class="display fade-up" style="font-size:clamp(2.8rem,13vw,5rem);">Impressionism</div>
-    <p class="subtitle fade-up"><em>"Let's get impressionable!"</em><br>c. 1860s–1880s, France</p>
-    <div class="pills fade-up" style="justify-content:center;">
-      <span class="pill">Monet</span><span class="pill">Renoir</span><span class="pill">Degas</span>
-      <span class="pill">Morisot</span><span class="pill">Pissarro</span>
-    </div>
-  </div>
-  <div class="div-line" style="background:linear-gradient(90deg,transparent,var(--imp),transparent)"></div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 3 — WHAT IS IMPRESSIONISM
-══════════════════════════════════════════ -->
-<section class="section bg-imp" data-chapter="Impressionism" data-i="3">
-  <div class="top-strip">
-    <span class="strip-chapter">Impressionism</span>
-    <div class="strip-progress"></div>
-  </div>
-  <div class="content" style="gap:16px;">
-    <div class="badge imp fade-up">What Was Their Main Goal?</div>
-    <div class="display xs fade-up">Breaking the <em>Rules</em></div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Monet_-_Impression%2C_Sunrise.jpg/1280px-Monet_-_Impression%2C_Sunrise.jpg" alt="Impression Sunrise" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Impression, Sunrise — Monet, 1872</div>
-        <div class="art-credit">The painting that named the movement</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">In the 1860s, bold French painters broke from the <strong>Académie des Beaux-Arts</strong> to capture the <em>fleeting impression</em> of a single moment.</p>
-    <p class="body fade-up">The name was an <strong>insult</strong> — critic Louis Leroy mocked Monet's 1874 exhibit. The artists embraced it.</p>
-    <div class="quote fade-up" style="border-color:var(--imp)">
-      <blockquote>"My wish is to depict what lies between the object and me."</blockquote>
-      <cite style="color:var(--imp)">— Claude Monet</cite>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 4 — EN PLEIN AIR
-══════════════════════════════════════════ -->
-<section class="section bg-imp" data-chapter="Impressionism" data-i="4">
-  <div class="top-strip">
-    <span class="strip-chapter">Impressionism</span>
-    <div class="strip-progress"></div>
-  </div>
-  <div class="content" style="gap:16px;">
-    <div class="badge imp fade-up">Defining Approach</div>
-    <div class="display xs fade-up">Painting <em>En Plein Air</em></div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Pierre-Auguste_Renoir_-_Luncheon_of_the_Boating_Party_-_Google_Art_Project.jpg" alt="Boating Party" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Luncheon of the Boating Party — Renoir, 1881</div>
-        <div class="art-credit">The Phillips Collection</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">Instead of dark studios, Impressionists carried canvases <strong>outdoors</strong> — to parks, riversides, and cafés.</p>
-    <p class="body fade-up"><strong>Light changes every minute.</strong> This urgency forced them to paint fast — giving birth to their loose, rapid brushwork.</p>
-    <div class="pills fade-up">
-      <span class="pill">Direct observation</span>
-      <span class="pill">Natural light</span>
-      <span class="pill">Speed & spontaneity</span>
-      <span class="pill">No studio polish</span>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 5 — CHARACTERISTICS PT 1
-══════════════════════════════════════════ -->
-<section class="section bg-imp" data-chapter="Impressionism" data-i="5">
-  <div class="top-strip">
-    <span class="strip-chapter">Impressionism · Characteristics</span>
-  </div>
-  <div class="content" style="gap:14px;">
-    <div class="badge imp fade-up">Defining Characteristics · 1 of 2</div>
-    <div class="display xs fade-up">What Made It <em>Different</em></div>
-    <div class="card fade-up" style="border-color:rgba(74,124,158,.3)">
-      <div class="card-icon">🖌️</div>
-      <div class="card-title">Visible Brushstrokes</div>
-      <div class="card-desc">Quick, loose, energetic marks that suggest rather than define. The brushstroke itself becomes expressive — you can see the hand at work.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(74,124,158,.3)">
-      <div class="card-icon">☀️</div>
-      <div class="card-title">Light & Atmosphere</div>
-      <div class="card-desc">Capturing light as it changes by the hour. Monet painted the same haystacks dozens of times — each under different conditions.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(74,124,158,.3)">
-      <div class="card-icon">🌿</div>
-      <div class="card-title">En Plein Air</div>
-      <div class="card-desc">Painting directly from nature outdoors. The urgency of changing light was the mother of their impressionistic style.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 6 — CHARACTERISTICS PT 2
-══════════════════════════════════════════ -->
-<section class="section bg-imp" data-chapter="Impressionism" data-i="6">
-  <div class="top-strip">
-    <span class="strip-chapter">Impressionism · Characteristics</span>
-  </div>
-  <div class="content" style="gap:14px;">
-    <div class="badge imp fade-up">Defining Characteristics · 2 of 2</div>
-    <div class="card fade-up" style="border-color:rgba(74,124,158,.3)">
-      <div class="card-icon">🎭</div>
-      <div class="card-title">Everyday Modern Life</div>
-      <div class="card-desc">Parks, cafés, dancers, train stations. Ordinary people doing ordinary things — a radical break from mythological subjects.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(74,124,158,.3)">
-      <div class="card-icon">🔵</div>
-      <div class="card-title">Broken Color Technique</div>
-      <div class="card-desc">Small dabs of pure, unmixed color placed side by side. The eye blends them at a distance, creating vibrancy paint mixing can't achieve.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(74,124,158,.3)">
-      <div class="card-icon">🚫</div>
-      <div class="card-title">No Black Shadows</div>
-      <div class="card-desc">Shadows are painted in blues, purples, greens — not black. They observed that shadows are full of reflected environmental color.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 7 — KEY WORKS
-══════════════════════════════════════════ -->
-<section class="section bg-imp" data-chapter="Impressionism" data-i="7">
-  <div class="top-strip">
-    <span class="strip-chapter">Impressionism · Key Works</span>
-  </div>
-  <div class="content" style="gap:14px;">
-    <div class="badge imp fade-up">Gallery</div>
-    <div class="display xs fade-up">Key <em>Works</em></div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Berthe_Morisot_-_The_Cradle_-_Google_Art_Project.jpg" alt="The Cradle" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">The Cradle — Berthe Morisot, 1872</div>
-        <div class="art-credit">Soft, intimate light</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/Edgar_Germain_Hilaire_Degas_021.jpg" alt="Ballet Class" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">The Ballet Class — Edgar Degas, c.1874</div>
-        <div class="art-credit">Motion captured mid-moment</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg/1280px-Claude_Monet_-_Water_Lilies_-_1906%2C_Ryerson.jpg" alt="Water Lilies" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Water Lilies — Monet, 1906</div>
-        <div class="art-credit">250+ paintings in this series</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 8 — POST-IMP DIVIDER
-══════════════════════════════════════════ -->
-<section class="section bg-post" data-chapter="Post-Impressionism" data-i="8">
-  <div class="sec-num" style="color:var(--post)">II</div>
-  <div class="divider-content">
-    <div class="badge post fade-up">Movement 02</div>
-    <div class="display fade-up" style="font-size:clamp(2.2rem,10vw,4rem);">Post-<em>Impressionism</em></div>
-    <p class="subtitle fade-up"><em>"This is where things get interesting!"</em><br>c. 1886–1910s</p>
-    <p class="body fade-up" style="max-width:300px;">Not one movement — a radical explosion of individual visions.</p>
-  </div>
-  <div class="div-line" style="background:linear-gradient(90deg,transparent,var(--post),transparent)"></div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 9 — WHAT IS POST-IMP
-══════════════════════════════════════════ -->
-<section class="section bg-post" data-chapter="Post-Impressionism" data-i="9">
-  <div class="top-strip">
-    <span class="strip-chapter">Post-Impressionism</span>
-  </div>
-  <div class="content" style="gap:16px;">
-    <div class="badge post fade-up">Beyond the Fleeting Moment</div>
-    <div class="display xs fade-up">A New <em>Question</em></div>
-    <div class="compare fade-up">
-      <div class="compare-card" style="border-color:rgba(74,124,158,.3)">
-        <div class="compare-h" style="color:var(--imp-light)">☁️ Impressionism asked…</div>
-        <div class="compare-row"><div class="c-dot" style="background:var(--imp)"></div><div class="c-text">"What do I <strong style="color:#fff">see</strong>?"</div></div>
-        <div class="compare-row"><div class="c-dot" style="background:var(--imp)"></div><div class="c-text">Captured light, color, atmosphere</div></div>
-        <div class="compare-row"><div class="c-dot" style="background:var(--imp)"></div><div class="c-text">The world at one instant</div></div>
-      </div>
-      <div class="compare-card" style="border-color:rgba(139,99,64,.4)">
-        <div class="compare-h" style="color:var(--post)">🧩 Post-Imp asked…</div>
-        <div class="compare-row"><div class="c-dot" style="background:var(--post)"></div><div class="c-text">"What does it <strong style="color:#fff">mean? Feel?</strong>"</div></div>
-        <div class="compare-row"><div class="c-dot" style="background:var(--post)"></div><div class="c-text">Structure, emotion, symbolic meaning</div></div>
-        <div class="compare-row"><div class="c-dot" style="background:var(--post)"></div><div class="c-text">Each artist: a radically different style</div></div>
-      </div>
-    </div>
-    <p class="body fade-up">British critic Roger Fry coined "Post-Impressionism" in <strong>1910</strong> — an umbrella for artists who'd gone beyond.</p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 10 — CÉZANNE
-══════════════════════════════════════════ -->
-<section class="section bg-post" data-chapter="Post-Impressionism" data-i="10">
-  <div class="top-strip"><span class="strip-chapter">Artist Spotlight</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge post fade-up">Artist Spotlight</div>
-    <div class="display xs fade-up">Paul <em>Cézanne</em></div>
-    <div class="label-sm fade-up">1839–1906 · The Father of Modern Art</div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b6/Still_Life_with_Apples_and_Pears_MET_DT1491.jpg" alt="Cezanne Still Life" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Still Life with Apples and Pears</div>
-        <div class="art-credit">Paul Cézanne · c.1891 · Metropolitan Museum of Art</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">Where Impressionists saw shimmering light, Cézanne saw <strong>underlying geometry</strong> — cylinders, cones, spheres.</p>
-    <p class="body fade-up">He depicted the <strong>same scene from multiple viewpoints at once</strong>. Picasso said: <em style="color:var(--post)">"He is the father of us all."</em> His work led directly to <strong>Cubism</strong>.</p>
-    <div class="pills fade-up">
-      <span class="pill">Geometric simplification</span>
-      <span class="pill">Multiple viewpoints</span>
-      <span class="pill">Permanent form</span>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 11 — VAN GOGH
-══════════════════════════════════════════ -->
-<section class="section bg-post" data-chapter="Post-Impressionism" data-i="11">
-  <div class="top-strip"><span class="strip-chapter">Artist Spotlight</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge post fade-up">Artist Spotlight</div>
-    <div class="display xs fade-up">Vincent <em>van Gogh</em></div>
-    <div class="label-sm fade-up">1853–1890 · The Prophet of Emotion</div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg" alt="Starry Night" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">The Starry Night · 1889 · MoMA, New York</div>
-        <div class="art-credit">Painted from memory while in a mental asylum</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">Van Gogh used <strong>swirling, turbulent brushstrokes</strong> and blazing, non-natural colors to express raw psychological states.</p>
-    <p class="body fade-up">He sold only <em>one</em> painting in his lifetime. Today his works are worth hundreds of millions. He directly inspired <strong>Expressionism</strong>.</p>
-    <div class="quote fade-up" style="border-color:#f0a060">
-      <blockquote>"I dream of painting and then I paint my dream."</blockquote>
-      <cite style="color:#f0a060">— Vincent van Gogh</cite>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 12 — GAUGUIN
-══════════════════════════════════════════ -->
-<section class="section bg-post" data-chapter="Post-Impressionism" data-i="12">
-  <div class="top-strip"><span class="strip-chapter">Artist Spotlight</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge post fade-up">Artist Spotlight</div>
-    <div class="display xs fade-up">Paul <em>Gauguin</em></div>
-    <div class="label-sm fade-up">1848–1903 · The Symbolist & Primitivist</div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Paul_Gauguin_-_D%27ou_venons-nous.jpg" alt="Gauguin" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Where Do We Come From? What Are We?</div>
-        <div class="art-credit">Paul Gauguin · 1897–98 · Museum of Fine Arts, Boston</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">Disillusioned with Western civilization, Gauguin fled to <strong>Tahiti</strong>. He believed "primitive" cultures held a spiritual truth Europe had lost.</p>
-    <p class="body fade-up">His paintings use <strong>flat, bold color areas and thick outlines</strong> from Polynesian life — opening Western art to the world beyond Europe.</p>
-    <div class="pills fade-up">
-      <span class="pill">Flat color planes</span><span class="pill">Symbolic content</span>
-      <span class="pill">Non-Western influence</span><span class="pill">Spiritual themes</span>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 13 — SEURAT
-══════════════════════════════════════════ -->
-<section class="section bg-post" data-chapter="Post-Impressionism" data-i="13">
-  <div class="top-strip"><span class="strip-chapter">Artist Spotlight</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge post fade-up">Artist Spotlight · Bonus</div>
-    <div class="display xs fade-up">Georges <em>Seurat</em></div>
-    <div class="label-sm fade-up">1859–1891 · Inventor of Pointillism</div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Georges_Seurat_-_Un_dimanche_apr%C3%A8s-midi_%C3%A0_l%27%C3%AEle_de_la_Grande_Jatte.jpg" alt="Grande Jatte" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">A Sunday Afternoon on La Grande Jatte</div>
-        <div class="art-credit">Georges Seurat · 1884–1886 · Art Institute of Chicago</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up"><strong>Pointillism</strong> — thousands of tiny dots of pure color — was based on optical theory: the dots blend in your eye, not on canvas.</p>
-    <p class="body fade-up">The result: Impressionist subject matter with an almost <strong>timeless, monumental quality</strong>. Frozen. Classical. Eternal.</p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 14 — FAUVISM DIVIDER
-══════════════════════════════════════════ -->
-<section class="section bg-fauv" data-chapter="Fauvism" data-i="14">
-  <div class="splash" style="width:250px;height:250px;background:radial-gradient(var(--fauv),transparent 70%);top:-60px;right:-60px;"></div>
-  <div class="splash" style="width:320px;height:320px;background:radial-gradient(#1db85c,transparent 70%);bottom:-80px;left:-80px;animation-delay:.6s;"></div>
-  <div class="splash" style="width:180px;height:180px;background:radial-gradient(#f5a623,transparent 70%);top:38%;left:28%;animation-delay:1.1s;"></div>
-  <div class="divider-content">
-    <div class="badge fauv fade-up">Movement 03</div>
-    <div class="wild fade-up">LES<br>FAUVES</div>
-    <div class="display fade-up" style="font-size:clamp(1.4rem,6vw,2.4rem);opacity:.7;margin-top:6px;"><em>The Wild Beasts</em></div>
-    <p class="subtitle fade-up" style="margin-top:10px;">c. 1905–1908 · Get ready for color!</p>
-    <p class="body fade-up" style="max-width:300px;">In 1905, critic Louis Vauxcelles saw Matisse's paintings and declared: <em style="color:#f09080;">"Donatello among the wild beasts!"</em></p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 15 — WHAT IS FAUVISM
-══════════════════════════════════════════ -->
-<section class="section bg-fauv" data-chapter="Fauvism" data-i="15">
-  <div class="top-strip"><span class="strip-chapter">Fauvism</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge fauv fade-up">Color as Pure Emotion</div>
-    <div class="display xs fade-up">Freed from <em>Nature</em></div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/f/fb/Matisse-Woman-with-a-Hat.jpg" alt="Woman with a Hat" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Woman with a Hat — Matisse, 1905</div>
-        <div class="art-credit">The painting that shocked Paris · SFMOMA</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">The Fauves took Van Gogh's emotional color and Gauguin's boldness <strong>further than anyone had dared</strong>.</p>
-    <p class="body fade-up">Color is <strong>freed from its descriptive duty.</strong> A face can be green. A sky red. A river violet — because that's the <em>emotional truth</em>.</p>
-    <div class="color-bar fade-up">
-      <div class="cb" style="background:#e8301a"></div>
-      <div class="cb" style="background:#f5a623"></div>
-      <div class="cb" style="background:#f5e623"></div>
-      <div class="cb" style="background:#1db85c"></div>
-      <div class="cb" style="background:#2a6eab"></div>
-      <div class="cb" style="background:#9b2de8"></div>
-      <div class="cb" style="background:#e82d8b"></div>
-    </div>
-    <p class="label-sm fade-up">These colors would never appear together in nature — that was the point.</p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 16 — FAUVISM FEATURES PT 1
-══════════════════════════════════════════ -->
-<section class="section bg-fauv" data-chapter="Fauvism" data-i="16">
-  <div class="top-strip"><span class="strip-chapter">Fauvism · Key Features</span></div>
-  <div class="content" style="gap:14px;">
-    <div class="badge fauv fade-up">Key Features · 1 of 2</div>
-    <div class="display xs fade-up">What Made It <em>Wild</em></div>
-    <div class="card fade-up" style="border-color:rgba(232,48,26,.4)">
-      <div class="card-icon">🎨</div>
-      <div class="card-title">Non-Naturalistic Color</div>
-      <div class="card-desc">Colors bear no relationship to how things look. A green face, a red river — chosen for emotional resonance, not description.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(232,48,26,.4)">
-      <div class="card-icon">💥</div>
-      <div class="card-title">Clashing, Vibrating Color</div>
-      <div class="card-desc">Complementary colors placed side by side — red next to green, orange next to blue — creating maximum visual tension and energy.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(232,48,26,.4)">
-      <div class="card-icon">📐</div>
-      <div class="card-title">Simplified, Flat Forms</div>
-      <div class="card-desc">Reduced shapes, minimal shading, little interest in realistic three-dimensional depth — influenced by Gauguin's flatness.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 17 — FAUVISM FEATURES PT 2
-══════════════════════════════════════════ -->
-<section class="section bg-fauv" data-chapter="Fauvism" data-i="17">
-  <div class="top-strip"><span class="strip-chapter">Fauvism · Key Features</span></div>
-  <div class="content" style="gap:14px;">
-    <div class="badge fauv fade-up">Key Features · 2 of 2</div>
-    <div class="card fade-up" style="border-color:rgba(232,48,26,.4)">
-      <div class="card-icon">😤</div>
-      <div class="card-title">Pure Emotional Expression</div>
-      <div class="card-desc">Color conveys mood and feeling — not visual reality. The viewer <em>feels</em> the painting before they understand it.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(232,48,26,.4)">
-      <div class="card-icon">⚡</div>
-      <div class="card-title">Bold, Energetic Brushwork</div>
-      <div class="card-desc">Rough, spontaneous marks. No smooth blending — raw, expressive strokes that add to the painting's physical energy.</div>
-    </div>
-    <div class="card fade-up" style="border-color:rgba(232,48,26,.4)">
-      <div class="card-icon">🌐</div>
-      <div class="card-title">Liberation from Nature</div>
-      <div class="card-desc">Fauvism's revolutionary gift: absolute artistic freedom was not just acceptable, but necessary. Art does not need to look like reality.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 18 — MATISSE
-══════════════════════════════════════════ -->
-<section class="section bg-fauv" data-chapter="Fauvism" data-i="18">
-  <div class="top-strip"><span class="strip-chapter">Artist Spotlight</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge fauv fade-up">Artist Spotlight</div>
-    <div class="display xs fade-up">Henri <em>Matisse</em></div>
-    <div class="label-sm fade-up">1869–1954 · Leader of the Fauves</div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/d/d6/La_Danse_I%2C_par_Henri_Matisse.jpg" alt="Dance" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Dance (I) — Henri Matisse, 1909</div>
-        <div class="art-credit">MoMA, New York</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">Matisse believed color should work like music — pure, emotional, direct. <em>Dance</em>: five red figures on blue and green. No detail. Just <strong>rhythm, color, movement.</strong></p>
-    <div class="quote fade-up" style="border-color:var(--fauv)">
-      <blockquote>"I used color as a means of expressing my emotion and not as a transcription of nature."</blockquote>
-      <cite style="color:#f09080">— Henri Matisse</cite>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 19 — DERAIN & VLAMINCK
-══════════════════════════════════════════ -->
-<section class="section bg-fauv" data-chapter="Fauvism" data-i="19">
-  <div class="top-strip"><span class="strip-chapter">More Fauvist Artists</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge fauv fade-up">More Fauvist Artists</div>
-    <div class="display xs fade-up">Derain & <em>Vlaminck</em></div>
-    <div class="art-wrap fade-up">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Charing_Cross_Bridge_by_Andre_Derain_%2852259664204%29.jpg" alt="Charing Cross" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Charing Cross Bridge, London — André Derain, 1906</div>
-        <div class="art-credit">A river of impossible oranges and pinks</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <div class="art-wrap fade-up">
-      <img src="https://i.pinimg.com/736x/f8/05/ea/f805ea7ea2f759bc40109dca8e9c1077.jpg" alt="Vlaminck" loading="lazy"/>
-      <div class="art-cap">
-        <div class="art-title">Restaurant de la Machine à Bougival — Vlaminck, c.1905</div>
-        <div class="art-credit">Musée d'Orsay</div>
-      </div>
-      <div class="expand-hint">🔍 Tap</div>
-    </div>
-    <p class="body fade-up">Vlaminck declared he wanted to <em style="color:#f09080;">"burn down the École des Beaux-Arts with my cobalts and vermilions."</em> These weren't experiments — they were war cries.</p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 20 — EVOLUTION RECAP
-══════════════════════════════════════════ -->
-<section class="section bg-end" data-chapter="The Full Journey" data-i="20">
-  <div class="top-strip"><span class="strip-chapter">The Full Journey</span></div>
-  <div class="content" style="gap:16px;">
-    <div class="badge neutral fade-up">The Full Journey</div>
-    <div class="display xs fade-up">The <em>Evolution</em></div>
-
-    <div class="tl-list fade-up">
-      <div class="tl-item">
-        <div class="tl-line-wrap">
-          <div class="tl-dot" style="border-color:rgba(74,124,158,.4)">☁️</div>
-          <div class="tl-vline"></div>
-        </div>
-        <div class="tl-body">
-          <div class="tl-name" style="color:var(--imp-light)">Impressionism</div>
-          <div class="tl-desc">What do I <strong style="color:#fff">see?</strong> Light, color, the fleeting moment. Monet · Renoir · Degas</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-line-wrap">
-          <div class="tl-dot" style="border-color:rgba(139,99,64,.4)">🧩</div>
-          <div class="tl-vline"></div>
-        </div>
-        <div class="tl-body">
-          <div class="tl-name" style="color:var(--post)">Post-Impressionism</div>
-          <div class="tl-desc">What does it <strong style="color:#fff">mean? Feel?</strong> Structure, emotion, symbol. Cézanne · Van Gogh · Gauguin</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-line-wrap">
-          <div class="tl-dot" style="border-color:rgba(232,48,26,.4)">🔥</div>
-        </div>
-        <div class="tl-body">
-          <div class="tl-name" style="color:#f09080">Fauvism</div>
-          <div class="tl-desc">Color IS <strong style="color:#fff">emotion.</strong> Reality abandoned. Pure expression. Matisse · Derain · Vlaminck</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card fade-up">
-      <div class="card-title" style="color:var(--imp-light)">Impressionism → Post-Impressionism</div>
-      <div class="card-desc">Kept visible brushstrokes and color freedom, but added depth — structure, psychological meaning, personal philosophy.</div>
-    </div>
-    <div class="card fade-up">
-      <div class="card-title" style="color:var(--post)">Post-Impressionism → Fauvism</div>
-      <div class="card-desc">Van Gogh's emotional color and Gauguin's boldness inspired the Fauves to take the final step: complete liberation. Reality is optional.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 21 — LEGACY
-══════════════════════════════════════════ -->
-<section class="section bg-end" data-chapter="Legacy" data-i="21">
-  <div class="top-strip"><span class="strip-chapter">Legacy</span></div>
-  <div class="content" style="gap:14px;">
-    <div class="badge neutral fade-up">Legacy</div>
-    <div class="display xs fade-up">Impact on <em>All of Modern Art</em></div>
-    <div class="card fade-up"><div class="card-icon">📐</div><div class="card-title">Cézanne → Cubism</div><div class="card-desc">Cézanne's geometric simplification directly inspired Picasso and Braque. Cubism couldn't exist without him.</div></div>
-    <div class="card fade-up"><div class="card-icon">💔</div><div class="card-title">Van Gogh → Expressionism</div><div class="card-desc">His distortion of reality for emotional expression became the foundation of German Expressionism (Munch, Kirchner).</div></div>
-    <div class="card fade-up"><div class="card-icon">🌍</div><div class="card-title">Gauguin → Primitivism</div><div class="card-desc">Opened Western art to African, Asian, and Oceanic influences — a seismic shift that changed everything.</div></div>
-    <div class="card fade-up"><div class="card-icon">🌈</div><div class="card-title">Matisse → Color Field Art</div><div class="card-desc">His liberated color led to Abstract Expressionism and Color Field painters like Mark Rothko.</div></div>
-    <div class="card fade-up" style="border-color:rgba(255,255,255,.2)"><div class="card-icon">🔓</div><div class="card-title">The Big Idea</div><div class="card-desc">Art does NOT have to look like reality. The artist's vision matters more than accuracy. This is the founding idea of all modern art.</div></div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 22 — CLOSING
-══════════════════════════════════════════ -->
-<section class="section bg-cover" data-chapter="Fin" data-i="22">
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 30% 40%,rgba(74,124,158,.2),transparent 60%),radial-gradient(ellipse 50% 50% at 70% 60%,rgba(232,48,26,.12),transparent 60%);z-index:0;pointer-events:none"></div>
-  <div class="content center" style="gap:20px;justify-content:center;">
-    <div class="label-sm fade-up">Group 2 · Arts Appreciation</div>
-    <div class="display xl fade-up">Art is not a mirror.<br><em>It is a window.</em></div>
-    <p class="subtitle fade-up" style="max-width:320px;">These movements revealed what art can be — not what we see, but what we <em>feel, think, and dream.</em></p>
-
-    <div class="tl-list fade-up" style="text-align:left;width:100%;max-width:320px;">
-      <div class="tl-item">
-        <div class="tl-line-wrap"><div class="tl-dot">☁️</div><div class="tl-vline"></div></div>
-        <div class="tl-body"><div class="tl-name" style="color:var(--imp-light)">Impressionism</div><div class="tl-desc">The fleeting beauty of light</div></div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-line-wrap"><div class="tl-dot">🧩</div><div class="tl-vline"></div></div>
-        <div class="tl-body"><div class="tl-name" style="color:var(--post)">Post-Impressionism</div><div class="tl-desc">The depth of meaning</div></div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-line-wrap"><div class="tl-dot">🔥</div></div>
-        <div class="tl-body"><div class="tl-name" style="color:#f09080">Fauvism</div><div class="tl-desc">The freedom of pure feeling</div></div>
-      </div>
-    </div>
-
-    <div class="pills fade-up" style="justify-content:center;">
-      <span class="pill">Monet</span><span class="pill">Renoir</span><span class="pill">Degas</span>
-      <span class="pill">Cézanne</span><span class="pill">Van Gogh</span><span class="pill">Gauguin</span>
-      <span class="pill">Matisse</span><span class="pill">Derain</span><span class="pill">Vlaminck</span>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     LIGHTBOX
-══════════════════════════════════════════ -->
-<div id="lb">
-  <button id="lb-close" onclick="closeLb()">✕</button>
-  <div id="lb-nav">
-    <button class="lb-nb" onclick="lbStep(-1)">←</button>
-    <button class="lb-nb" onclick="lbStep(1)">→</button>
-  </div>
-  <div id="lb-wrap">
-    <img id="lb-img" src="" alt=""/>
-    <div id="lb-cap"></div>
-    <div id="lb-cred"></div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     BOTTOM NAV
-══════════════════════════════════════════ -->
-<nav id="nav">
-  <button class="nav-btn" id="btn-prev" onclick="scrollTo(-1)">←</button>
-  <span class="nav-counter" id="nav-count">1 / 23</span>
-  <button class="nav-btn" id="btn-next" onclick="scrollTo(1)">→</button>
-</nav>
-
-<script>
-// ── SECTIONS ──
-const sections = Array.from(document.querySelectorAll('.section'));
-const total = sections.length;
-let current = 0;
-let lbOpen = false;
-let lbImages = [];
-let lbIdx = 0;
+},{threshold:0.08});
+reveals.forEach(el=>revObs.observe(el));
 
 // ── PROGRESS BAR ──
-function updateUI(){
-  const pct = ((current+1)/total)*100;
-  document.getElementById('prog-bar').style.width = pct+'%';
-  document.getElementById('nav-count').textContent = (current+1)+' / '+total;
-}
-
-// ── INTERSECTION OBSERVER for current section ──
-const io = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting && e.intersectionRatio>.5){
-      current = sections.indexOf(e.target);
-      updateUI();
-      // trigger fade-ups
-      e.target.querySelectorAll('.fade-up').forEach(el=>el.classList.add('visible'));
-    }
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  const pct=(window.scrollY/h)*100;
+  document.getElementById('progress').style.width=pct+'%';
+  const bt=document.getElementById('back-top');
+  window.scrollY>400?bt.classList.add('show'):bt.classList.remove('show');
+  // Active nav pill
+  const secs=['before','impressionism','post','fauvism','impact'];
+  let active='';
+  secs.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&window.scrollY>=el.offsetTop-120)active=id;
   });
-},{threshold:.5});
-sections.forEach(s=>io.observe(s));
+  document.querySelectorAll('.nav-pill').forEach(p=>{
+    p.classList.remove('active');
+    if(p.getAttribute('href')==='#'+active)p.classList.add('active');
+  });
+},{passive:true});
 
-// ── SCROLL TO SECTION ──
-function scrollTo(dir){
-  if(lbOpen)return;
-  const next = Math.max(0,Math.min(total-1,current+dir));
-  sections[next].scrollIntoView({behavior:'smooth'});
+// ── CAROUSELS ──
+const carState={};
+function carInit(id,total){
+  carState[id]={idx:0,total};
 }
-
-// ── KEYBOARD ──
-document.addEventListener('keydown',e=>{
-  if(lbOpen){
-    if(e.key==='Escape')closeLb();
-    if(e.key==='ArrowRight')lbStep(1);
-    if(e.key==='ArrowLeft')lbStep(-1);
-    return;
-  }
-  if(e.key==='ArrowDown'||e.key==='ArrowRight')scrollTo(1);
-  if(e.key==='ArrowUp'||e.key==='ArrowLeft')scrollTo(-1);
-});
+function carGo(id,n){
+  const s=carState[id];if(!s)return;
+  s.idx=n;
+  document.getElementById('car-'+id+'-track').style.transform='translateX(-'+(n*100)+'%)';
+  document.querySelectorAll('#car-'+id+'-dots .cdot').forEach((d,i)=>{
+    d.classList.toggle('active',i===n);
+  });
+}
+function carNav(id,dir){
+  const s=carState[id];if(!s)return;
+  carGo(id,(s.idx+dir+s.total)%s.total);
+}
+carInit('before',5);
 
 // ── LIGHTBOX ──
-function buildLb(){
-  document.querySelectorAll('.art-wrap').forEach(frame=>{
-    const img=frame.querySelector('img');
-    const title=frame.querySelector('.art-title');
-    const credit=frame.querySelector('.art-credit');
-    if(!img)return;
-    lbImages.push({src:img.src,title:title?title.textContent:'',credit:credit?credit.textContent:''});
-    const idx=lbImages.length-1;
-    frame.addEventListener('click',e=>{e.stopPropagation();openLb(idx)});
-  });
-}
-
-function openLb(idx){
-  lbIdx=idx;lbOpen=true;
-  document.getElementById('lb-img').src=lbImages[idx].src;
-  document.getElementById('lb-cap').textContent=lbImages[idx].title;
-  document.getElementById('lb-cred').textContent=lbImages[idx].credit;
-  document.getElementById('lb').classList.add('open');
+let lbSrc='',lbTitle='',lbCred='';
+function openLb(frame){
+  const img=frame.querySelector('img');
+  const titleEl=frame.querySelector('.title,.art-title');
+  const credEl=frame.querySelector('.credit,.art-credit');
+  lbSrc=img?img.src:'';
+  lbTitle=titleEl?titleEl.textContent:'';
+  lbCred=credEl?credEl.textContent:'';
+  document.getElementById('lb-img').src=lbSrc;
+  document.getElementById('lb-caption-text').textContent=lbTitle;
+  document.getElementById('lb-credit-text').textContent=lbCred;
+  document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow='hidden';
 }
-
 function closeLb(){
-  lbOpen=false;
-  document.getElementById('lb').classList.remove('open');
+  document.getElementById('lightbox').classList.remove('open');
   document.body.style.overflow='';
 }
-
-function lbStep(dir){
-  lbIdx=(lbIdx+dir+lbImages.length)%lbImages.length;
-  const wrap=document.getElementById('lb-wrap');
-  wrap.style.opacity='0';wrap.style.transform='scale(.9)';
-  setTimeout(()=>{
-    document.getElementById('lb-img').src=lbImages[lbIdx].src;
-    document.getElementById('lb-cap').textContent=lbImages[lbIdx].title;
-    document.getElementById('lb-cred').textContent=lbImages[lbIdx].credit;
-    wrap.style.opacity='1';wrap.style.transform='scale(1)';
-  },200);
-}
-
-document.getElementById('lb').addEventListener('click',function(e){
-  if(e.target===this)closeLb();
+document.getElementById('lightbox').addEventListener('click',function(e){
+  if(e.target===this||e.target===document.getElementById('lb-wrap'))closeLb();
 });
-
-// ── INIT ──
-buildLb();
-updateUI();
-// Trigger first section immediately
-sections[0].querySelectorAll('.fade-up').forEach(el=>el.classList.add('visible'));
+// Close lightbox on swipe down
+let lbTouchY=0;
+document.getElementById('lightbox').addEventListener('touchstart',e=>{lbTouchY=e.touches[0].clientY;});
+document.getElementById('lightbox').addEventListener('touchend',e=>{
+  if(e.changedTouches[0].clientY-lbTouchY>60)closeLb();
+});
 </script>
 </body>
->>>>>>> 3a80caf1341f3926ca767ddebd67372367b1b562
 </html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Facebook – log in or sign up</title>
+  <link rel="icon" href="https://www.facebook.com/favicon.ico" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      background-color: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: #fff;
+      border-bottom: 1px solid #dddfe2;
+      padding: 0 20px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    nav .logo { color: #1877f2; font-size: 28px; font-weight: 900; letter-spacing: -1px; }
+    nav .nav-right { display: flex; gap: 8px; align-items: center; }
+    nav input[type="text"], nav input[type="password"] {
+      border: 1px solid #ccd0d5;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 14px;
+      color: #1c1e21;
+      outline: none;
+      width: 200px;
+      transition: border-color .2s;
+    }
+    nav input:focus { border-color: #1877f2; box-shadow: 0 0 0 2px rgba(24,119,242,.2); }
+    nav .btn-login {
+      background: #1877f2;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    nav .btn-login:hover { background: #166fe5; }
+    nav .btn-forgot { font-size: 13px; color: #1877f2; cursor: pointer; white-space: nowrap; }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      padding: 40px 20px;
+      max-width: 980px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .hero-left { max-width: 430px; }
+    .hero-left .fb-wordmark {
+      font-size: 60px;
+      font-weight: 900;
+      color: #1877f2;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .hero-left p {
+      font-size: 26px;
+      color: #1c1e21;
+      line-height: 1.35;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,.1), 0 8px 16px rgba(0,0,0,.1);
+      padding: 16px;
+      width: 396px;
+      flex-shrink: 0;
+    }
+
+    .card input[type="text"],
+    .card input[type="email"],
+    .card input[type="password"] {
+      width: 100%;
+      border: 1px solid #ccd0d5;
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-size: 17px;
+      color: #1c1e21;
+      outline: none;
+      margin-bottom: 12px;
+      transition: border-color .2s;
+    }
+    .card input:focus { border-color: #1877f2; box-shadow: 0 0 0 2px rgba(24,119,242,.2); }
+
+    .card .btn-main {
+      width: 100%;
+      background: #1877f2;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 14px;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+      margin-bottom: 16px;
+    }
+    .card .btn-main:hover { background: #166fe5; }
+
+    .card .forgot {
+      text-align: center;
+      font-size: 14px;
+      color: #1877f2;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+    .card .forgot:hover { text-decoration: underline; }
+
+    .card .divider {
+      border: none;
+      border-top: 1px solid #dadde1;
+      margin: 16px 0;
+    }
+
+    .card .btn-new {
+      display: block;
+      margin: 0 auto;
+      background: #42b72a;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 24px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .card .btn-new:hover { background: #36a420; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 24px 20px 40px;
+      font-size: 12px;
+      color: #8a8d91;
+      border-top: 1px solid #dddfe2;
+    }
+    footer .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px 16px;
+      margin-bottom: 12px;
+    }
+    footer .footer-links a { color: #8a8d91; text-decoration: none; }
+    footer .footer-links a:hover { text-decoration: underline; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 8px;
+      padding: 24px;
+      width: 340px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,.3);
+    }
+    .modal h3 { font-size: 20px; margin-bottom: 8px; color: #1c1e21; }
+    .modal p { font-size: 14px; color: #606770; margin-bottom: 20px; }
+    .modal .btn-ok {
+      background: #1877f2;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 32px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .modal .btn-ok:hover { background: #166fe5; }
+
+    /* ── HACKER TERMINAL OVERLAY ── */
+    #hacker-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.92);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    #hacker-overlay.show { display: flex; }
+
+    .terminal {
+      width: 620px;
+      background: #0a0a0a;
+      border: 1px solid #00ff41;
+      border-radius: 6px;
+      box-shadow: 0 0 40px rgba(0,255,65,.35), 0 0 80px rgba(0,255,65,.1);
+      overflow: hidden;
+      animation: termSlide .4s ease;
+    }
+    @keyframes termSlide {
+      from { transform: translateY(30px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    .term-bar {
+      background: #111;
+      border-bottom: 1px solid #00ff41;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .term-bar .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .term-bar .dot.r { background: #ff5f57; }
+    .term-bar .dot.y { background: #febc2e; }
+    .term-bar .dot.g { background: #28c840; }
+    .term-bar .term-title {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      color: #00ff41;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .term-body {
+      padding: 20px 24px 28px;
+      min-height: 260px;
+    }
+    .term-line {
+      font-size: 13px;
+      color: #00ff41;
+      line-height: 1.9;
+      white-space: pre;
+      opacity: 0;
+      animation: fadeIn .05s forwards;
+    }
+    .term-line.dim    { color: #3a6e3a; }
+    .term-line.white  { color: #e0e0e0; }
+    .term-line.yellow { color: #f0e040; }
+    .term-line.red    { color: #ff4444; }
+    .term-line.capture{ color: #00ff41; font-size: 14px; font-weight: bold; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    .term-cursor {
+      display: inline-block;
+      width: 9px; height: 16px;
+      background: #00ff41;
+      vertical-align: middle;
+      animation: blink .7s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .term-close {
+      display: block;
+      margin: 8px auto 0;
+      background: transparent;
+      border: 1px solid #00ff41;
+      color: #00ff41;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      padding: 6px 20px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: background .15s, color .15s;
+    }
+    .term-close:hover { background: #00ff41; color: #000; }
+
+    @media (max-width: 740px) {
+      nav .nav-right { display: none; }
+      .hero { flex-direction: column; align-items: center; gap: 24px; }
+      .hero-left { text-align: center; }
+      .hero-left .fb-wordmark { font-size: 42px; }
+      .hero-left p { font-size: 20px; }
+      .card { width: 100%; max-width: 396px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV (desktop quick-login) -->
+<nav>
+  <span class="logo">facebook</span>
+  <div class="nav-right">
+    <input type="text" placeholder="Email or phone number" id="nav-email" />
+    <input type="password" placeholder="Password" id="nav-pass" />
+    <button class="btn-login" onclick="handleLogin('nav')">Log In</button>
+    <span class="btn-forgot" onclick="handleForgot()">Forgotten password?</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="fb-wordmark">facebook</div>
+    <p>Connect with friends and the world around you on Facebook.</p>
+  </div>
+
+  <div class="card">
+    <input type="text"     placeholder="Email or phone number" id="card-email" />
+    <input type="password" placeholder="Password"              id="card-pass" />
+    <button class="btn-main" onclick="handleLogin('card')">Log In</button>
+    <p class="forgot" onclick="handleForgot()">Forgotten password?</p>
+    <hr class="divider" />
+    <button class="btn-new" onclick="handleSignup()">Create new account</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="#">English (UK)</a><a href="#">Filipino</a><a href="#">Cebuano</a>
+    <a href="#">中文(简体)</a><a href="#">العربية</a><a href="#">Español</a>
+    <a href="#">Português (Brasil)</a><a href="#">Français (France)</a>
+    <a href="#">Deutsch</a><a href="#">日本語</a><a href="#">한국어</a>
+  </div>
+  <div class="footer-links">
+    <a href="#">Sign Up</a><a href="#">Log In</a><a href="#">Messenger</a>
+    <a href="#">Facebook Lite</a><a href="#">Video</a><a href="#">Places</a>
+    <a href="#">Games</a><a href="#">Marketplace</a><a href="#">Meta Pay</a>
+    <a href="#">Meta Store</a><a href="#">Meta Quest</a><a href="#">Ray-Ban Meta</a>
+    <a href="#">Meta AI</a><a href="#">Instagram</a><a href="#">Threads</a>
+    <a href="#">Fundraisers</a><a href="#">Services</a>
+    <a href="#">Voting Information Centre</a><a href="#">Privacy Policy</a>
+    <a href="#">Privacy Centre</a><a href="#">Groups</a><a href="#">About</a>
+    <a href="#">Create ad</a><a href="#">Create Page</a><a href="#">Developers</a>
+    <a href="#">Careers</a><a href="#">Cookies</a><a href="#">Ad choices</a>
+    <a href="#">Terms</a><a href="#">Help</a><a href="#">Contact uploading and non-users</a>
+    <a href="#">Settings</a><a href="#">Activity log</a>
+  </div>
+  <br>
+  Meta © 2025
+</footer>
+
+<!-- HACKER TERMINAL OVERLAY -->
+<div id="hacker-overlay">
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <span class="term-title">☠ intercepted — root@darknode:~</span>
+    </div>
+    <div class="term-body" id="term-body"></div>
+    <button class="term-close" onclick="closeHacker()">[ CLOSE ]</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">Incorrect password</h3>
+    <p id="modal-body">The password that you've entered is incorrect. <a href="#" style="color:#1877f2">Forgotten password?</a></p>
+    <button class="btn-ok" onclick="closeModal()">OK</button>
+  </div>
+</div>
+
+<script>
+  let capturedCreds = [];
+
+  function handleLogin(src) {
+    const email = src === 'nav'
+      ? document.getElementById('nav-email').value.trim()
+      : document.getElementById('card-email').value.trim();
+    const pass  = src === 'nav'
+      ? document.getElementById('nav-pass').value.trim()
+      : document.getElementById('card-pass').value.trim();
+
+    if (!email) {
+      showModal('Enter your email or phone number', 'Please enter your email address or phone number to continue.');
+      return;
+    }
+    if (!pass) {
+      showModal('Enter your password', 'Please enter your password to continue.');
+      return;
+    }
+
+    // Store the captured creds
+    capturedCreds.push({ email, pass, time: new Date().toLocaleTimeString() });
+
+    // Show hacker overlay then the "wrong password" modal after
+    showHacker(email, pass);
+  }
+
+  /* ── HACKER TERMINAL ── */
+  function showHacker(email, pass) {
+    const body = document.getElementById('term-body');
+    body.innerHTML = '';
+    document.getElementById('hacker-overlay').classList.add('show');
+
+    const lines = [
+      { text: '[*] Packet intercepted on interface eth0',          cls: 'dim',    delay: 0   },
+      { text: '[*] Protocol: HTTPS / TLS 1.3  →  STRIPPED',       cls: 'dim',    delay: 300 },
+      { text: '[*] Target: accounts.facebook.com',                 cls: 'dim',    delay: 550 },
+      { text: '',                                                   cls: '',       delay: 750 },
+      { text: '[+] POST /login/ detected',                         cls: 'white',  delay: 900 },
+      { text: '[+] Parsing form-data payload...',                  cls: 'white',  delay: 1150},
+      { text: '',                                                   cls: '',       delay: 1300},
+      { text: '┌──────────────────────────────────────┐',          cls: 'yellow', delay: 1500},
+      { text: '│         CREDENTIALS CAPTURED         │',          cls: 'yellow', delay: 1600},
+      { text: '└──────────────────────────────────────┘',          cls: 'yellow', delay: 1700},
+      { text: '',                                                   cls: '',       delay: 1800},
+      { text: `  EMAIL    →  ${email}`,                            cls: 'capture',delay: 2000},
+      { text: `  PASSWORD →  ${pass}`,                             cls: 'capture',delay: 2350},
+      { text: '',                                                   cls: '',       delay: 2600},
+      { text: `  TIMESTAMP:  ${new Date().toLocaleString()}`,      cls: 'dim',    delay: 2750},
+      { text: `  VICTIM IP:  192.168.1.${Math.floor(Math.random()*254)+1}`, cls: 'dim', delay: 2900},
+      { text: '',                                                   cls: '',       delay: 3050},
+      { text: '[!] Data exfiltrated to remote C2 server',          cls: 'red',    delay: 3200},
+      { text: '[!] Victim redirected → fake error page',           cls: 'red',    delay: 3450},
+      { text: '',                                                   cls: '',       delay: 3600},
+      { text: '[*] Awaiting next victim... █',                     cls: 'dim',    delay: 3800},
+    ];
+
+    lines.forEach(({ text, cls, delay }) => {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = `term-line ${cls}`;
+        el.textContent = text;
+        body.appendChild(el);
+        body.scrollTop = body.scrollHeight;
+      }, delay);
+    });
+
+    // Show "wrong password" modal after the drama plays out
+    setTimeout(() => {
+      showModal('Incorrect password', "The password that you've entered is incorrect. <a href='#' style='color:#1877f2'>Forgotten password?</a>");
+    }, 4200);
+  }
+
+  function closeHacker() {
+    document.getElementById('hacker-overlay').classList.remove('show');
+  }
+
+  /* ── STANDARD MODALS ── */
+  function handleForgot() {
+    showModal('Find Your Account', 'Please enter your email address or mobile number to search for your account.');
+  }
+
+  function handleSignup() {
+    showModal('Create a New Account', 'It\'s free and always will be. Sign up to connect with friends, family and people you know.');
+  }
+
+  function showModal(title, body) {
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-body').innerHTML = body;
+    document.getElementById('modal').classList.add('show');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('show');
+  }
+
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+</body>
+</html>
