@@ -9,43 +9,74 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --g:#00ff41;--g2:#00cc33;--g3:#008f11;--g4:#003a0f;
-  --y:#f0c040;--r:#ff3333;--gr:#3a4a3a;--bg:#050a05;
+  --y:#f0c040;--r:#ff3333;--gr:#3a4a3a;--bg:#020802;
   --c:#00ffff;--w:#cccccc;
 }
-html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;cursor:none}
+html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;cursor:default}
 
-/* ── MATRIX RAIN CANVAS ── */
-#matrix-canvas{
-  position:fixed;inset:0;z-index:0;opacity:0.18;
-  pointer-events:none;
+/* ── LAYERED BACKGROUND ── */
+/* Layer 1: matrix canvas */
+#matrix-canvas{position:fixed;inset:0;z-index:0;opacity:0.13;pointer-events:none;}
+
+/* Layer 2: hex grid texture */
+#hex-canvas{position:fixed;inset:0;z-index:1;opacity:0.06;pointer-events:none;}
+
+/* Layer 3: noise grain */
+.grain{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+  opacity:0.04;
+  mix-blend-mode: overlay;
 }
 
-/* ── SCANLINES ── */
-body::before{
-  content:'';position:fixed;inset:0;z-index:999;pointer-events:none;
-  background:repeating-linear-gradient(to bottom,transparent 0,transparent 2px,rgba(0,0,0,0.12) 2px,rgba(0,0,0,0.12) 4px);
-}
-body::after{
-  content:'';position:fixed;inset:0;z-index:998;pointer-events:none;
-  background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,0.75) 100%);
+/* Layer 4: diagonal grid lines */
+.grid-lines{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
-/* ── MAIN LAYOUT ── */
+/* Layer 5: corner vignette + top/bottom fade */
+.vignette{
+  position:fixed;inset:0;z-index:3;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(0,0,0,0.82) 100%),
+    linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 8%, transparent 92%, rgba(0,0,0,0.5) 100%);
+}
+
+/* Layer 6: scanlines */
+.scanlines{
+  position:fixed;inset:0;z-index:4;pointer-events:none;
+  background:repeating-linear-gradient(
+    to bottom, transparent 0, transparent 2px,
+    rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px
+  );
+}
+
+/* Layer 7: slow horizontal sweep glow */
+.sweep{
+  position:fixed;left:0;right:0;z-index:3;pointer-events:none;
+  height:3px;
+  background:linear-gradient(90deg,transparent,rgba(0,255,65,0.18),transparent);
+  animation:sweep 8s linear infinite;
+  top:0;
+}
+@keyframes sweep{0%{top:-2%;opacity:0}5%{opacity:1}95%{opacity:1}100%{top:102%;opacity:0}}
+
+/* ── LAYOUT ── */
 #screen{
   position:relative;z-index:10;
   width:100vw;height:100vh;
   display:grid;
   grid-template-rows:auto 1fr auto;
   grid-template-columns:1fr 320px;
-  grid-template-areas:
-    "topbar topbar"
-    "main   side"
-    "status status";
-  gap:0;
+  grid-template-areas:"topbar topbar" "main side" "status status";
   font-family:'Share Tech Mono',monospace;
   font-size:clamp(10px,1.2vw,13px);
   color:var(--g);
-  padding:0;
 }
 
 /* ── TOP BAR ── */
@@ -53,203 +84,377 @@ body::after{
   grid-area:topbar;
   display:flex;justify-content:space-between;align-items:center;
   padding:8px 20px;
-  border-bottom:1px solid var(--g3);
-  background:rgba(0,10,0,0.8);
+  border-bottom:1px solid rgba(0,143,17,0.4);
+  background:rgba(2,8,2,0.92);
+  backdrop-filter:blur(2px);
   font-family:'VT323',monospace;
   font-size:clamp(14px,1.6vw,18px);
   color:var(--g3);
+  box-shadow:0 1px 0 rgba(0,255,65,0.06), 0 4px 20px rgba(0,0,0,0.6);
 }
-#topbar .hi{color:var(--g);text-shadow:0 0 8px var(--g);}
+#topbar .hi{color:var(--g);text-shadow:0 0 10px rgba(0,255,65,0.5);}
 #topbar .warn{color:var(--y);animation:blink2 1.2s step-end infinite;}
 .dot{
   display:inline-block;width:8px;height:8px;border-radius:50%;
-  background:var(--g);box-shadow:0 0 6px var(--g);
+  background:var(--g);box-shadow:0 0 8px var(--g),0 0 16px rgba(0,255,65,0.3);
   animation:blink2 0.7s ease-in-out infinite;
   margin-right:6px;vertical-align:middle;
 }
 
-/* ── MAIN TERMINAL ── */
-#main{
-  grid-area:main;
-  padding:14px 18px;
-  overflow:hidden;
-  display:flex;flex-direction:column;
-  border-right:1px solid var(--g4);
+/* ── TERMINATE BUTTON ── */
+#btn-terminate{
+  font-family:'VT323',monospace;
+  font-size:clamp(13px,1.5vw,17px);
+  letter-spacing:0.1em;
+  background:transparent;
+  border:1px solid rgba(255,51,51,0.6);
+  color:rgba(255,51,51,0.8);
+  padding:4px 16px;
+  cursor:pointer;
+  text-transform:uppercase;
+  transition:all 0.2s;
+  outline:none;
   position:relative;
+  overflow:hidden;
 }
-#output{
-  flex:1;overflow:hidden;
-  display:flex;flex-direction:column;
-  gap:0;
+#btn-terminate::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 40%,rgba(255,51,51,0.04) 100%);
+  pointer-events:none;
 }
+#btn-terminate:hover{
+  border-color:var(--r);color:var(--r);
+  box-shadow:0 0 14px rgba(255,51,51,0.25), inset 0 0 14px rgba(255,51,51,0.05);
+}
+#btn-terminate:active{background:rgba(255,51,51,0.1);}
+#btn-terminate:disabled{opacity:0.25;cursor:not-allowed;pointer-events:none;}
+
+/* ── MAIN ── */
+#main{
+  grid-area:main;padding:14px 18px;
+  overflow:hidden;display:flex;flex-direction:column;
+  border-right:1px solid rgba(0,58,15,0.5);
+  position:relative;
+  background:rgba(2,8,2,0.4);
+}
+#output{flex:1;overflow:hidden;display:flex;flex-direction:column;}
 .line{
-  display:block;white-space:pre;
-  opacity:0;
-  min-height:1.5em;
-  line-height:1.5;
+  display:block;white-space:pre;opacity:0;
+  min-height:1.5em;line-height:1.5;
   transition:opacity 0.06s ease;
 }
 .line.vis{opacity:1;}
 
-/* ── SIDE PANEL ── */
+/* ── SIDE ── */
 #side{
-  grid-area:side;
-  padding:14px 12px;
+  grid-area:side;padding:14px 12px;
   display:flex;flex-direction:column;gap:12px;
   overflow:hidden;
-  background:rgba(0,5,0,0.6);
+  background:rgba(1,6,1,0.75);
+  border-left:1px solid rgba(0,58,15,0.3);
+  backdrop-filter:blur(1px);
 }
 .panel{
-  border:1px solid var(--g4);
+  border:1px solid rgba(0,58,15,0.6);
   padding:8px 10px;
-  background:rgba(0,15,0,0.4);
+  background:rgba(0,12,0,0.5);
+  box-shadow:inset 0 0 20px rgba(0,0,0,0.4);
+  position:relative;
+  overflow:hidden;
 }
+/* panel corner accent */
+.panel::before,.panel::after{
+  content:'';position:absolute;width:6px;height:6px;
+  border-color:rgba(0,143,17,0.4);border-style:solid;
+}
+.panel::before{top:0;left:0;border-width:1px 0 0 1px;}
+.panel::after{bottom:0;right:0;border-width:0 1px 1px 0;}
+
 .panel-title{
   font-family:'VT323',monospace;
   font-size:clamp(13px,1.5vw,17px);
   color:var(--g3);
-  border-bottom:1px solid var(--g4);
+  border-bottom:1px solid rgba(0,58,15,0.5);
   padding-bottom:4px;margin-bottom:6px;
   letter-spacing:0.08em;
 }
 .panel-row{
   display:flex;justify-content:space-between;
-  font-size:clamp(9px,1vw,11px);
-  color:var(--gr);
-  margin:2px 0;
+  font-size:clamp(9px,1vw,11px);color:var(--gr);margin:2px 0;
 }
 .panel-row .val{color:var(--g2);}
 .panel-row .val.hot{color:var(--y);}
 .panel-row .val.danger{color:var(--r);animation:blink2 0.6s step-end infinite;}
-
-/* mini bar */
-.mini-bar{
-  height:3px;background:var(--g4);margin-top:3px;
-  position:relative;overflow:hidden;
-}
-.mini-bar-fill{
-  height:100%;background:var(--g2);
-  transition:width 1s ease;
-  box-shadow:0 0 4px var(--g2);
-}
+.mini-bar{height:3px;background:rgba(0,58,15,0.4);margin-top:3px;position:relative;overflow:hidden;}
+.mini-bar-fill{height:100%;background:var(--g2);transition:width 1s ease;box-shadow:0 0 4px var(--g2);}
 
 /* ── STATUS BAR ── */
 #status{
   grid-area:status;
   display:flex;justify-content:space-between;align-items:center;
   padding:5px 20px;
-  border-top:1px solid var(--g4);
-  background:rgba(0,10,0,0.9);
-  font-size:clamp(9px,1vw,11px);
-  color:var(--g3);
+  border-top:1px solid rgba(0,58,15,0.4);
+  background:rgba(2,8,2,0.95);
+  backdrop-filter:blur(2px);
   font-family:'VT323',monospace;
   font-size:clamp(12px,1.3vw,15px);
+  color:var(--g3);
+  box-shadow:0 -1px 0 rgba(0,255,65,0.05), 0 -4px 20px rgba(0,0,0,0.5);
 }
 #status .s-hi{color:var(--g);}
 #status .s-warn{color:var(--y);}
 #status .s-danger{color:var(--r);}
-#progress-bar{
-  width:180px;height:6px;background:var(--g4);
-  border:1px solid var(--g3);position:relative;overflow:hidden;
-}
-#progress-fill{
-  height:100%;width:0%;background:var(--g2);
-  box-shadow:0 0 6px var(--g2);
-  transition:width 0.5s linear;
-}
+#progress-bar{width:180px;height:6px;background:rgba(0,58,15,0.4);border:1px solid var(--g3);position:relative;overflow:hidden;}
+#progress-fill{height:100%;width:0%;background:var(--g2);box-shadow:0 0 6px var(--g2);transition:width 0.5s linear;}
 
-/* enter prompt */
-#enter-prompt{
-  position:fixed;bottom:50px;left:50%;transform:translateX(-50%);
-  font-family:'VT323',monospace;
-  font-size:clamp(18px,2.5vw,28px);
-  color:var(--y);letter-spacing:0.1em;
-  text-align:center;opacity:0;
-  text-shadow:0 0 12px var(--y);
-  pointer-events:none;z-index:100;
-  animation:pulseY 1.2s ease-in-out infinite;
-}
-#enter-prompt.show{opacity:1;}
-
-/* ── TERMINATED OVERLAY ── */
-#term-overlay{
-  position:fixed;inset:0;z-index:500;
+/* ── CREDENTIALS OVERLAY ── (keyboard triggered) */
+#cred-overlay{
+  position:fixed;inset:0;z-index:300;
+  display:none;
+  align-items:center;justify-content:center;
   background:rgba(0,0,0,0);
-  display:flex;align-items:center;justify-content:center;
-  pointer-events:none;
-  transition:background 0.8s;
+  transition:background 0.3s;
 }
-#term-overlay.show{background:rgba(0,0,0,0.95);pointer-events:all;}
-#term-box{
+#cred-overlay.show{
+  display:flex;
+  background:rgba(0,0,0,0.75);
+}
+#cred-box{
   font-family:'VT323',monospace;
-  font-size:clamp(14px,2vw,22px);
+  font-size:clamp(13px,1.6vw,18px);
+  color:var(--g);
+  border:1px solid rgba(0,255,65,0.3);
+  padding:28px 32px;
+  background:rgba(2,10,2,0.97);
+  box-shadow:0 0 0 1px rgba(0,255,65,0.08), 0 0 60px rgba(0,255,65,0.08);
+  min-width:clamp(300px,52vw,580px);
+  position:relative;
+  overflow:hidden;
+  transform:translateY(10px);opacity:0;
+  transition:transform 0.25s ease, opacity 0.25s ease;
+}
+#cred-overlay.show #cred-box{transform:translateY(0);opacity:1;}
+
+/* corner brackets */
+#cred-box::before{
+  content:'';position:absolute;top:0;left:0;
+  width:20px;height:20px;
+  border-top:1px solid rgba(0,255,65,0.5);
+  border-left:1px solid rgba(0,255,65,0.5);
+}
+#cred-box::after{
+  content:'';position:absolute;bottom:0;right:0;
+  width:20px;height:20px;
+  border-bottom:1px solid rgba(0,255,65,0.5);
+  border-right:1px solid rgba(0,255,65,0.5);
+}
+
+.cred-header{
+  color:var(--g3);font-size:0.85em;
+  letter-spacing:0.12em;text-transform:uppercase;
+  border-bottom:1px solid rgba(0,58,15,0.5);
+  padding-bottom:8px;margin-bottom:14px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.cred-header-dot{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--g);box-shadow:0 0 6px var(--g);
+  margin-right:8px;animation:blink2 0.5s step-end infinite;
+}
+.cred-row{
+  display:flex;gap:0;margin:4px 0;font-size:clamp(12px,1.5vw,16px);
+}
+.cred-key{color:var(--g3);min-width:120px;}
+.cred-val{color:var(--g);text-shadow:0 0 6px rgba(0,255,65,0.3);}
+.cred-val.dim{color:var(--g3);font-size:0.85em;}
+.cred-divider{border:0;border-top:1px solid rgba(0,58,15,0.4);margin:10px 0;}
+.cred-status{
+  color:var(--y);font-size:0.9em;letter-spacing:0.06em;
+  margin-top:10px;
+  animation:blink2 1s step-end infinite;
+}
+.cred-dismiss{
+  margin-top:14px;font-size:0.75em;color:rgba(0,143,17,0.5);
+  letter-spacing:0.08em;text-align:right;
+}
+
+/* ── TERMINATE MODAL (redesigned) ── */
+#modal-overlay{
+  position:fixed;inset:0;z-index:400;
+  display:none;align-items:center;justify-content:center;
+}
+#modal-overlay.show{display:flex;}
+
+/* full-screen takeover — not a floating box */
+#modal-full{
+  position:fixed;inset:0;
+  background:rgba(2,0,0,0.96);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  opacity:0;
+  transition:opacity 0.5s;
+  font-family:'VT323',monospace;
+}
+#modal-overlay.show #modal-full{opacity:1;}
+
+/* large status display */
+.kill-phase{
+  font-size:clamp(10px,1.1vw,12px);
+  font-family:'Share Tech Mono',monospace;
+  color:#330000;letter-spacing:0.2em;
+  text-transform:uppercase;
+  margin-bottom:24px;
+}
+
+.kill-main{
+  font-size:clamp(28px,5vw,60px);
+  color:#440000;
+  letter-spacing:0.06em;
+  margin-bottom:8px;
+  position:relative;
+  display:block;
+  transition:color 0.3s;
+}
+.kill-main.active{
   color:var(--r);
-  border:2px solid var(--r);
-  padding:40px 60px;text-align:center;
-  opacity:0;transform:scale(0.85);
-  transition:opacity 0.6s 0.4s,transform 0.6s 0.4s;
-  background:rgba(5,0,0,0.99);
-  box-shadow:0 0 80px rgba(255,30,30,0.4),inset 0 0 40px rgba(255,0,0,0.05);
-  line-height:2;min-width:clamp(280px,55vw,600px);
+  text-shadow:0 0 40px rgba(255,0,0,0.3);
+  animation:flicker 0.15s steps(1) infinite;
 }
-#term-overlay.show #term-box{opacity:1;transform:scale(1);}
-#term-box .th{
-  color:var(--r);font-size:clamp(22px,3.5vw,42px);
-  letter-spacing:0.1em;display:block;margin-bottom:10px;
-  text-shadow:0 0 24px rgba(255,50,50,0.9);
-  animation:glitch 0.18s steps(1) infinite;
+.kill-main.done{
+  color:#882222;
+  text-shadow:none;
+  animation:none;
 }
-#term-box .td{color:#773333;}
-#term-box .tf{color:#444;font-size:0.75em;margin-top:14px;display:block;}
+
+@keyframes flicker{
+  0%  {opacity:1;}
+  30% {opacity:0.7;}
+  60% {opacity:1;}
+  80% {opacity:0.5;}
+  100%{opacity:1;}
+}
+
+/* progress track — minimal */
+.kill-track{
+  width:clamp(240px,40vw,480px);
+  height:1px;
+  background:rgba(80,0,0,0.6);
+  margin:20px 0;
+  position:relative;
+  overflow:hidden;
+}
+.kill-fill{
+  height:100%;width:0%;
+  background:var(--r);
+  box-shadow:0 0 12px rgba(255,51,51,0.8);
+  transition:width 0.25s linear;
+}
+/* moving light on track */
+.kill-fill::after{
+  content:'';position:absolute;
+  top:-1px;right:0;width:30px;height:3px;
+  background:linear-gradient(90deg,transparent,rgba(255,80,80,0.9));
+  pointer-events:none;
+}
+
+/* step log — right-aligned, small */
+.kill-log{
+  width:clamp(240px,40vw,480px);
+  font-family:'Share Tech Mono',monospace;
+  font-size:clamp(9px,0.9vw,11px);
+  color:#330000;line-height:2;
+  letter-spacing:0.06em;
+  text-align:right;
+  min-height:120px;
+}
+.kill-log .kl-done{color:#552222;}
+.kill-log .kl-ok{color:#883333;}
+
+/* final confirmed state */
+#kill-confirmed{
+  display:none;
+  text-align:center;
+}
+.kc-label{
+  font-family:'Share Tech Mono',monospace;
+  font-size:clamp(9px,0.9vw,11px);
+  color:#330000;letter-spacing:0.2em;text-transform:uppercase;
+  margin-bottom:16px;display:block;
+}
+.kc-time{
+  font-size:clamp(11px,1.2vw,14px);
+  font-family:'Share Tech Mono',monospace;
+  color:#441111;letter-spacing:0.1em;
+  margin-bottom:24px;display:block;
+}
+#btn-dismiss{
+  font-family:'Share Tech Mono',monospace;
+  font-size:clamp(10px,1vw,12px);
+  letter-spacing:0.14em;
+  background:transparent;
+  border:none;
+  border-bottom:1px solid #330000;
+  color:#441111;
+  padding:4px 0;
+  cursor:pointer;
+  text-transform:uppercase;
+  transition:color 0.2s,border-color 0.2s;
+}
+#btn-dismiss:hover{color:#883333;border-color:#553333;}
 
 /* colour classes */
 .cg {color:var(--g);}
 .cg2{color:var(--g2);}
 .cg3{color:var(--g3);}
+.cg4{color:var(--g4);}
 .cy {color:var(--y);}
 .cr {color:var(--r);}
-.cc {color:var(--c);}
-.cw {color:var(--w);}
 .cgr{color:var(--gr);}
 .box{font-family:'VT323',monospace;font-size:clamp(13px,1.6vw,18px);letter-spacing:0.02em;}
-
-/* animations */
 @keyframes blink2{0%,100%{opacity:1}50%{opacity:0}}
-@keyframes pulseY{0%,100%{opacity:0.4}50%{opacity:1}}
-@keyframes glitch{
-  0%  {text-shadow:3px 0 rgba(255,0,0,.8),-2px 0 rgba(0,255,65,.4);}
-  25% {text-shadow:-3px 0 rgba(255,0,0,.8), 2px 0 rgba(0,255,65,.4);}
-  50% {text-shadow:2px 2px rgba(255,0,0,.6),0 0 0;}
-  75% {text-shadow:-1px -2px rgba(255,0,0,.8),1px 0 rgba(0,255,65,.3);}
-  100%{text-shadow:3px 0 rgba(255,0,0,.8),-2px 0 rgba(0,255,65,.4);}
+.glitch-txt{
+  animation:gt 0.2s steps(1) infinite;
 }
-.glitch-txt{animation:glitch 0.2s steps(1) infinite;}
+@keyframes gt{
+  0%  {text-shadow:2px 0 rgba(255,0,0,.7),-1px 0 rgba(0,255,65,.3);}
+  33% {text-shadow:-2px 0 rgba(255,0,0,.7),1px 0 rgba(0,255,65,.3);}
+  66% {text-shadow:1px 1px rgba(255,0,0,.5),0 0 0;}
+  100%{text-shadow:2px 0 rgba(255,0,0,.7),-1px 0 rgba(0,255,65,.3);}
+}
 </style>
 </head>
 <body>
 
-<!-- Matrix rain -->
+<!-- background layers -->
 <canvas id="matrix-canvas"></canvas>
+<canvas id="hex-canvas"></canvas>
+<div class="grain"></div>
+<div class="grid-lines"></div>
+<div class="vignette"></div>
+<div class="scanlines"></div>
+<div class="sweep"></div>
 
 <div id="screen">
 
-  <!-- TOP BAR -->
   <div id="topbar">
     <div><span class="dot"></span><span class="hi">INTERCEPTOR v2.1.4</span> &nbsp;|&nbsp; root@kali</div>
     <div id="clock-top">--:--:--</div>
-    <div><span class="warn">⚠ CAPTURE ACTIVE</span> &nbsp;|&nbsp; wlan0 &nbsp;|&nbsp; ch.6</div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <span class="warn">⚠ CAPTURE ACTIVE</span>
+      <span style="color:rgba(0,143,17,0.4)">|</span>
+      <span style="color:var(--g3)">wlan0 &nbsp;|&nbsp; ch.6</span>
+      <button id="btn-terminate" onclick="openTerminate()">[ TERMINATE SESSION ]</button>
+    </div>
   </div>
 
-  <!-- MAIN OUTPUT -->
   <div id="main">
     <div id="output"></div>
   </div>
 
-  <!-- SIDE PANELS -->
   <div id="side">
     <div class="panel">
       <div class="panel-title">◈ NETWORK STATS</div>
-      <div class="panel-row"><span>SSID</span><span class="val">FREE_CAFE_WIFI</span></div>
+      <div class="panel-row"><span>SSID</span><span class="val">FREE_CAMPUS_WIFI</span></div>
       <div class="panel-row"><span>BSSID</span><span class="val" id="bssid">D4:6E:0E:--:--:--</span></div>
       <div class="panel-row"><span>CHANNEL</span><span class="val">6 (2.4GHz)</span></div>
       <div class="panel-row"><span>SIGNAL</span><span class="val hot" id="signal">-62 dBm</span></div>
@@ -277,12 +482,11 @@ body::after{
       <div class="panel-title">◈ ENTROPY / CPU</div>
       <div class="panel-row"><span>CPU</span><span class="val" id="cpu">12%</span></div>
       <div class="panel-row"><span>MEM</span><span class="val" id="mem">341 MB</span></div>
-      <div class="panel-row"><span>ENTROPY</span><span class="val hot" id="entropy">HIGH</span></div>
+      <div class="panel-row"><span>ENTROPY</span><span class="val hot">HIGH</span></div>
       <div class="mini-bar"><div class="mini-bar-fill" id="bar-cpu" style="width:12%"></div></div>
     </div>
   </div>
 
-  <!-- STATUS BAR -->
   <div id="status">
     <span id="status-msg"><span class="s-hi">PHASE 1</span> — ARP SPOOFING</span>
     <div style="display:flex;align-items:center;gap:10px;">
@@ -294,154 +498,234 @@ body::after{
 
 </div>
 
-<!-- ENTER PROMPT -->
-<div id="enter-prompt">[ PRESS ENTER OR CLICK TO CONTINUE ]</div>
+<!-- CREDENTIALS OVERLAY (keyboard triggered) -->
+<div id="cred-overlay">
+  <div id="cred-box">
+    <div class="cred-header">
+      <div><span class="cred-header-dot"></span> post body intercepted — credential parse complete</div>
+      <div id="cred-ts" style="color:var(--g3);font-size:0.85em;"></div>
+    </div>
 
-<!-- TERMINATED OVERLAY -->
-<div id="term-overlay">
-  <div id="term-box">
-    <span class="th">SESSION TERMINATED</span>
-    ╔══════════════════════════════════╗<br>
-    <span class="td">
-    ║  Access revoked by account owner ║<br>
-    ║  All tokens invalidated          ║<br>
-    ║  Connection forcibly dropped     ║<br>
-    ║  Session cookie destroyed        ║<br>
-    </span>
-    ╚══════════════════════════════════╝<br>
-    <span class="td">[*] Capture session ended. Logs wiped.</span>
-    <span class="tf">— FOR FILMING PURPOSES ONLY — LOST IN TRANSMISSION —</span>
+    <div class="cred-row"><span class="cred-key">USERNAME</span><span class="cred-val">bliza_tayo@gmail.com</span></div>
+    <div class="cred-row"><span class="cred-key">PASSWORD</span><span class="cred-val">•••••••••••••</span></div>
+    <div class="cred-row"><span class="cred-key">SESSION</span><span class="cred-val dim">eyJhbGciOiJIUzI1NiJ9.bliza...</span></div>
+    <div class="cred-row"><span class="cred-key">CSRF</span><span class="cred-val dim">lsd_AVo8zCp3w_K5Y...</span></div>
+    <hr class="cred-divider"/>
+    <div class="cred-row"><span class="cred-key">SOURCE IP</span><span class="cred-val dim">192.168.1.105</span></div>
+    <div class="cred-row"><span class="cred-key">USER AGENT</span><span class="cred-val dim">Mozilla/5.0 (Android 14; Chrome/120)</span></div>
+    <div class="cred-row"><span class="cred-key">PLATFORM</span><span class="cred-val dim">Facebook Web — m.facebook.com</span></div>
+    <hr class="cred-divider"/>
+    <div class="cred-status">▶ SESSION HIJACK READY — CONTROL ESTABLISHED</div>
+    <div class="cred-dismiss">[ press any key to close ]</div>
+  </div>
+</div>
+
+<!-- TERMINATE MODAL — full screen -->
+<div id="modal-overlay">
+  <div id="modal-full">
+
+    <!-- loading state -->
+    <div id="kill-loading">
+      <div class="kill-phase" id="kill-phase-label">// initiating termination sequence</div>
+      <span class="kill-main active" id="kill-main">KILL SWITCH ENGAGED</span>
+      <div class="kill-track"><div class="kill-fill" id="kill-fill"></div></div>
+      <div class="kill-log" id="kill-log"></div>
+    </div>
+
+    <!-- confirmed state -->
+    <div id="kill-confirmed">
+      <span class="kc-label">// sequence complete</span>
+      <span class="kill-main done">SESSION CLOSED</span>
+      <span class="kc-time" id="kc-time"></span>
+      <button id="btn-dismiss" onclick="closeModal()">continue →</button>
+    </div>
+
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════
-// MATRIX RAIN
-// ══════════════════════════════════════════════════
+// ── MATRIX RAIN ──────────────────────────────────────
 (function(){
-  const canvas = document.getElementById('matrix-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, cols, drops;
-  const chars = '0123456789ABCDEF><|{}[]!@#$%^&*アイウエオカキクケコサシスセソ';
-
-  function init(){
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    const fs = 14;
-    cols = Math.floor(W / fs);
-    drops = Array(cols).fill(1);
-  }
-  init();
-  window.addEventListener('resize', init);
-
-  function draw(){
-    ctx.fillStyle = 'rgba(5,10,5,0.06)';
-    ctx.fillRect(0, 0, W, H);
-    ctx.font = '14px Share Tech Mono';
-    for(let i = 0; i < cols; i++){
-      const ch = chars[Math.floor(Math.random() * chars.length)];
-      const bright = Math.random() > 0.95;
-      ctx.fillStyle = bright ? '#00ff41' : (Math.random() > 0.7 ? '#00cc33' : '#005511');
-      ctx.fillText(ch, i * 14, drops[i] * 14);
-      if(drops[i] * 14 > H && Math.random() > 0.975) drops[i] = 0;
+  const c=document.getElementById('matrix-canvas');
+  const ctx=c.getContext('2d');
+  let W,H,cols,drops;
+  const chars='0123456789ABCDEF><|{}[]アイウエオカキクケコ';
+  function init(){W=c.width=innerWidth;H=c.height=innerHeight;cols=Math.floor(W/16);drops=Array(cols).fill(1);}
+  init();addEventListener('resize',init);
+  setInterval(()=>{
+    ctx.fillStyle='rgba(2,8,2,0.07)';ctx.fillRect(0,0,W,H);
+    ctx.font='14px Share Tech Mono';
+    for(let i=0;i<cols;i++){
+      const ch=chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillStyle=Math.random()>.95?'#00ff41':Math.random()>.65?'#00cc33':'#004010';
+      ctx.fillText(ch,i*16,drops[i]*16);
+      if(drops[i]*16>H&&Math.random()>.975)drops[i]=0;
       drops[i]++;
     }
-  }
-  setInterval(draw, 45);
+  },50);
 })();
 
-// ══════════════════════════════════════════════════
-// CLOCK
-// ══════════════════════════════════════════════════
-const clockEl = document.getElementById('clock-top');
-function tick(){ clockEl.textContent = new Date().toTimeString().slice(0,8); }
-tick(); setInterval(tick,1000);
+// ── HEX GRID ─────────────────────────────────────────
+(function(){
+  const c=document.getElementById('hex-canvas');
+  const ctx=c.getContext('2d');
+  function draw(){
+    c.width=innerWidth;c.height=innerHeight;
+    const r=28,h=r*Math.sqrt(3);
+    ctx.strokeStyle='rgba(0,200,50,1)';ctx.lineWidth=0.5;
+    for(let col=0;col*r*1.5<innerWidth+r*2;col++){
+      for(let row=0;row*h<innerHeight+h;row++){
+        const x=col*r*1.5;
+        const y=row*h+(col%2)*h/2;
+        ctx.beginPath();
+        for(let i=0;i<6;i++){
+          const a=Math.PI/180*(60*i-30);
+          i===0?ctx.moveTo(x+r*Math.cos(a),y+r*Math.sin(a)):ctx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a));
+        }
+        ctx.closePath();ctx.stroke();
+      }
+    }
+  }
+  draw();addEventListener('resize',draw);
+})();
 
-// ══════════════════════════════════════════════════
-// ELAPSED TIMER
-// ══════════════════════════════════════════════════
-const timerEl = document.getElementById('timer-status');
-let elapsed = 0;
-const timerInt = setInterval(()=>{
+// ── CLOCK ─────────────────────────────────────────────
+const clockEl=document.getElementById('clock-top');
+function tick(){clockEl.textContent=new Date().toTimeString().slice(0,8);}
+tick();setInterval(tick,1000);
+
+// ── ELAPSED ───────────────────────────────────────────
+const timerEl=document.getElementById('timer-status');
+let elapsed=0;
+const timerInt=setInterval(()=>{
   elapsed++;
-  const m = String(Math.floor(elapsed/60)).padStart(2,'0');
-  const s = String(elapsed%60).padStart(2,'0');
-  timerEl.textContent = `ELAPSED: ${m}:${s}`;
+  timerEl.textContent=`ELAPSED: ${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;
 },1000);
 
-// ══════════════════════════════════════════════════
-// SIDE PANEL LIVE UPDATES
-// ══════════════════════════════════════════════════
-let pkts=0, http=0, https=0, post=0;
+// ── SIDE PANELS ───────────────────────────────────────
+let pkts=0,http=0,https=0,post=0;
 function rand(a,b){return Math.floor(Math.random()*(b-a))+a;}
-function randHex(n){return [...Array(n)].map(()=>rand(0,256).toString(16).padStart(2,'0').toUpperCase()).join(':');}
-
+function randHex(n){return[...Array(n)].map(()=>rand(0,256).toString(16).padStart(2,'0').toUpperCase()).join(':');}
 setInterval(()=>{
-  const add = rand(2,9);
-  pkts += add; http += rand(1,4); https += rand(0,3); post += (Math.random()>0.85?1:0);
-  const rate = rand(8,95);
-  document.getElementById('pkt-count').textContent = pkts;
-  document.getElementById('pkt-http').textContent = http;
-  document.getElementById('pkt-https').textContent = https;
-  document.getElementById('pkt-post').textContent = post;
-  document.getElementById('data-rate').textContent = rate+' KB/s';
-  document.getElementById('bar-fill').style.width = Math.min(rate,100)+'%';
-  document.getElementById('pkt-total-status').textContent = 'PKT: '+pkts;
-  document.getElementById('signal').textContent = '-'+rand(55,75)+' dBm';
-  document.getElementById('cpu').textContent = rand(14,72)+'%';
-  document.getElementById('bar-cpu').style.width = rand(14,72)+'%';
-  document.getElementById('mem').textContent = rand(280,480)+' MB';
-  if(Math.random()>0.8) document.getElementById('mac').textContent = randHex(4);
-  if(Math.random()>0.9) document.getElementById('bssid').textContent = 'D4:6E:0E:'+randHex(3).split(':').join(':');
-}, 900);
+  pkts+=rand(2,9);http+=rand(1,4);https+=rand(0,3);post+=(Math.random()>.85?1:0);
+  const rate=rand(8,95);
+  document.getElementById('pkt-count').textContent=pkts;
+  document.getElementById('pkt-http').textContent=http;
+  document.getElementById('pkt-https').textContent=https;
+  document.getElementById('pkt-post').textContent=post;
+  document.getElementById('data-rate').textContent=rate+' KB/s';
+  document.getElementById('bar-fill').style.width=Math.min(rate,100)+'%';
+  document.getElementById('pkt-total-status').textContent='PKT: '+pkts;
+  document.getElementById('signal').textContent='-'+rand(55,75)+' dBm';
+  document.getElementById('cpu').textContent=rand(14,72)+'%';
+  document.getElementById('bar-cpu').style.width=rand(14,72)+'%';
+  document.getElementById('mem').textContent=rand(280,480)+' MB';
+  if(Math.random()>.8)document.getElementById('mac').textContent=randHex(4);
+  if(Math.random()>.9)document.getElementById('bssid').textContent='D4:6E:0E:'+randHex(3).split(':').join(':');
+},900);
 
-// ══════════════════════════════════════════════════
-// OUTPUT ENGINE
-// ══════════════════════════════════════════════════
-const output = document.getElementById('output');
-const enterProm = document.getElementById('enter-prompt');
-const termOver  = document.getElementById('term-overlay');
-const statusMsg = document.getElementById('status-msg');
-const progressFill = document.getElementById('progress-fill');
+// ── OUTPUT ────────────────────────────────────────────
+const output=document.getElementById('output');
+const statusMsg=document.getElementById('status-msg');
+const progressFill=document.getElementById('progress-fill');
+let totalLines=0;
 
-let phase = 1; // 1=running 2=waiting 3=terminated
-let totalLines = 0;
-
-function addLine(text, cls){
-  const el = document.createElement('span');
-  el.className = 'line '+(cls||'');
-  el.textContent = (text===''||text===undefined) ? '\u00A0' : text;
-  // keep only last ~40 lines visible
+function addLine(text,cls){
+  const el=document.createElement('span');
+  el.className='line '+(cls||'');
+  el.textContent=(text===''||text===undefined)?'\u00A0':text;
   output.appendChild(el);
-  while(output.children.length > 42){
-    output.removeChild(output.firstChild);
-  }
+  while(output.children.length>42)output.removeChild(output.firstChild);
   requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('vis')));
   totalLines++;
-  progressFill.style.width = Math.min((totalLines / 95)*100, 98)+'%';
+  progressFill.style.width=Math.min((totalLines/95)*100,98)+'%';
   return el;
 }
-
-function tw(el, text, spd, done){
-  el.textContent='';
-  let i=0;
-  function t(){
-    if(i<text.length){
-      el.textContent+=text[i++];
-      setTimeout(t, spd+rand(-spd*0.3,spd*0.5));
-    } else { if(done) done(); }
-  }
+function tw(el,text,spd,done){
+  el.textContent='';let i=0;
+  function t(){if(i<text.length){el.textContent+=text[i++];setTimeout(t,spd+rand(-spd*0.3,spd*0.5));}else if(done)done();}
   t();
 }
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+// ── CREDENTIALS OVERLAY — keyboard triggered ──────────
+let credShown=false;
+let credUnlocked=false; // set true after credentials are in the script
 
-// ══════════════════════════════════════════════════
-// SCRIPT — ~60 seconds of content
-// ══════════════════════════════════════════════════
+document.addEventListener('keydown',(e)=>{
+  // show cred panel
+  if(credUnlocked && !credShown && !terminated){
+    credShown=true;
+    document.getElementById('cred-ts').textContent=new Date().toTimeString().slice(0,8);
+    document.getElementById('cred-overlay').classList.add('show');
+    return;
+  }
+  // dismiss cred panel
+  if(credShown){
+    document.getElementById('cred-overlay').classList.remove('show');
+    credShown=false;
+    return;
+  }
+});
+
+// ── TERMINATE ─────────────────────────────────────────
+let terminated=false;
+
+function openTerminate(){
+  if(terminated)return;
+  terminated=true;
+  document.getElementById('btn-terminate').disabled=true;
+  document.getElementById('modal-overlay').classList.add('show');
+
+  const fill=document.getElementById('kill-fill');
+  const log=document.getElementById('kill-log');
+  const phLabel=document.getElementById('kill-phase-label');
+  const main=document.getElementById('kill-main');
+
+  const steps=[
+    {pct:8,  delay:0,    text:'revoking active session tokens',        phase:'// revoking access'},
+    {pct:22, delay:500,  text:'flushing packet capture buffer',         phase:'// flushing buffers'},
+    {pct:38, delay:1100, text:'encrypting → /out/session_001.enc',     phase:'// exporting data'},
+    {pct:54, delay:1700, text:'encrypting → /out/msg_log.enc',         phase:'// exporting data'},
+    {pct:68, delay:2300, text:'poisoning ARP cache entries removed',    phase:'// restoring network'},
+    {pct:80, delay:2900, text:'shutting down rogue access point',       phase:'// closing ap'},
+    {pct:92, delay:3500, text:'overwriting session fingerprints',       phase:'// wiping traces'},
+    {pct:100,delay:4100, text:'exit code 0 — clean',                   phase:'// done'},
+  ];
+
+  steps.forEach(({pct,delay,text,phase})=>{
+    setTimeout(()=>{
+      fill.style.width=pct+'%';
+      phLabel.textContent=phase;
+      const line=document.createElement('div');
+      line.className='kl-done';
+      line.textContent=new Date().toTimeString().slice(0,8)+'  '+text;
+      log.appendChild(line);
+    },delay);
+  });
+
+  // final
+  setTimeout(()=>{
+    main.classList.remove('active');
+    main.classList.add('done');
+    main.textContent='SESSION CLOSED';
+    document.getElementById('kill-loading').style.display='none';
+    document.getElementById('kill-confirmed').style.display='block';
+    document.getElementById('kc-time').textContent=new Date().toTimeString().slice(0,8)+'  —  elapsed '+timerEl.textContent.replace('ELAPSED: ','');
+    clearInterval(timerInt);
+    statusMsg.innerHTML='<span class="s-danger">TERMINATED</span>';
+    progressFill.style.width='100%';
+    progressFill.style.background='var(--r)';
+    document.getElementById('target-status').textContent='OFFLINE';
+  },5000);
+}
+
+function closeModal(){
+  document.getElementById('modal-overlay').classList.remove('show');
+}
+
+// ── TERMINAL SCRIPT ───────────────────────────────────
 async function runScript(){
-
-  // ── PHASE 1: BOOT / INIT ─────────────────────────
   statusMsg.innerHTML='<span class="s-hi">PHASE 1</span> — INITIALIZING';
 
   const boot=[
@@ -459,12 +743,9 @@ async function runScript(){
   for(const [txt,cls,delay] of boot){
     await sleep(delay);
     const el=addLine(txt,cls);
-    if(delay>400 && txt!==''){
-      await new Promise(r=>tw(el,txt,22,r)); el.textContent=txt;
-    }
+    if(delay>400&&txt!==''){await new Promise(r=>tw(el,txt,22,r));el.textContent=txt;}
   }
 
-  // ARP scan results
   const hosts=[
     ['192.168.1.1  ','D4:6E:0E:12:3A:BC','Router / Gateway'],
     ['192.168.1.101','A1:B2:C3:D4:E5:F6','iPhone 14 Pro'],
@@ -475,7 +756,7 @@ async function runScript(){
   await sleep(300);
   for(const [ip,mac,desc] of hosts){
     await sleep(280);
-    addLine(`    ${ip}   ${mac}   — ${desc}`, ip.includes('105')?'cy':'cg3');
+    addLine(`    ${ip}   ${mac}   — ${desc}`,ip.includes('105')?'cy':'cg3');
   }
   await sleep(400);
   addLine('[*] Target selected: 192.168.1.105','cy');
@@ -483,32 +764,26 @@ async function runScript(){
   addLine('[*] Gateway:         192.168.1.1','cg3');
   await sleep(500);
 
-  // ── PHASE 2: ARP SPOOF ───────────────────────────
   statusMsg.innerHTML='<span class="s-hi">PHASE 2</span> — ARP POISONING';
   await sleep(200);
   addLine('','');
-  addLine('[*] Starting ARP poison — intercepting between target and gateway...','cg2');
+  addLine('[*] Starting ARP poison...','cg2');
   await sleep(400);
 
   const arpLines=[
-    ['[>>] Sending ARP reply: 192.168.1.105 is-at AA:BB:CC:DD:EE:FF (gateway impersonate)','cg3'],
-    ['[>>] Sending ARP reply: 192.168.1.1   is-at AA:BB:CC:DD:EE:FF (target impersonate)','cg3'],
+    ['[>>] ARP reply: 192.168.1.105 is-at AA:BB:CC:DD:EE:FF','cg3'],
+    ['[>>] ARP reply: 192.168.1.1   is-at AA:BB:CC:DD:EE:FF','cg3'],
     ['[OK] ARP cache poisoned on target','cg2'],
     ['[OK] ARP cache poisoned on gateway','cg2'],
-    ['[*] IP forwarding enabled: /proc/sys/net/ipv4/ip_forward = 1','cg3'],
-    ['[*] Traffic now routing through this machine...','cg2'],
+    ['[*] IP forwarding: /proc/sys/net/ipv4/ip_forward = 1','cg3'],
+    ['[*] Traffic routing through this machine...','cg2'],
   ];
-  for(const [txt,cls] of arpLines){
-    await sleep(rand(300,600));
-    const el=addLine(txt,cls);
-  }
+  for(const [txt,cls] of arpLines){await sleep(rand(300,600));addLine(txt,cls);}
 
   await sleep(500);
   addLine('','');
   statusMsg.innerHTML='<span class="s-hi">PHASE 3</span> — PACKET INTERCEPT';
-
-  // ── PHASE 3: PACKET FLOOD ─────────────────────────
-  addLine('[*] Intercepting live traffic... CTRL+C to abort','cy');
+  addLine('[*] Intercepting live traffic...','cy');
   await sleep(400);
   addLine('','');
 
@@ -534,73 +809,41 @@ async function runScript(){
     ['[>>] Pkt#0019  192.168.1.105 → 31.13.92.36    TCP  HTTP  POST /ajax/send-message','cy'],
     ['[>>] Pkt#0020  192.168.1.105 → 31.13.92.36    TCP  HTTP  GET /profile/bliza.tayo.2024','cgr'],
   ];
+  for(const [txt,cls] of pktPool){await sleep(rand(500,1200));addLine(txt,cls);}
 
-  for(const [txt,cls] of pktPool){
-    await sleep(rand(500,1200));
-    addLine(txt,cls);
-  }
-
-  // ── PHASE 4: CREDENTIAL PARSE ─────────────────────
   await sleep(600);
   addLine('','');
   statusMsg.innerHTML='<span class="s-hi">PHASE 4</span> — CREDENTIAL EXTRACTION';
   addLine('[!!] POST body detected — running credential parser...','cy');
   await sleep(500);
-  addLine('[!!] HTTP (unencrypted) login form intercepted','cr');
+  addLine('[!!] HTTP login form intercepted','cr');
   await sleep(300);
   addLine('[*]  Decoding URL-encoded POST body...','cg2');
   await sleep(400);
-  addLine('[*]  Parsing fields: username, password, remember_me, lsd_token','cg2');
+  addLine('[*]  Parsing fields...','cg2');
   await sleep(500);
-  addLine('[*]  Cross-referencing with session cookie store...','cg2');
+  addLine('[*]  Cross-referencing session cookie store...','cg2');
   await sleep(600);
   addLine('','');
-  addLine('[!!] CREDENTIALS PARSED SUCCESSFULLY','cy');
-  await sleep(300);
+  addLine('[!!] CREDENTIALS CAPTURED — press any key to view','cy');
+  await sleep(200);
   addLine('','');
 
-  // credential box
-  const box=[
-    ['╔══════════════════════════════════════════════════╗','cy box'],
-    ['║            CREDENTIALS CAPTURED                  ║','cy box'],
-    ['╠══════════════════════════════════════════════════╣','cy box'],
-    ['║  USERNAME : bliza_tayo@gmail.com                 ║','cg  box'],
-    ['║  PASSWORD : ••••••••••••• (MD5 hashed)           ║','cg  box'],
-    ['║  SESSION  : eyJhbGciOiJIUzI1NiJ9.bliza...        ║','cg  box'],
-    ['║  CSRF     : lsd_AVo8zCp3w_K5Y...                 ║','cg  box'],
-    ['╠══════════════════════════════════════════════════╣','cy box'],
-    ['║  SOURCE IP: 192.168.1.105                        ║','cgr box'],
-    ['║  USER-AGT : Mozilla/5.0 (Android 14; Chrome/120) ║','cgr box'],
-    ['║  PLATFORM : Facebook Web (m.facebook.com)        ║','cgr box'],
-    ['╠══════════════════════════════════════════════════╣','cy box'],
-    ['║  STATUS   : SESSION HIJACK READY ◀◀◀             ║','cr  box glitch-txt'],
-    ['╚══════════════════════════════════════════════════╝','cy box'],
-  ];
-  for(const [txt,cls] of box){
-    await sleep(90);
-    addLine(txt,cls);
-  }
+  // unlock the keyboard credential trigger
+  credUnlocked=true;
 
-  // ── PHASE 5: SESSION HIJACK ───────────────────────
   await sleep(600);
-  addLine('','');
   statusMsg.innerHTML='<span class="s-hi">PHASE 5</span> — SESSION CLONING';
-  addLine('[*] Injecting session token into local browser profile...','cg2');
+  addLine('[*] Injecting session token into local browser...','cg2');
   await sleep(500);
-  addLine('[*] Cookie set: c_user=100087342, xs=session_token_hash','cg2');
-  await sleep(400);
-  addLine('[*] Spoofing user-agent to match target device...','cg2');
-  await sleep(400);
   addLine('[OK] Authentication bypass complete — logged in as bliza_tayo','cg');
   await sleep(300);
-  addLine('[OK] Session active — full account access obtained','cg');
+  addLine('[OK] Full account access obtained','cg');
   await sleep(400);
   addLine('','');
-  addLine('[>>] Enumerating messages... 847 threads found','cg3');
+  addLine('[>>] Messages enumerated: 847 threads','cg3');
   await sleep(350);
-  addLine('[>>] Enumerating friends... 312 contacts indexed','cg3');
-  await sleep(350);
-  addLine('[>>] Drafting outgoing messages via session API...','cy');
+  addLine('[>>] Contacts indexed: 312','cg3');
   await sleep(350);
   addLine('[>>] Message sent as bliza_tayo → contact_0001 [OK]','cy');
   await sleep(300);
@@ -610,34 +853,10 @@ async function runScript(){
   await sleep(500);
   addLine('','');
   document.getElementById('target-status').textContent='COMPROMISED';
-
-  // done — wait for enter
-  statusMsg.innerHTML='<span class="s-warn">WAITING</span> — CAPTURE PAUSED';
+  statusMsg.innerHTML='<span class="s-warn">MONITORING</span> — SESSION ACTIVE';
   progressFill.style.width='98%';
-  phase=2;
-  enterProm.classList.add('show');
 }
 
-// ══════════════════════════════════════════════════
-// ENTER / CLICK
-// ══════════════════════════════════════════════════
-function showTerminated(){
-  if(phase!==2) return;
-  phase=3;
-  enterProm.classList.remove('show');
-  clearInterval(timerInt);
-  statusMsg.innerHTML='<span class="s-danger">SESSION TERMINATED</span>';
-  progressFill.style.width='100%';
-  progressFill.style.background='var(--r)';
-  termOver.classList.add('show');
-}
-
-document.addEventListener('keydown', e=>{ if(e.key==='Enter') showTerminated(); });
-document.addEventListener('click', ()=>showTerminated());
-
-// ══════════════════════════════════════════════════
-// GO
-// ══════════════════════════════════════════════════
 runScript();
 </script>
 </body>
