@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEC-PEE Reviewer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  :root {
+    --green: #1a7a4a;
+    --green-light: #e8f5ee;
+    --green-mid: #2e9e62;
+    --accent: #f0b429;
+    --dark: #0f2117;
+    --gray: #4a5568;
+    --light: #f9fafb;
+    --border: #c3e6d3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--light);
+    color: var(--dark);
+    font-size: 14.5px;
+    line-height: 1.75;
+  }
+
+  header {
+    background: var(--dark);
+    color: white;
+    padding: 36px 40px 28px;
+    border-bottom: 4px solid var(--green-mid);
+    position: sticky; top: 0; z-index: 99;
+  }
+
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.7rem;
+    font-weight: 800;
+  }
+
+  nav {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 14px 40px;
+    background: white;
+    border-bottom: 2px solid var(--border);
+    position: sticky; top: 92px; z-index: 98;
+  }
+
+  nav a {
+    text-decoration: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--green);
+    padding: 5px 14px;
+    border: 2px solid var(--green);
+    border-radius: 999px;
+    transition: all 0.2s;
+  }
+
+  nav a:hover { background: var(--green); color: white; }
+
+  main { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .chapter {
+    margin-bottom: 56px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+    background: white;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .chapter-header {
+    background: var(--green);
+    color: white;
+    padding: 22px 28px;
+  }
+
+  .chapter-header .label {
+    font-size: 0.72rem;
+    letter-spacing: 2.5px;
+    font-weight: 500;
+    opacity: 0.8;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .chapter-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  .chapter-body { padding: 28px; }
+
+  .section { margin-bottom: 28px; }
+  .section:last-child { margin-bottom: 0; }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--green);
+    border-left: 4px solid var(--green);
+    padding-left: 12px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 14px 0 8px;
+  }
+
+  p { margin-bottom: 10px; color: var(--gray); }
+
+  ul, ol { padding-left: 20px; margin-bottom: 12px; color: var(--gray); }
+  li { margin-bottom: 4px; }
+  li ul, li ol { margin-top: 4px; margin-bottom: 4px; }
+
+  strong { color: var(--dark); font-weight: 500; }
+
+  .term {
+    display: inline-block;
+    font-weight: 700;
+    color: var(--green);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .card {
+    background: var(--green-light);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .card .card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--green);
+    margin-bottom: 6px;
+  }
+
+  .card p { margin: 0; font-size: 0.88rem; }
+
+  .highlight-box {
+    background: #fffbeb;
+    border: 1.5px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    color: var(--dark);
+    font-size: 0.9rem;
+  }
+
+  .highlight-box strong { color: #92610a; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin-bottom: 16px;
+  }
+
+  th {
+    background: var(--green);
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    padding: 10px 14px;
+    text-align: left;
+  }
+
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--gray);
+  }
+
+  tr:nth-child(even) td { background: var(--green-light); }
+
+  .divider {
+    border: none;
+    border-top: 1.5px solid var(--border);
+    margin: 24px 0;
+  }
+
+  @media (max-width: 600px) {
+    header, nav { padding-left: 20px; padding-right: 20px; }
+    main { padding: 24px 16px 60px; }
+    .chapter-body { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>People and Earth's Ecosystem</h1>
+  <h2>GEC-PEE Reviewer</h2>
+</header>
+
+<nav>
+  <a href="#ch1">Ch. 1 – Population Ecology</a>
+  <a href="#ch2">Ch. 2 – Ecosystem Components</a>
+  <a href="#ch3">Ch. 3 – Ecological Relationships</a>
+  <a href="#ch4">Ch. 4 – Feeding Relationships</a>
+  <a href="#ch5">Ch. 5 – Environmental Cycles</a>
+</nav>
+
+<main>
+
+<!-- CHAPTER 1 -->
+<div class="chapter" id="ch1">
+  <div class="chapter-header">
+    <div class="label">Chapter 1</div>
+    <h2>POPULATION ECOLOGY</h2>
+  </div>
+  <div class="chapter-body">
+
+    <div class="section">
+      <h3>What is a Population?</h3>
+      <p>Each species in an ecosystem exists as a population. Members of a population rely on the same resources, are influenced by similar environmental factors and breed with one another. A <span class="term">population</span> consists of a group of interbreeding or potentially interbreeding organisms found in the same space or area at the same time.</p>
+      <p>The study of populations and how they change over time is called <strong>population ecology</strong>. It studies the spatial and temporal patterns in the abundance and distribution of organisms and the mechanisms that produce those patterns — including understanding, explanation, and prediction of population growth, regulation, and dynamics or <strong>demography</strong>.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>Types of Organisms</h3>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">Unitary Organisms</div>
+          <p>Form is highly determinate — a strictly defined number of parts established only during embryogenesis. Pattern of development and final form are <strong>predictable</strong>. Most animals are unitary organisms (e.g., all dogs have four legs).</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Modular Organisms</div>
+          <p>Neither timing nor form is predictable. Grow by repeated iteration of modules, usually yielding a branching pattern. Examples: <strong>plants and many sessile benthic invertebrates</strong>. A single genetic individual (genet) can consist of many modules (ramets) capable of existing as individuals.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>Population Characteristics</h3>
+      <p>A population has several characteristics or attributes which are a <strong>function of the whole group</strong> and not of the individual. The study of the group characteristics of a population, their changes over time, and prediction of future changes is known as <strong>demography</strong>.</p>
+
+      <h4>I. Population Density</h4>
+      <p>The size of the population is represented by its fundamental property called <strong>density</strong> — generally expressed as the number of individuals or the population biomass per unit area or volume.</p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">Crude Density</div>
+          <p>Density per unit of <strong>total space</strong>. Populations do not occupy all space because all area may not be habitable.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Specific / Ecological Density</div>
+          <p>Density per unit of <strong>habitable space</strong>. Includes only the portion of total space that can actually be colonized by the population.</p>
+        </div>
+      </div>
+
+      <h4>Determining Population Size</h4>
+      <ul>
+        <li><strong>Abundance</strong> — absolute number of individuals in population.</li>
+        <li><strong>Numerical Density</strong> — number of individuals per unit area or volume. Used when size of individuals is relatively uniform (mammals, insects, birds).</li>
+        <li><strong>Biomass Density</strong> — expressed in terms of wet weight, dry weight, volume, and carbon and nitrogen weight per unit area or volume.</li>
+      </ul>
+
+      <div class="highlight-box">
+        <strong>Population Density Formula:</strong><br>
+        <strong>Dp = N / A</strong><br>
+        Dp = density of population &nbsp;|&nbsp; N = total population (number of individuals) &nbsp;|&nbsp; A = land area covered by that population
+      </div>
+
+      <h4>II. Natality</h4>
+      <p>Refers to the rate of reproduction or birth per unit time. An expression of the production of new individuals in the population by birth, hatching, germination, or fission.</p>
+      <div class="highlight-box">
+        <strong>Birth Rate / Natality (B) =</strong> Number of births per year ÷ Number of population per year × 1,000
+      </div>
+      <p>The maximum number of births produced per individual under ideal conditions is called <strong>potential natality</strong> (also called reproductive or biotic potential, absolute natality, or maximum natality). Natality depends upon population density and environmental factors.</p>
+
+      <h4>III. Mortality</h4>
+      <p>Refers to the number of deaths for every 1,000 people per year. The death rate is correlated with conditions of a country — level of prosperity, health, or the occurrence of war.</p>
+      <div class="highlight-box">
+        <strong>Mortality Rate =</strong> Number of deaths per year ÷ Number of population per year × 1,000
+      </div>
+      <ul>
+        <li><strong>Minimum / Specific / Potential Mortality</strong> — minimum theoretical loss of individuals under ideal or non-limiting conditions. Even under the best conditions individuals die of old age determined by their physiological longevity.</li>
+        <li><strong>Ecological / Realized Mortality</strong> — death of individuals under existing environmental conditions. Never constant since it varies with the environment. Maximum mortality occurs at the egg, larval, seedling, and old age stages. Affected by density, competition, disease, predation, and environment.</li>
+      </ul>
+
+      <h4>IV. Population Growth</h4>
+      <p>When the number of individuals of a population is plotted on the y-axis and time on the x-axis, a curve is obtained that indicates the trend in growth of population size in a given time. There are two types of growth curves:</p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">1. Sigmoid Curve (S-Curve)</div>
+          <p>When a few organisms are introduced in an area, population increase is <strong>very slow in the beginning</strong>. In the middle phase, increase becomes <strong>very rapid</strong>. In the last phase, increase is <strong>slowed down</strong> until an equilibrium is attained and the population size fluctuates according to the variability of the environment.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">2. J-Shaped Curve</div>
+          <p>In the first phase, there is <strong>no increase</strong> in population size — it needs time to adjust to the new environment. Once established, population <strong>multiplies rapidly</strong>. This increase continues until large amounts of food materials exist in the habitat.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CHAPTER 2 -->
+<div class="chapter" id="ch2">
+  <div class="chapter-header">
+    <div class="label">Chapter 2</div>
+    <h2>COMPONENTS OF ECOSYSTEM</h2>
+  </div>
+  <div class="chapter-body">
+
+    <div class="section">
+      <h3>Biotic & Abiotic Factors</h3>
+      <p><span class="term">Biotic factors</span> refer to the biological influences on organisms within an ecosystem. This includes all ecological community and relationships such as insect-flower relationships, predator-prey relationships, seed dispersal, scavenging, symbiosis (mutualism, parasitism & commensalism), overpopulation, animal behavior, aposematic coloration.</p>
+      <p><span class="term">Abiotic factors</span> are those that relate physical, or nonliving, factors that shape the ecosystem — including temperature, precipitation, humidity, wind, nutrients, substrate (soil), atmospheric gasses, currents, and sunlight.</p>
+      <p>Together, biotic and abiotic factors determine the <strong>survival and growth</strong> of an organism and the <strong>productivity of the ecosystem</strong>.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>Major Abiotic Factors</h3>
+      <ol>
+        <li><strong>Sunlight</strong> — necessary for photosynthesis.</li>
+        <li><strong>Water</strong> — all living things require some; some can live with lesser amounts.</li>
+        <li><strong>Temperature</strong> — all living things have a range in which they can survive; beyond those limits they will have difficult time.</li>
+        <li><strong>Oxygen</strong> — necessary for cellular respiration; others are actually killed by the presence of oxygen (certain bacteria).</li>
+        <li><strong>Soil</strong> — type, pH, amount of water it holds, and available nutrients determine what type of organism can successfully live in or on the soil.</li>
+      </ol>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>Biotic Factor Categories</h3>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">1. Producers / Autotrophs</div>
+          <p>Make their own food through photosynthesis — using carbon dioxide and water to make sugar.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">2. Consumers / Heterotrophs</div>
+          <p>Need to eat food that autotrophs have produced. <strong>Herbivores</strong> eat plants. <strong>Carnivores</strong> eat animals. <strong>Omnivores</strong> eat both.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">3. Decomposers</div>
+          <p>Heterotrophs that break down dead tissue and waste products. They recycle nutrients. Bacteria and fungi are decomposers.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>Important Processes in Ecosystems</h3>
+      <ol>
+        <li><strong>Photosynthesis</strong> — carried out by plants (with chlorophyll). Rate influenced by light intensity, temperature, and availability of water.</li>
+        <li><strong>Decomposition</strong> — the reverse process of photosynthesis, with organic matter being converted into inorganic compounds (like carbon dioxide), accomplished by decomposers such as microorganisms like bacteria and fungi; and larger organisms like earthworms.</li>
+      </ol>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>Factors Influencing Distribution of Plants & Animals</h3>
+
+      <h4>1. Temperature</h4>
+      <p>The ability to withstand extremes in temperature varies widely among plants & animals.</p>
+      <ul>
+        <li><strong>Endotherms</strong> (birds & mammals) — 'hot-blooded'; maintain relatively high body temperatures using the heat by their own metabolism.</li>
+        <li><strong>Ectotherms</strong> (reptiles, amphibians, fish, insects) — body temperatures are largely set by the ambient (surrounding) temperature.</li>
+        <li><strong>Hibernation</strong> = winter dormancy. <strong>Estivation</strong> = summer dormancy.</li>
+        <li>Plants: photosynthesis slows or stops at extreme temps; adapted by having hairs on leaves/stems, more solutes in cytoplasm to reduce freezing point, dark-colored to absorb more heat.</li>
+      </ul>
+
+      <h4>2. Water</h4>
+      <p>Precipitation determines, along with mean temperature, the world-wide distribution of biomes.</p>
+      <ul>
+        <li><strong>Xerophytes</strong> — special means of storing and conserving water; often have few or no leaves (e.g., cacti).</li>
+        <li><strong>Phreatophytes</strong> — plants that grow extremely long roots to acquire moisture at or near the water table.</li>
+        <li><strong>Perennials</strong> — survive by becoming dormant during dry periods, then springing to life when water becomes available.</li>
+        <li><strong>Ephemerals</strong> — germinate in spring following winter rains, grow quickly, flower and produce seeds before dying.</li>
+      </ul>
+
+      <h4>3. Fire</h4>
+      <p>Plants and animals evolved together with fire, making it a necessary element in the survival of many ecosystems.</p>
+      <ul>
+        <li>Many plants depend on fire to heat and scar their seeds as a process for germination.</li>
+        <li>Larger animals generally survive more often than smaller ones.</li>
+        <li>Many birds thrive after a fire when seeds of many trees are dispersed.</li>
+        <li>Insects usually do not survive fires well because their escape range is too small.</li>
+      </ul>
+
+      <h4>4. Light</h4>
+      <p>Light influences daily and seasonal activity patterns of plants and animals. It is necessary for photosynthesis, which is the source of energy in almost all ecosystems.</p>
+      <ul>
+        <li><strong>Gross primary production</strong> — the sun's energy that is assimilated (total photosynthesis); respiration where energy is needed for maintenance and reproduction.</li>
+        <li><strong>Net primary production</strong> — the energy remaining after respiration & stored as organic matter; the energy available to other organisms in a food chain (or food web).</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- CHAPTER 3 -->
+<div class="chapter" id="ch3">
+  <div class="chapter-header">
+    <div class="label">Chapter 3</div>
+    <h2>ECOLOGICAL RELATIONSHIPS</h2>
+  </div>
+  <div class="chapter-body">
+
+    <div class="section">
+      <h3>Community Interactions</h3>
+      <ol>
+        <li><strong>Competition</strong> — happens when organisms of the same or different species attempt to use an ecological resource in the same place at the same time. Plants compete for water, light, minerals, and carbon dioxide. Species that exclude their competitors from part of the ecosystem exhibit <strong>competitive exclusion</strong>.</li>
+        <li><strong>Predation</strong> — an interaction where one organism captures and feeds on another organism. <strong>Predator</strong> = organism that kills and consumes. <strong>Prey</strong> = organism that is killed.</li>
+        <li><strong>Symbiosis</strong> — refers to any relationship in which two species live closely together in communities, but some species interact in a much more intimate way.</li>
+      </ol>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>Three Types of Direct Interaction</h3>
+
+      <h4>1. Mutualism</h4>
+      <p>Occurs when <strong>both species benefit</strong> from the relationship. Ex. Flowers and insect.</p>
+      <ul>
+        <li><strong>Pollination</strong> — pollinator may get food (nectar, pollen), mating advantage, or nesting materials; flowering plant gets efficiency of pollen transfer and mixing of pollen from many plants.</li>
+        <li><strong>Dispersal Mutualisms</strong> — fruits are plant rewards for animal dispersal of seeds; seeds often pass through guts of dispersers without harm.</li>
+        <li><strong>Cleaning Mutualisms</strong> — one species gets food by removing (and eating) ectoparasites of another; partner loses its parasites without having to clean itself.</li>
+        <li><strong>Defense Mutualisms</strong> — one species gets food and/or shelter from another species; other partner gets protection from being eaten. Ex. Ant-Acacia system.</li>
+      </ul>
+
+      <h4>2. Commensalism</h4>
+      <p>Happens when <strong>one member of the association benefits</strong> and the other is <strong>neither helped nor harmed</strong>. Commensalism means literally 'at table together'. Often, the host species provides a home and/or transportation for the other species.</p>
+      <div class="highlight-box">
+        <strong>Example:</strong> Clownfishes live within the waving mass of tentacles of sea anemones. Because most fishes avoid the poisonous tentacles, the clownfishes are protected from predators.
+      </div>
+
+      <h4>3. Parasitism</h4>
+      <p>If one organism lives in or on another organism, obtaining from its host part of all of its nutritional needs.</p>
+      <ul>
+        <li><strong>Ectoparasites</strong> — live on the host (fleas, lice, ticks).</li>
+        <li><strong>Endoparasites</strong> — live in the host (tapeworms, malaria parasite).</li>
+        <li>Animals are parasitized by viruses, bacteria, fungi, protozoans, flatworms, nematodes, insects (fleas, lice), and arachnids (mites).</li>
+        <li>Parasites damage host by consuming its tissues (e.g., hookworms) or liberating toxins (e.g., Tetanus bacilli, Diphtheria bacilli).</li>
+      </ul>
+      <div class="highlight-box">
+        <strong>Parasitism in Plants — Dodder (Cuscuta sp.):</strong> Often found twined round the stems of clover plants or grasses. Penetrates to the host's vascular bundles; obtains organic nutrients, water and mineral salts directly from the host.
+      </div>
+      <div class="highlight-box">
+        <strong>Parasitism in Animals — Schistosoma haematobium:</strong> A parasitic flatworm that completes its life cycle in two hosts — the blood of humans (adults) and the bodies of a snail, Bulinus africanus (larval forms).
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- CHAPTER 4 -->
+<div class="chapter" id="ch4">
+  <div class="chapter-header">
+    <div class="label">Chapter 4</div>
+    <h2>FEEDING RELATIONSHIPS: ENERGY TRANSFER</h2>
+  </div>
+  <div class="chapter-body">
+
+    <div class="section">
+      <h3>Food Chain & Food Web</h3>
+      <p><span class="term">Food Chain</span> refers to a sequence or chain of organisms existing in a natural community in which each link of the chain feeds on the one below and is eaten by the one above.</p>
+      <ul>
+        <li>Seldom more than <strong>six links</strong> in a food chain, with plants on the bottom and the largest carnivores at the top.</li>
+        <li>The source of all food is the activity of autotrophs, mainly <strong>photosynthesis by plants</strong> (called <strong>producers</strong>).</li>
+        <li>This food feeds herbivores, called <strong>primary consumers</strong>.</li>
+        <li>Carnivores that feed on herbivores are called <strong>secondary consumers</strong>.</li>
+        <li>Carnivores that feed on other carnivores are <strong>tertiary (or higher) consumers</strong>.</li>
+      </ul>
+      <p><span class="term">Food Web</span> is a complex pattern of interconnected food chains in a community where the organisms are typically connected by arrows that show the direction of energy flow.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>Trophic Levels</h3>
+      <table>
+        <tr>
+          <th>Trophic Level</th>
+          <th>Organism</th>
+          <th>Example (Grass → Hawk chain)</th>
+        </tr>
+        <tr><td>Level 1</td><td>Producers / Autotrophs</td><td>Grass (10,000 kcal)</td></tr>
+        <tr><td>Level 2</td><td>Primary Consumers / Herbivores</td><td>Grasshopper (1,000 kcal)</td></tr>
+        <tr><td>Level 3</td><td>Secondary Consumers / Carnivores</td><td>Frog (100 kcal)</td></tr>
+        <tr><td>Level 4</td><td>Tertiary Consumers</td><td>Snake (10 kcal)</td></tr>
+        <tr><td>Level 5</td><td>Higher Consumers</td><td>Hawk (1 kcal)</td></tr>
+        <tr><td>Level 5/6</td><td>Decomposers</td><td>Bacteria, Fungi</td></tr>
+      </table>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>Key Terms</h3>
+      <ul>
+        <li><strong>Autotrophic</strong> — mode of nutrition in which the organism is able to synthesize its own energy-rich carbohydrate molecules.</li>
+        <li><strong>Heterotrophic</strong> — mode of nutrition in which an organism is unable to synthesize its own energy-rich carbohydrate molecules; is parasitic or saprophytic on other organisms.</li>
+        <li><strong>Lichen</strong> — a symbiotic relationship between an alga (autotrophic phycobiont) and a fungus (heterotrophic mycobiont). Mutually beneficial to both organisms.</li>
+        <li><strong>Herbivore</strong> — an animal that eats herbage or plant material.</li>
+        <li><strong>Granivore</strong> — a herbivore (such as a rodent) with a diet primarily of grains and seeds.</li>
+        <li><strong>Omnivore</strong> — an animal that eats both plant and animal material.</li>
+        <li><strong>Insectivore</strong> — a predatory animal (such as a shrew or bat) with a diet consisting chiefly of insects.</li>
+        <li><strong>Carnivore</strong> — an animal that feeds on the flesh of other animals.</li>
+        <li><strong>Predator</strong> — an animal that kills and feeds upon another animal.</li>
+        <li><strong>Prey</strong> — an animal that is hunted and killed for food by another animal.</li>
+        <li><strong>Scavengers</strong> (like insect larvae) — occupy the fifth trophic level; preceded by a sixth trophic level.</li>
+      </ul>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>Feeding Relationships & Energy Pyramids</h3>
+
+      <h4>Pyramid of Energy</h4>
+      <p>Energy that is originally stored by the autotrophic plants is dissipated along the food chain. The more links in the food chain, the more dissipated or unusable energy. There is generally a <strong>90 percent loss</strong> at each link of the food chain, creating a pyramid-shaped diagram that is wider at the bottom and narrow at the top.</p>
+
+      <h4>Pyramid of Mass & Numbers</h4>
+      <p>The mass (weight) and numbers of organisms decreases along a food chain (e.g., grass-grasshoppers-frogs-snakes-hawk). It takes many pounds of grass (or numerous grass plants) to support one hawk at the top of a food chain.</p>
+
+      <div class="highlight-box">
+        <strong>Percent Decrease at Each Trophic Level:</strong> To determine the decrease in kilocalories for trophic level #2, subtract 1000 kcal of grasshoppers from 10,000 kcal of grass in trophic level #1 = 9,000 kcal. This decrease in kilocalories is divided by the starting number of kilocalories of grass in trophic level #1 and the result multiplied by 100. [10,000 − 1000 = 9,000; 9,000/10,000 × 100 = <strong>90%</strong>] Depending on the ecosystem, the percent decrease for each trophic level is typically <strong>80% to 90%</strong>.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- CHAPTER 5 -->
+<div class="chapter" id="ch5">
+  <div class="chapter-header">
+    <div class="label">Chapter 5</div>
+    <h2>ENVIRONMENTAL CYCLES AND PROCESSES</h2>
+  </div>
+  <div class="chapter-body">
+
+    <div class="section">
+      <h3>BioGeoChemical Cycles</h3>
+      <p>A <span class="term">Biogeochemical cycle</span> refers to the overall chemical cycles through both the <em>bio</em>logical and the <em>geo</em>logical world. The inorganic nutrients cycle through more than the organisms — they also enter into the atmosphere, the oceans, and even rocks. Each chemical has its own unique cycle, but all of the cycles do have some things in common.</p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">Reservoirs</div>
+          <p>Parts of the cycle where the chemical is held in <strong>large quantities for long periods of time</strong>. Ex. Oceans are a reservoir for water.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Exchange Pools</div>
+          <p>The chemical is held for <strong>only a short time</strong>. Ex. A cloud is an exchange pool.</p>
+        </div>
+      </div>
+      <p>The length of time a chemical is held in an exchange pool or a reservoir is termed its <strong>residence time</strong>.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>The Water Cycle (Hydrologic Cycle)</h3>
+      <p>The <span class="term">water cycle</span> is the paths water takes through its various states — vapor, liquid, soil — as it moves throughout the ocean, atmosphere, groundwater, streams, etc. Energy is supplied by the <strong>sun</strong>, which drives evaporation and the weather systems that move water vapor from place to place.</p>
+
+      <h4>1. Evaporation</h4>
+      <p>The reverse process in which liquid water becomes gaseous. Evaporation occurs when the physical state of water is changed from a liquid state to a gaseous state. About <strong>600 calories of energy</strong> for each gram of water is exchanged during the change of state. Solar radiation, air temperature, vapor pressure, wind, and atmospheric pressure affect the amount of natural evaporation.</p>
+
+      <h4>2. Transpiration</h4>
+      <p>The biological process that occurs mostly in the day. Water inside of plants is transferred from the plant to the atmosphere as water vapor through numerous individual leave openings. Transpiration is greatly affected by the species of plants and the amount of light. Only a small portion of the water that plants absorb is retained in the plants.</p>
+
+      <h4>3. Condensation</h4>
+      <p>The process by which water vapor changes its physical state from a vapor to a liquid. Water vapor condenses onto small airborne particles to form dew, fog, or clouds. Condensation is brought about by cooling of the air or by increasing the amount of vapor in the air to its saturation point. When water vapor condenses back into a liquid state, the same <strong>600 calories of energy per gram</strong> that was needed to make it a vapor is released to the environment.</p>
+
+      <h4>4. Precipitation</h4>
+      <p>Occurs when water condenses from a gaseous state in the atmosphere and falls to earth. Two sub-processes cause clouds to release precipitation: the <strong>coalescence process</strong> and the <strong>ice-crystal process</strong>. Precipitated water may fall into a water body or onto land — it can adhere to surfaces, be carried through stream channels, penetrate the soil, or be intercepted by plants.</p>
+      <p>The portion of precipitation that appears in surface streams is called <strong>runoff</strong>. Surface runoff travels through surface channels to a drainage basin or <strong>watershed</strong>. The total runoff confined in stream channels is called <strong>streamflow</strong>.</p>
+
+      <h4>5. Interception</h4>
+      <p>The process of interrupting the movement of water in the chain of transportation events leading to streams. Interception can take place by vegetal cover or depression storage in puddles and land formations such as rills and furrows.</p>
+
+      <h4>6. Infiltration</h4>
+      <p>The physical process involving movement of water through the boundary area where the atmosphere interfaces with the soil. The infiltration rate depends on the puddling of water at the soil surface, texture and structure of the soil, initial soil moisture content, and the swelling of wetted soils that in turn close cracks in the soil. Water that is infiltrated and stored in the soil can become the water that later is evapotranspired or becomes subsurface runoff.</p>
+
+      <h4>7. Percolation</h4>
+      <p>The movement of water through the soil and its layers, by gravity and capillary forces. Water in the zone of aeration is called <strong>vadose water</strong>; water in the zone of saturation is called <strong>groundwater</strong>. The boundary separating the vadose and the saturation zones is called the <strong>water table</strong>. A geologic formation which transmits water from one location to another in sufficient quantity for economic development is called an <strong>aquifer</strong>.</p>
+
+      <h4>8. Runoff & Storage</h4>
+      <p><strong>Runoff</strong> is flow from a drainage basin or watershed that appears in surface streams. There are three basic locations of water storage: in the atmosphere, on the surface of the earth, and in the ground. Storage occurs as surface storage in oceans, lakes, reservoirs, and glaciers; underground storage occurs in the soil, in aquifers, and in the crevices of rock formations.</p>
+      <div class="highlight-box">
+        <strong>Water Renewal Times:</strong> Atmosphere — every 16 days | Soil moisture — every year | Wetlands — every 5 years | Lake water — about 17 years | Groundwater — can exceed 1,400 years.
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>The Carbon Cycle</h3>
+      <p><span class="term">Carbon cycle</span> is the movement of carbon, in its many forms, between the biosphere, atmosphere, oceans, and geosphere.</p>
+      <ul>
+        <li><strong>Plants</strong> obtain carbon dioxide from the air and, through photosynthesis, incorporate carbon into their tissues.</li>
+        <li><strong>Producers & consumers</strong> transform part of the carbon in their food back into carbon dioxide via respiration.</li>
+        <li><strong>Decomposers</strong> release the carbon tied up in dead plants & animals into the atmosphere.</li>
+        <li>The <strong>chief reservoirs</strong> for carbon dioxide are in the oceans and in rock. Carbon dioxide dissolves readily in water and may precipitate as a solid rock known as <strong>calcium carbonate (limestone)</strong>.</li>
+        <li>Fossil fuels can be mined and burned in the future, releasing carbon dioxide to the atmosphere. Carbon in limestone can only be released when subducted and brought to volcanoes, or when pushed to the surface and slowly weathered away.</li>
+      </ul>
+
+      <h4>Respiration vs. Photosynthesis</h4>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">Respiration</div>
+          <p>Takes carbohydrates and oxygen and combines them to produce <strong>carbon dioxide, water, and energy</strong>.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Photosynthesis</div>
+          <p>Takes carbon dioxide and water and produces <strong>carbohydrates and oxygen</strong>. Outputs of respiration are the inputs of photosynthesis, and vice versa.</p>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <strong>Global Carbon Cycle imbalance:</strong> Atmospheric CO₂ levels are rising rapidly — currently 25% above pre-industrial revolution levels. Burning fossil fuels, slash-and-burn agriculture, deforestation, and unsustainable logging all release carbon dioxide. More CO₂ in the atmosphere causes <strong>global warming</strong> because the carbon dioxide allows more energy to reach the Earth from the sun than it allows escaping from the Earth into space.
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>The Oxygen Cycle</h3>
+      <p>Oxygen is present in the carbon dioxide, in carbohydrates, in water, and as a molecule of two oxygen atoms. Oxygen is released to the atmosphere by autotrophs during photosynthesis and taken up by both autotrophs and heterotrophs during respiration.</p>
+      <p>All of the oxygen in the atmosphere is <strong>biogenic</strong> — it was released from water through photosynthesis by autotrophs.</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">Photosynthesis (Plants)</div>
+          <p>CO₂ + H₂O + sunlight → carbohydrates + O₂<br>Plants "breathe in" CO₂ and "breathe out" O₂.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Respiration (Animals)</div>
+          <p>O₂ + carbohydrates → CO₂ + H₂O + energy<br>Animals breathe in O₂ and breathe out CO₂.</p>
+        </div>
+      </div>
+
+      <p>During the day, plants hold onto some oxygen produced in photosynthesis and use it to break down carbohydrates. At night, plants must absorb oxygen from the air and give off carbon dioxide just as animals do. Even though plants produce approximately <strong>ten times as much oxygen</strong> as they consume at night, night-time consumption of oxygen by plants can create low oxygen conditions in some water habitats.</p>
+
+      <h4>Oxygen in Water</h4>
+      <p>Oxygen in water is known as <strong>dissolved oxygen (DO)</strong>. Oxygen enters water when water runs over rocks and creates tremendous amounts of surface area. <strong>Oxygen uptake rate (O.U.R.)</strong> is the rate at which oxygen is consumed by living organisms in the water. In a healthy ecosystem, the rates of oxygen transfer (being used up) and oxygen uptake are balanced in the water.</p>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>The Nitrogen Cycle</h3>
+      <p>The chief reservoir of nitrogen is the atmosphere, which is about <strong>78% nitrogen</strong>. Nitrogen gas is composed of two nitrogen atoms bound to each other — a pretty non-reactive gas; it takes a lot of energy to break it up and combine with other things.</p>
+      <p>Nitrogen is critically important in forming the amino portions of the amino acids, which in turn form the proteins of our body. All enzymes are proteins, and enzymes carry out almost all of the chemical reactions in your body.</p>
+
+      <h4>Two Ways Nitrogen Gas Is Fixed</h4>
+      <ol>
+        <li><strong>Lightning</strong> — provides enough energy to "burn" the nitrogen and fix it in the form of <strong>nitrate</strong> (nitrogen with three oxygen attached). This process is duplicated in fertilizer factories to produce nitrogen fertilizers.</li>
+        <li><strong>Nitrogen-fixing bacteria</strong> — use special enzymes instead of extreme energy. They come in three forms:
+          <ul>
+            <li>Free-living in the soil</li>
+            <li>Symbiotic, mutualistic with roots of bean plants and other legumes (<strong>rhizobial bacteria</strong>)</li>
+            <li>Photosynthetic cyanobacteria (blue-green algae) found most commonly in water</li>
+          </ul>
+          All fix nitrogen either in the form of nitrate or ammonia. Biological fixation globally adds approximately <strong>140 million metric tons of nitrogen</strong> to ecosystems every year.
+        </li>
+      </ol>
+
+      <h4>Nitrogen Flow</h4>
+      <ul>
+        <li>Most plants take up <strong>nitrate</strong> and convert it to amino acids.</li>
+        <li>Animals acquire all their amino acids when they eat plants.</li>
+        <li>When plants or animals die, nitrogen is returned to the soil. The usual form is <strong>ammonia</strong>.</li>
+        <li><strong>Nitrite bacteria</strong> in the soil and water take up ammonia and convert it to <strong>nitrite</strong> (nitrogen with two oxygen).</li>
+        <li><strong>Nitrate bacteria</strong> take nitrite and convert it to <strong>nitrate</strong>, which can be taken up by plants to continue the cycle.</li>
+      </ul>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section">
+      <h3>The Phosphorus Cycle</h3>
+      <p>The <span class="term">phosphorus cycle</span> is the simplest of the cycles. Phosphorus has only one form, <strong>phosphate</strong>, which is a phosphorous atom with four oxygen atoms. This heavy molecule never makes its way into the atmosphere; it is always part of an organism, dissolved in water, or in the form of rock.</p>
+      <ul>
+        <li>When rock with phosphate is exposed to water, the rock is weathered and goes into solution. <strong>Autotrophs</strong> take this phosphorous up and use it in a variety of ways. It is an important constituent of <strong>cell membranes, DNA, RNA, and ATP</strong>.</li>
+        <li><strong>Heterotrophs (animals)</strong> obtain their phosphorous from the plants they eat. Fungi excel at taking up phosphorous and may form mutualistic symbiotic relationships with plant roots — called <strong>mycorrhizae</strong>; the plant gets phosphate from the fungus and gives the fungus sugars in return.</li>
+        <li>Animals also use phosphorous as a component of <strong>bones, teeth and shells</strong>.</li>
+        <li>When animals or plants die, phosphate may be returned to the soil or water by the decomposers, taken up by another plant, and used again.</li>
+        <li>Eventually the phosphorous is lost at the bottom of the deepest parts of the ocean, where it becomes part of <strong>sedimentary rocks</strong>. It will be released again when the rock is brought to the surface and weathered. Humans often mine rock rich in phosphorous.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+</main>
+</body>
+</html>
