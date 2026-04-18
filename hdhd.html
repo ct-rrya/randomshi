@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Organizational Context — Group 4 · Chapter 10</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0f1117;
+  --surface: #181c27;
+  --surface2: #1e2235;
+  --border: #2a2f45;
+  --text: #e8e4dc;
+  --muted: #7a8099;
+  --accent: #e8a44a;
+  --accent2: #5b8dee;
+  --green: #4caf7d;
+  --red-soft: #e06c6c;
+
+  /* per-student colors */
+  --s1: #e8a44a;
+  --s2: #5b8dee;
+  --s3: #4caf7d;
+  --s4: #c97fd4;
+  --s5: #e06c6c;
+  --s6: #4fc3cf;
+  --s7: #e8d44a;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Citations */
+sup.cite {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--accent);
+  background: rgba(232,164,74,0.15);
+  border: 1px solid rgba(232,164,74,0.3);
+  border-radius: 3px;
+  padding: 1px 4px;
+  margin-left: 2px;
+  cursor: default;
+  vertical-align: super;
+  line-height: 1;
+  white-space: nowrap;
+}
+/* References section */
+.ref-seg {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 30px 32px;
+  margin-top: 24px;
+}
+.ref-seg h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 20px;
+}
+.ref-list { list-style: none; padding: 0; counter-reset: refcount; }
+.ref-list li {
+  counter-increment: refcount;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 8px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+  color: #9aa0b8;
+  line-height: 1.7;
+}
+.ref-list li:last-child { border-bottom: none; }
+.ref-list li::before {
+  content: '[' counter(refcount) ']';
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--accent);
+  margin-top: 3px;
+  white-space: nowrap;
+}
+.ref-list li em { font-style: italic; color: #c0c8d8; }
+.ref-list li a { color: var(--accent2); text-decoration: none; }
+.ref-list li a:hover { text-decoration: underline; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 52px 40px 40px;
+  position: relative;
+  overflow: hidden;
+}
+header::after {
+  content: 'CHAPTER 10';
+  position: absolute;
+  right: -10px; top: 30px;
+  font-family: 'Fraunces', serif;
+  font-size: 8rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.03);
+  letter-spacing: -4px;
+  pointer-events: none;
+  user-select: none;
+}
+.header-inner { max-width: 900px; margin: 0 auto; position: relative; }
+.chip {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: rgba(232,164,74,0.15);
+  color: var(--accent);
+  border: 1px solid rgba(232,164,74,0.3);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+}
+header h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 10px;
+  color: #fff;
+}
+header .subtitle {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 300;
+  margin-bottom: 28px;
+}
+
+/* Group roster */
+.roster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.roster-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 12px 5px 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.roster-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── LAYOUT ── */
+.layout {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 36px 20px 60px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 36px;
+  align-items: start;
+}
+
+/* ── SIDENAV ── */
+nav.sidenav {
+  position: sticky;
+  top: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  font-size: 12.5px;
+}
+nav.sidenav .nav-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+  display: block;
+}
+nav.sidenav a {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--muted);
+  padding: 6px 8px;
+  border-radius: 7px;
+  margin-bottom: 2px;
+  transition: all 0.15s;
+  line-height: 1.35;
+}
+nav.sidenav a:hover { color: var(--text); background: var(--surface2); }
+nav.sidenav a.active { color: #fff; background: var(--surface2); }
+nav.sidenav a .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+/* ── ILO ── */
+.ilo-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 26px 30px;
+  margin-bottom: 32px;
+}
+.ilo-box .ilo-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+  display: block;
+}
+.ilo-box ol {
+  padding-left: 18px;
+  color: #b0b8cc;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.ilo-box li { margin-bottom: 4px; }
+
+/* ── STUDENT SEGMENT ── */
+.segment {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  scroll-margin-top: 20px;
+}
+
+/* Student banner */
+.student-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.student-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+}
+.banner-num {
+  font-family: 'Fraunces', serif;
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.5;
+}
+.banner-info { flex: 1; }
+.banner-name {
+  font-weight: 700;
+  font-size: 15.5px;
+  color: #fff;
+  line-height: 1.2;
+}
+.banner-role {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 1px;
+  font-family: 'DM Mono', monospace;
+}
+.banner-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid;
+  white-space: nowrap;
+  opacity: 0.9;
+}
+
+/* Segment content */
+.seg-body {
+  padding: 28px 30px;
+}
+.seg-body h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.seg-body h3 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  margin: 26px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.seg-body p {
+  color: #c0c8d8;
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+.seg-body p:last-child { margin-bottom: 0; }
+
+/* Def box */
+.def {
+  border-left: 3px solid;
+  background: rgba(255,255,255,0.03);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-size: 14.5px;
+  color: #b8c0d0;
+  line-height: 1.7;
+  font-style: italic;
+}
+.def strong { font-style: normal; }
+
+/* Card grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+.card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.card .ct {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+}
+.card p { font-size: 13.5px; margin: 0; color: #8090a8; line-height: 1.6; }
+
+/* Table */
+.table-wrap { overflow-x: auto; margin: 16px 0; border-radius: 8px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th {
+  background: var(--surface2);
+  color: var(--muted);
+  text-align: left;
+  padding: 10px 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+td {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  color: #b0b8cc;
+  vertical-align: top;
+  line-height: 1.55;
+}
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* List */
+.ll { list-style: none; padding: 0; margin: 12px 0; }
+.ll li {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14.5px;
+  color: #b0b8cc;
+  line-height: 1.6;
+}
+.ll li:last-child { border-bottom: none; }
+.ll li::before {
+  content: '›';
+  font-size: 16px;
+  margin-top: 0px;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+/* Activity box */
+.activity {
+  border: 1px solid;
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin-top: 22px;
+}
+.activity-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: block;
+}
+.activity ol { padding-left: 16px; font-size: 13.5px; line-height: 1.85; }
+.activity li { margin-bottom: 4px; }
+
+/* Summary */
+.summary-seg {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 30px 32px;
+  margin-top: 8px;
+}
+.summary-seg h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 22px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+@media (max-width: 700px) {
+  .layout { grid-template-columns: 1fr; }
+  nav.sidenav { position: static; }
+  .seg-body { padding: 20px 18px; }
+  header { padding: 36px 20px 28px; }
+  .student-banner { padding: 12px 16px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <span class="chip">BSIT 3A · Social &amp; Professional Issues · Group 4</span>
+    <h1>Organizational Context</h1>
+    <p class="subtitle">Chapter 10 · Business Processes · IT Environment · Organizational Culture · Professionalism</p>
+    <div class="roster">
+      <div class="roster-item"><div class="roster-dot" style="background:var(--s1)"></div>Dejito, Bea</div>
+      <div class="roster-item"><div class="roster-dot" style="background:var(--s2)"></div>Dela Pieza, Frances Mae</div>
+      <div class="roster-item"><div class="roster-dot" style="background:var(--s3)"></div>Delos Santos, Bea</div>
+      <div class="roster-item"><div class="roster-dot" style="background:var(--s4)"></div>Doble, Vence Peter</div>
+      <div class="roster-item"><div class="roster-dot" style="background:var(--s5)"></div>Dumon, Justin</div>
+      <div class="roster-item"><div class="roster-dot" style="background:var(--s6)"></div>Fernandez, Kirt Irah</div>
+      <div class="roster-item"><div class="roster-dot" style="background:var(--s7)"></div>Edaño, Merry Apple</div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- SIDENAV -->
+  <nav class="sidenav">
+    <span class="nav-label">Segments</span>
+    <a href="#ilo"><div class="dot" style="background:#444"></div>Learning Outcomes</a>
+    <a href="#s1"><div class="dot" style="background:var(--s1)"></div>Dejito — BP: Definitions</a>
+    <a href="#s2"><div class="dot" style="background:var(--s2)"></div>Dela Pieza — BP: IT Support</a>
+    <a href="#s3"><div class="dot" style="background:var(--s3)"></div>Delos Santos — IT Env: Components</a>
+    <a href="#s4"><div class="dot" style="background:var(--s4)"></div>Doble — IT Env: Infra + Security</a>
+    <a href="#s5"><div class="dot" style="background:var(--s5)"></div>Dumon — Culture: Elements</a>
+    <a href="#s6"><div class="dot" style="background:var(--s6)"></div>Fernandez — Culture: Change Mgmt</a>
+    <a href="#s7"><div class="dot" style="background:var(--s7)"></div>Edaño — Professionalism</a>
+    <a href="#summary"><div class="dot" style="background:#444"></div>Summary</a>
+    <a href="#references"><div class="dot" style="background:var(--accent)"></div>References</a>
+  </nav>
+
+  <main>
+
+    <!-- ILO -->
+    <div class="ilo-box" id="ilo">
+      <span class="ilo-label">Intended Learning Outcomes</span>
+      <ol>
+        <li>Outline the basic parts of a typical IT environment.</li>
+        <li>Explain how IT must support business processes.</li>
+        <li>Identify how an IT professional maintains their professional behavior.</li>
+        <li>Explain how organizational culture can affect IT.</li>
+      </ol>
+    </div>
+
+    <!-- ─── STUDENT 1: Dejito, Bea ─── -->
+    <div class="segment" id="s1">
+      <div class="student-banner" style="background: linear-gradient(90deg, rgba(232,164,74,0.12), transparent);">
+        <div class="banner-num" style="color:var(--s1)">01</div>
+        <div class="banner-info">
+          <div class="banner-name">Dejito, Bea</div>
+          <div class="banner-role">Topic: Business Processes — Definition &amp; Types</div>
+        </div>
+        <div class="banner-badge" style="color:var(--s1); border-color:rgba(232,164,74,0.4)">Business Processes</div>
+      </div>
+      <div class="seg-body">
+        <h2>What Are Business Processes?</h2>
+        <p>Before we understand what IT does inside an organization, we need to understand what the organization <em>does</em> first. Every company, school, government, or institution runs on <strong>business processes</strong> — the structured series of steps that people or systems carry out to produce a specific result.<sup class="cite">[1]</sup></p>
+
+        <div class="def" style="border-color:var(--s1)">
+          <strong style="color:var(--s1)">Business Process:</strong> A collection of related, structured activities or tasks performed by people or systems to deliver a specific service, product, or outcome for a defined audience.<sup class="cite">[2]</sup>
+        </div>
+
+        <h3>Why This Matters to IT</h3>
+        <p>IT does not exist in isolation. Every IT decision — what software to deploy, what servers to maintain, what to secure — must map to what the organization is actually trying to accomplish. An IT professional who does not understand business processes will build things nobody needs, or miss the real problem entirely.<sup class="cite">[1]</sup></p>
+
+        <h3>Three Types of Business Processes</h3>
+        <div class="card-grid">
+          <div class="card">
+            <div class="ct" style="color:var(--s1)">Core Processes</div>
+            <p>Directly create value for the customer or client. Examples: delivering a product, processing an order, teaching a class, treating a patient.</p>
+          </div>
+          <div class="card">
+            <div class="ct" style="color:var(--s1)">Support Processes</div>
+            <p>Enable core processes to run smoothly but do not directly produce the end product. Examples: HR, IT infrastructure, payroll, facilities management.</p>
+          </div>
+          <div class="card">
+            <div class="ct" style="color:var(--s1)">Management Processes</div>
+            <p>Govern and oversee the whole organization. Examples: strategic planning, compliance monitoring, performance reviews, budgeting.</p>
+          </div>
+        </div>
+
+        <h3>Key Characteristics of a Business Process</h3>
+        <ul class="ll">
+          <li style="--c:var(--s1)"><strong>Defined Input &amp; Output</strong> — Every process starts with something (a request, data, raw material) and ends with something (a report, a product, a service).</li>
+          <li><strong>Repeatable</strong> — The same process can be performed consistently across many instances.</li>
+          <li><strong>Measurable</strong> — You can track how long it takes, how much it costs, and how often it succeeds.</li>
+          <li><strong>Value-Adding</strong> — The output should be worth more to the recipient than the inputs were to begin with.</li>
+        </ul>
+
+        <div class="activity" style="border-color:rgba(232,164,74,0.3); background:rgba(232,164,74,0.04)">
+          <span class="activity-label" style="color:var(--s1)">Discussion Questions</span>
+          <ol style="color:#b0b8cc">
+            <li>Name one core, one support, and one management process at CTU-Daanbantayan.</li>
+            <li>If a business process cannot be measured, can IT truly support it? Why or why not?</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── STUDENT 2: Dela Pieza, Frances Mae ─── -->
+    <div class="segment" id="s2">
+      <div class="student-banner" style="background: linear-gradient(90deg, rgba(91,141,238,0.12), transparent);">
+        <div class="banner-num" style="color:var(--s2)">02</div>
+        <div class="banner-info">
+          <div class="banner-name">Dela Pieza, Frances Mae</div>
+          <div class="banner-role">Topic: Business Processes — How IT Supports Them &amp; Real Examples</div>
+        </div>
+        <div class="banner-badge" style="color:var(--s2); border-color:rgba(91,141,238,0.4)">IT &amp; Business</div>
+      </div>
+      <div class="seg-body">
+        <h2>How IT Supports Business Processes</h2>
+        <p>Knowing what a business process is only gets you halfway. The more important question for an IT professional is: <em>how does technology make that process faster, more accurate, more accessible, or more secure?</em><sup class="cite">[1]</sup></p>
+
+        <div class="def" style="border-color:var(--s2)">
+          <strong style="color:var(--s2)">Core Idea:</strong> IT is a means to an end. The "end" is always the business process. IT professionals serve business goals — not the other way around.<sup class="cite">[3]</sup>
+        </div>
+
+        <h3>Five Ways IT Supports Processes</h3>
+        <ul class="ll">
+          <li><strong>Automation</strong> — Eliminates repetitive manual tasks. Example: automated payroll calculation, inventory tracking.<sup class="cite">[1]</sup></li>
+          <li><strong>Communication</strong> — Email, messaging tools, video conferencing. Teams coordinate without being physically together.<sup class="cite">[3]</sup></li>
+          <li><strong>Data Management</strong> — Databases store and retrieve critical information instantly, accurately, and at scale.<sup class="cite">[4]</sup></li>
+          <li><strong>Decision Support</strong> — Analytics dashboards and reports give managers real information to act on — not gut feeling.<sup class="cite">[1]</sup></li>
+          <li><strong>Security &amp; Compliance</strong> — IT protects process integrity and ensures legal and regulatory requirements are met.<sup class="cite">[5]</sup></li>
+        </ul>
+
+        <h3>Side-by-Side: With and Without IT</h3>
+        <div class="table-wrap">
+          <table>
+            <tr>
+              <th>Business Process</th>
+              <th>Without IT</th>
+              <th>With IT Support</th>
+            </tr>
+            <tr>
+              <td>Student Enrollment</td>
+              <td>Manual paper forms, long queues, frequent errors in records</td>
+              <td>Online portal, automated slot management, instant confirmation emails</td>
+            </tr>
+            <tr>
+              <td>Bank Transaction</td>
+              <td>Teller-only, limited to banking hours, paper receipts</td>
+              <td>24/7 ATM and mobile banking, real-time balance updates</td>
+            </tr>
+            <tr>
+              <td>Product Inventory</td>
+              <td>Manual counting, stock errors, delayed reorders</td>
+              <td>Barcode/RFID scanning, automatic reorder triggers, live stock view</td>
+            </tr>
+            <tr>
+              <td>Hospital Patient Records</td>
+              <td>Paper files, risk of loss, slow retrieval across departments</td>
+              <td>Electronic Health Records (EHR), instant cross-department access, audit trails</td>
+            </tr>
+          </table>
+        </div>
+
+        <h3>When IT Fails the Process</h3>
+        <p>IT support can also go wrong. Some common failure modes:</p>
+        <ul class="ll">
+          <li><strong>Automation without understanding</strong> — Automating a broken process just makes you fail faster.</li>
+          <li><strong>Technology-first thinking</strong> — Choosing a trendy tool before understanding what the process actually needs.</li>
+          <li><strong>Poor user adoption</strong> — A system nobody uses solves nothing, no matter how well-built it is.</li>
+        </ul>
+
+        <div class="activity" style="border-color:rgba(91,141,238,0.3); background:rgba(91,141,238,0.04)">
+          <span class="activity-label" style="color:var(--s2)">Discussion Questions</span>
+          <ol style="color:#b0b8cc">
+            <li>Pick one school process you find inefficient. How would you redesign it with IT support?</li>
+            <li>"Automating a broken process just makes you fail faster." Do you agree? Give an example.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── STUDENT 3: Delos Santos, Bea ─── -->
+    <div class="segment" id="s3">
+      <div class="student-banner" style="background: linear-gradient(90deg, rgba(76,175,125,0.12), transparent);">
+        <div class="banner-num" style="color:var(--s3)">03</div>
+        <div class="banner-info">
+          <div class="banner-name">Delos Santos, Bea</div>
+          <div class="banner-role">Topic: IT Environment — The 5 Core Components</div>
+        </div>
+        <div class="banner-badge" style="color:var(--s3); border-color:rgba(76,175,125,0.4)">IT Environment</div>
+      </div>
+      <div class="seg-body">
+        <h2>The IT Environment &amp; Its 5 Components</h2>
+        <p>The <strong>IT environment</strong> is the complete ecosystem of hardware, software, networks, data, and people that an organization uses to manage information and keep operations running. Think of it as the infrastructure behind everything digital in a workplace.<sup class="cite">[4]</sup></p>
+
+        <div class="def" style="border-color:var(--s3)">
+          <strong style="color:var(--s3)">IT Environment:</strong> The full set of infrastructure and systems — physical and logical — that an organization uses to collect, store, process, and communicate information.<sup class="cite">[3]</sup>
+        </div>
+
+        <h3>The 5 Core Components</h3>
+        <div class="card-grid">
+          <div class="card">
+            <div class="ct" style="color:var(--s3)">1. Hardware</div>
+            <p>Physical devices: servers, computers, routers, switches, printers, storage drives, IoT devices. The physical foundation everything else depends on.</p>
+          </div>
+          <div class="card">
+            <div class="ct" style="color:var(--s3)">2. Software</div>
+            <p>Programs that run on hardware: operating systems, business applications (ERP, CRM), custom-built systems, and utilities. What the hardware actually does.</p>
+          </div>
+          <div class="card">
+            <div class="ct" style="color:var(--s3)">3. Network</div>
+            <p>The communication layer: LAN, WAN, Wi-Fi, VPN, internet. Connects all devices and enables data to move between them.</p>
+          </div>
+          <div class="card">
+            <div class="ct" style="color:var(--s3)">4. Data</div>
+            <p>The actual information assets: customer records, financial data, documents, logs. Often the most valuable component — and the most targeted by attackers.</p>
+          </div>
+          <div class="card">
+            <div class="ct" style="color:var(--s3)">5. People</div>
+            <p>IT professionals, end-users, administrators. Technology is only as effective as the people managing and using it. The most unpredictable component.</p>
+          </div>
+        </div>
+
+        <h3>Why All 5 Are Interdependent</h3>
+        <p>A failure in any one component cascades through the others. You cannot treat them as separate:</p>
+        <ul class="ll">
+          <li>Network goes down → Software hosted on servers becomes unreachable → Data is inaccessible → People cannot work.</li>
+          <li>People are untrained → Software is misused → Data becomes corrupted → Hardware resources are wasted.</li>
+          <li>Data is unprotected → Breach occurs → Trust in the entire IT environment collapses.</li>
+        </ul>
+
+        <h3>Mapping CTU's IT Environment</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Component</th><th>CTU-DB Example</th></tr>
+            <tr><td>Hardware</td><td>Computer lab PCs, campus Wi-Fi routers, projectors, printers</td></tr>
+            <tr><td>Software</td><td>School enrollment system, LMS (Moodle/Google Classroom), Microsoft Office</td></tr>
+            <tr><td>Network</td><td>Campus Wi-Fi, internet connection provided by the university</td></tr>
+            <tr><td>Data</td><td>Student records, grades database, faculty documents</td></tr>
+            <tr><td>People</td><td>IT admin staff, students, faculty, registrar personnel</td></tr>
+          </table>
+        </div>
+
+        <div class="activity" style="border-color:rgba(76,175,125,0.3); background:rgba(76,175,125,0.04)">
+          <span class="activity-label" style="color:var(--s3)">Discussion Questions</span>
+          <ol style="color:#b0b8cc">
+            <li>Which of the 5 components do you think is most critical — and most often neglected — in a school setting?</li>
+            <li>Why is "People" considered the most unpredictable component of the IT environment?</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── STUDENT 4: Doble, Vence Peter ─── -->
+    <div class="segment" id="s4">
+      <div class="student-banner" style="background: linear-gradient(90deg, rgba(201,127,212,0.12), transparent);">
+        <div class="banner-num" style="color:var(--s4)">04</div>
+        <div class="banner-info">
+          <div class="banner-name">Doble, Vence Peter</div>
+          <div class="banner-role">Topic: IT Environment — Infrastructure Types &amp; Security</div>
+        </div>
+        <div class="banner-badge" style="color:var(--s4); border-color:rgba(201,127,212,0.4)">Infrastructure</div>
+      </div>
+      <div class="seg-body">
+        <h2>Infrastructure Types &amp; Securing the IT Environment</h2>
+        <p>Once you understand the 5 components of an IT environment, the next question is: <em>where does it all live, and who is responsible for keeping it safe?</em><sup class="cite">[4]</sup> The answer depends on what kind of infrastructure an organization chooses to run.</p>
+
+        <h3>Types of IT Infrastructure</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Type</th><th>Description</th><th>Advantage</th><th>Risk</th></tr>
+            <tr>
+              <td><strong>On-Premise</strong></td>
+              <td>All hardware and software are physically located and managed by the organization itself.</td>
+              <td>Full control, no internet dependency</td>
+              <td>High upfront cost, requires in-house IT staff, vulnerable to physical damage</td>
+            </tr>
+            <tr>
+              <td><strong>Cloud-Based</strong></td>
+              <td>Resources are hosted by a third-party provider (AWS, Azure, Google) and accessed via the internet.</td>
+              <td>Scalable, lower maintenance, accessible anywhere</td>
+              <td>Internet dependency, data is off-site, shared infrastructure risks</td>
+            </tr>
+            <tr>
+              <td><strong>Hybrid</strong></td>
+              <td>A combination: sensitive data stays on-premise, less critical workloads move to the cloud.</td>
+              <td>Flexibility, balance of control and scalability</td>
+              <td>More complex to manage, requires clear data governance policy</td>
+            </tr>
+          </table>
+        </div>
+
+        <h3>Securing Each Layer of the IT Environment</h3>
+        <p>Every component of the IT environment is a potential entry point for attackers. IT professionals must think about security at every layer — not just one:<sup class="cite">[5]</sup></p>
+        <ul class="ll">
+          <li><strong>Physical Security</strong> — Who can physically access server rooms, devices, and cables? Locks, keycards, CCTV.</li>
+          <li><strong>Network Security</strong> — Firewalls, intrusion detection/prevention systems (IDS/IPS), VPNs, network segmentation.</li>
+          <li><strong>Application Security</strong> — Patching vulnerabilities, input validation, strong authentication, code reviews.</li>
+          <li><strong>Data Security</strong> — Encryption at rest and in transit, access controls, backup and recovery strategies.</li>
+          <li><strong>User/People Security</strong> — Security awareness training, phishing simulations, enforcing password policies.</li>
+        </ul>
+
+        <div class="def" style="border-color:var(--s4)">
+          <strong style="color:var(--s4)">Defense in Depth:</strong> No single layer of security is enough. Professional IT security means layering multiple defenses so that if one fails, the next one holds. Attackers have to breach every layer; defenders only have to hold one.
+        </div>
+
+        <h3>Real Scenario: School Switches to Cloud</h3>
+        <p>Suppose CTU decides to move all student records from a local server to Google Drive / cloud storage. New security questions immediately arise:</p>
+        <ul class="ll">
+          <li>Who controls access permissions to the cloud storage?</li>
+          <li>What happens to records if the institution's internet connection goes down?</li>
+          <li>Does the cloud provider's data center comply with Philippine data privacy law (RA 10173)?</li>
+          <li>Who monitors for unauthorized access or data leaks in the cloud?</li>
+        </ul>
+
+        <div class="activity" style="border-color:rgba(201,127,212,0.3); background:rgba(201,127,212,0.04)">
+          <span class="activity-label" style="color:var(--s4)">Discussion Questions</span>
+          <ol style="color:#b0b8cc">
+            <li>If your school had to pick one infrastructure type right now — on-premise, cloud, or hybrid — which would you recommend and why?</li>
+            <li>Which security layer do you think is most often ignored in Philippine schools? What's the consequence of ignoring it?</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── STUDENT 5: Dumon, Justin ─── -->
+    <div class="segment" id="s5">
+      <div class="student-banner" style="background: linear-gradient(90deg, rgba(224,108,108,0.12), transparent);">
+        <div class="banner-num" style="color:var(--s5)">05</div>
+        <div class="banner-info">
+          <div class="banner-name">Dumon, Justin</div>
+          <div class="banner-role">Topic: Organizational Culture — Elements &amp; How Culture Affects IT</div>
+        </div>
+        <div class="banner-badge" style="color:var(--s5); border-color:rgba(224,108,108,0.4)">Org. Culture</div>
+      </div>
+      <div class="seg-body">
+        <h2>Organizational Culture &amp; Its Effect on IT</h2>
+        <p>You can deploy the best technology in the world — and it will still fail if the organization's culture does not support it. Culture is one of the most overlooked but most decisive factors in whether IT succeeds or quietly dies inside an organization.<sup class="cite">[6]</sup></p>
+
+        <div class="def" style="border-color:var(--s5)">
+          <strong style="color:var(--s5)">Organizational Culture:</strong> The shared values, beliefs, behaviors, norms, and assumptions that shape how people in an organization think, act, and interact — with each other, and with technology.<sup class="cite">[7]</sup>
+        </div>
+
+        <h3>Core Elements of Organizational Culture</h3>
+        <div class="card-grid">
+          <div class="card">
+            <div class="ct" style="color:var(--s5)">Values</div>
+            <p>What the organization believes matters most — innovation, efficiency, tradition, collaboration, hierarchy, or openness.</p>
+          </div>
+          <div class="card">
+            <div class="ct" style="color:var(--s5)">Norms</div>
+            <p>Unwritten rules about how things are done. "We never skip approvals, even in emergencies." These override official policies all the time.</p>
+          </div>
+          <div class="card">
+            <div class="ct" style="color:var(--s5)">Leadership Style</div>
+            <p>Top-down authority vs. collaborative decision-making directly controls how IT projects get approved, funded, and trusted.</p>
+          </div>
+          <div class="card">
+            <div class="ct" style="color:var(--s5)">Communication Patterns</div>
+            <p>Whether teams share information freely or in silos determines how well IT systems get adopted and improved over time.</p>
+          </div>
+        </div>
+
+        <h3>How Culture Shapes IT — Both Directions</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Cultural Trait</th><th>Positive IT Impact</th><th>Negative IT Impact</th></tr>
+            <tr>
+              <td>Innovation-friendly</td>
+              <td>Embraces new tools, fast adoption</td>
+              <td>Reckless experimentation, insecure shortcuts</td>
+            </tr>
+            <tr>
+              <td>Risk-averse / traditional</td>
+              <td>Strong compliance, thorough testing</td>
+              <td>Resistance to change, systems become outdated</td>
+            </tr>
+            <tr>
+              <td>Collaborative</td>
+              <td>IT gets real-world feedback, issues get reported</td>
+              <td>Decision-making slows down if consensus is always required</td>
+            </tr>
+            <tr>
+              <td>Siloed / hierarchical</td>
+              <td>Clear approval chains for IT procurement</td>
+              <td>Poor data sharing across departments, redundant systems</td>
+            </tr>
+          </table>
+        </div>
+
+        <p>Note that the same cultural trait can be both helpful and harmful to IT — it depends on context, leadership, and how the culture is managed. This is why IT professionals need to <em>read</em> the culture they work in, not just the technical specs.<sup class="cite">[6]</sup></p>
+
+        <div class="activity" style="border-color:rgba(224,108,108,0.3); background:rgba(224,108,108,0.04)">
+          <span class="activity-label" style="color:var(--s5)">Discussion Questions</span>
+          <ol style="color:#b0b8cc">
+            <li>Describe the culture of CTU-Daanbantayan based on what you observe. Does it help or hurt how technology is used here?</li>
+            <li>Can two organizations use the exact same IT system and get completely different results because of culture? Give a real or hypothetical example.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── STUDENT 6: Fernandez, Kirt Irah ─── -->
+    <div class="segment" id="s6">
+      <div class="student-banner" style="background: linear-gradient(90deg, rgba(79,195,207,0.12), transparent);">
+        <div class="banner-num" style="color:var(--s6)">06</div>
+        <div class="banner-info">
+          <div class="banner-name">Fernandez, Kirt Irah</div>
+          <div class="banner-role">Topic: Organizational Culture — Change Management &amp; Alignment Strategies</div>
+        </div>
+        <div class="banner-badge" style="color:var(--s6); border-color:rgba(79,195,207,0.4)">Change Mgmt</div>
+      </div>
+      <div class="seg-body">
+        <h2>Managing Culture When Introducing IT Change</h2>
+        <p>Introducing a new IT system is never purely a technical challenge. It is always, at least equally, a <em>human</em> challenge. Most IT implementations that fail do not fail because the technology is bad — they fail because the people didn't adopt it.<sup class="cite">[8]</sup></p>
+
+        <h3>Why People Resist New IT Systems</h3>
+        <ul class="ll">
+          <li><strong>"We've always done it this way"</strong> — Long-tenured staff comfortable with existing (often manual) workflows see new systems as threats to their routine.<sup class="cite">[8]</sup></li>
+          <li><strong>Fear of job displacement</strong> — Employees who worry that automation will make their role unnecessary will unconsciously or openly resist IT adoption.<sup class="cite">[1]</sup></li>
+          <li><strong>Low digital literacy</strong> — Staff who lack confidence with technology will find ways to avoid using new systems rather than admit they don't understand them.<sup class="cite">[6]</sup></li>
+          <li><strong>No leadership buy-in</strong> — If management does not visibly use and endorse a new system, employees read this as a signal that it doesn't really matter.<sup class="cite">[8]</sup></li>
+          <li><strong>Poor communication</strong> — If people don't know <em>why</em> a system is changing, they fill the gap with their own assumptions — usually negative ones.<sup class="cite">[8]</sup></li>
+        </ul>
+
+        <h3>Strategies for Aligning IT with Organizational Culture</h3>
+        <ul class="ll">
+          <li><strong>Involve users early</strong> — Include end-users in the design or selection process. People support what they helped create.</li>
+          <li><strong>Communicate the why</strong> — Before the how or the what, explain clearly why the change is happening and what problem it solves for the user — not just the organization.</li>
+          <li><strong>Train thoroughly</strong> — Rollouts without training are setups for failure. Build in adequate training time and make it easy to ask for help.</li>
+          <li><strong>Start with a pilot group</strong> — Roll out to a small, willing group first. Let them become advocates and troubleshooters before the organization-wide launch.</li>
+          <li><strong>Secure visible leadership support</strong> — Get management to use the system publicly. Their visible adoption signals to everyone else that this is real and permanent.</li>
+          <li><strong>Celebrate wins</strong> — When a team or department successfully adopts the new system, acknowledge it. Positive reinforcement shapes culture.</li>
+        </ul>
+
+        <div class="def" style="border-color:var(--s6)">
+          <strong style="color:var(--s6)">Key Insight:</strong> Part of an IT professional's job is understanding the humans, not just the technology. Successful implementation requires empathy, communication, and stakeholder management — not just technical skill.
+        </div>
+
+        <h3>Quick Scenario</h3>
+        <p>A company's IT team wants to replace a manual filing cabinet system with a cloud-based Document Management System (DMS). Senior staff are resistant. What cultural factors might be at play, and what would you do?</p>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Cultural Factor</th><th>Likely Concern</th><th>IT Response</th></tr>
+            <tr><td>Long tenure</td><td>"I know where everything is. This will slow me down."</td><td>Involve them in organizing the folder structure in the new system.</td></tr>
+            <tr><td>Low digital literacy</td><td>"I don't know how to use cloud software."</td><td>Provide hands-on 1:1 training before full launch.</td></tr>
+            <tr><td>Fear of surveillance</td><td>"They'll see everything I access."</td><td>Communicate clearly who has access to what and why.</td></tr>
+          </table>
+        </div>
+
+        <div class="activity" style="border-color:rgba(79,195,207,0.3); background:rgba(79,195,207,0.04)">
+          <span class="activity-label" style="color:var(--s6)">Discussion Questions</span>
+          <ol style="color:#b0b8cc">
+            <li>Think of a time when a new system, app, or process was introduced at school and people resisted it. What was the real reason for the resistance?</li>
+            <li>As a future IT professional, how do you convince a 60-year-old department head to stop using paper and shift to a digital system — without making them feel incompetent?</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── STUDENT 7: Edaño, Merry Apple ─── -->
+    <div class="segment" id="s7">
+      <div class="student-banner" style="background: linear-gradient(90deg, rgba(232,212,74,0.12), transparent);">
+        <div class="banner-num" style="color:var(--s7)">07</div>
+        <div class="banner-info">
+          <div class="banner-name">Edaño, Merry Apple</div>
+          <div class="banner-role">Topic: Professionalism — Traits, Ethics &amp; Professional Behavior</div>
+        </div>
+        <div class="banner-badge" style="color:var(--s7); border-color:rgba(232,212,74,0.4)">Professionalism</div>
+      </div>
+      <div class="seg-body">
+        <h2>Professionalism in IT</h2>
+        <p>Technical skill gets you into the room. Professionalism determines whether you stay, lead, and get trusted with things that matter. In IT, where professionals routinely handle sensitive data, critical systems, and the digital lives of real people — how you carry yourself is not a soft concern. It is a core competency.<sup class="cite">[9]</sup></p>
+
+        <div class="def" style="border-color:var(--s7)">
+          <strong style="color:var(--s7)">Professionalism:</strong> The conduct, behavior, and attitude of a person in accordance with the norms, ethics, and standards of their profession — consistently, not just when observed.<sup class="cite">[9]</sup>
+        </div>
+
+        <h3>6 Core Traits of a Professional IT Person</h3>
+        <div class="card-grid">
+          <div class="card"><div class="ct" style="color:var(--s7)">Reliability</div><p>You do what you said you would do, when you said you would do it. Deadlines and commitments are honored consistently.</p></div>
+          <div class="card"><div class="ct" style="color:var(--s7)">Accountability</div><p>When something goes wrong, you own it. You don't deflect blame or manufacture excuses. You focus on the fix.</p></div>
+          <div class="card"><div class="ct" style="color:var(--s7)">Integrity</div><p>You act ethically even when no one is watching — no unauthorized access, no data misuse, no dishonest reporting.</p></div>
+          <div class="card"><div class="ct" style="color:var(--s7)">Competence</div><p>You keep your skills current. Technology changes constantly — professionals commit to continuous learning, not just past credentials.</p></div>
+          <div class="card"><div class="ct" style="color:var(--s7)">Respect</div><p>You treat colleagues, clients, and users with dignity regardless of their technical skill level or position.</p></div>
+          <div class="card"><div class="ct" style="color:var(--s7)">Confidentiality</div><p>IT professionals regularly access sensitive data. Professional behavior means never disclosing what you are not authorized to share.</p></div>
+        </div>
+
+        <h3>Professional vs. Unprofessional: In Practice</h3>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Situation</th><th>Unprofessional Response</th><th>Professional Response</th></tr>
+            <tr>
+              <td>You caused a bug that's affecting users</td>
+              <td>"That's not my fault. I just followed the specs."</td>
+              <td>"I'm sorry — let me investigate and fix this right away."</td>
+            </tr>
+            <tr>
+              <td>You access a user's files during maintenance</td>
+              <td>Browse files out of curiosity since you have the access</td>
+              <td>Access only what is necessary; document your actions; report anything unusual</td>
+            </tr>
+            <tr>
+              <td>A non-technical client doesn't understand your explanation</td>
+              <td>Get impatient, use more jargon, dismiss their question</td>
+              <td>Rephrase in plain language, use an analogy, ask what part is still unclear</td>
+            </tr>
+            <tr>
+              <td>A deadline is at risk due to unexpected issues</td>
+              <td>Stay silent and hope the problem resolves itself</td>
+              <td>Proactively notify stakeholders and present a revised timeline with a clear plan</td>
+            </tr>
+          </table>
+        </div>
+
+        <h3>IT Codes of Ethics</h3>
+        <p>Several global professional bodies have formalized what ethical IT behavior looks like:</p>
+        <ul class="ll">
+          <li><strong>ACM Code of Ethics</strong> — Contributing to society, avoiding harm, honesty, fairness, and respecting privacy.<sup class="cite">[10]</sup></li>
+          <li><strong>IEEE Code of Ethics</strong> — Prioritizing public safety, honesty in claims, avoiding conflicts of interest, supporting professional development.<sup class="cite">[11]</sup></li>
+          <li><strong>RA 10173 (Data Privacy Act)</strong> — Philippine law governing how personal data must be handled, stored, and protected by organizations and IT professionals.<sup class="cite">[12]</sup></li>
+        </ul>
+
+        <h3>Why Professionalism Is an Organizational Concern</h3>
+        <p>How IT professionals behave shapes how the entire IT department is perceived — and trusted — inside the organization:</p>
+        <ul class="ll">
+          <li>IT teams that communicate proactively earn budget and leadership trust far more easily.</li>
+          <li>Professionals who speak clearly get included in strategic decisions — not just technical tasks.</li>
+          <li>One serious breach of confidentiality can permanently destroy the trust an IT team spent years building.</li>
+          <li>Unprofessional behavior gets IT sidelined. Professional behavior gets IT a seat at the table.</li>
+        </ul>
+
+        <div class="activity" style="border-color:rgba(232,212,74,0.3); background:rgba(232,212,74,0.04)">
+          <span class="activity-label" style="color:var(--s7)">Discussion Questions</span>
+          <ol style="color:#b0b8cc">
+            <li>Honestly rate yourself (1–5) on each of the 6 professional traits. Which one needs the most work before you enter the industry?</li>
+            <li>You discover a security vulnerability in a client's system that your team accidentally introduced. The professional course of action is clear — but it means admitting fault publicly. Walk us through what you would actually do.</li>
+            <li>Why do "soft skills" like communication, empathy, and ethics matter in a technical field? Can you be a great IT professional without them?</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="summary-seg" id="summary">
+      <span class="ilo-label" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:14px">Chapter Summary · Group 4</span>
+      <h2>Lesson Wrap-Up</h2>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Presenter</th><th>Topic</th><th>Key Takeaway</th></tr>
+          <tr><td style="color:var(--s1)">Dejito</td><td>Business Processes: Definitions &amp; Types</td><td>Every IT decision must map to a real business process. Understand the process first.</td></tr>
+          <tr><td style="color:var(--s2)">Dela Pieza</td><td>BP: How IT Supports Them</td><td>IT supports processes through automation, communication, data management, decision support, and security.</td></tr>
+          <tr><td style="color:var(--s3)">Delos Santos</td><td>IT Environment: 5 Components</td><td>Hardware, Software, Network, Data, and People are interdependent — a failure in one cascades through all.</td></tr>
+          <tr><td style="color:var(--s4)">Doble</td><td>IT Env: Infrastructure &amp; Security</td><td>On-premise, cloud, and hybrid each have tradeoffs. Security must be layered across all 5 components.</td></tr>
+          <tr><td style="color:var(--s5)">Dumon</td><td>Org. Culture: Elements &amp; Impact</td><td>Culture determines whether IT succeeds or fails. The same technology produces different results in different cultures.</td></tr>
+          <tr><td style="color:var(--s6)">Fernandez</td><td>Culture: Change Management</td><td>People resist change for real reasons. IT professionals must manage people, not just systems.</td></tr>
+          <tr><td style="color:var(--s7)">Edaño</td><td>Professionalism</td><td>Technical skill gets you hired. Integrity, accountability, and continuous learning determine how far you go.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- REFERENCES -->
+    <div class="ref-seg" id="references">
+      <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:14px">APA Format · Chapter 10</span>
+      <h2>References</h2>
+      <ol class="ref-list">
+        <li>Laudon, K. C., &amp; Laudon, J. P. (2020). <em>Management information systems: Managing the digital firm</em> (16th ed.). Pearson Education.</li>
+        <li>Davenport, T. H. (1993). <em>Process innovation: Reengineering work through information technology</em>. Harvard Business School Press.</li>
+        <li>O'Brien, J. A., &amp; Marakas, G. M. (2011). <em>Introduction to information systems</em> (15th ed.). McGraw-Hill/Irwin.</li>
+        <li>Stair, R., &amp; Reynolds, G. (2018). <em>Principles of information systems</em> (13th ed.). Cengage Learning.</li>
+        <li>Turban, E., Volonino, L., &amp; Wood, G. R. (2015). <em>Information technology for management: Digital strategies for insight, action, and sustainable performance</em> (10th ed.). Wiley.</li>
+        <li>Cameron, K. S., &amp; Quinn, R. E. (2011). <em>Diagnosing and changing organizational culture: Based on the competing values framework</em> (3rd ed.). Jossey-Bass.</li>
+        <li>Schein, E. H. (2010). <em>Organizational culture and leadership</em> (4th ed.). Jossey-Bass.</li>
+        <li>Kotter, J. P. (1996). <em>Leading change</em>. Harvard Business School Press.</li>
+        <li>Reynolds, G. W. (2018). <em>Ethics in information technology</em> (6th ed.). Cengage Learning.</li>
+        <li>Association for Computing Machinery. (2018). <em>ACM code of ethics and professional conduct</em>. <a href="https://www.acm.org/code-of-ethics" target="_blank">https://www.acm.org/code-of-ethics</a></li>
+        <li>Institute of Electrical and Electronics Engineers. (2006). <em>IEEE code of ethics</em>. <a href="https://www.ieee.org/about/corporate/governance/p7-8.html" target="_blank">https://www.ieee.org/about/corporate/governance/p7-8.html</a></li>
+        <li>Republic of the Philippines. (2012). <em>Republic Act No. 10173: Data Privacy Act of 2012</em>. National Privacy Commission. <a href="https://www.privacy.gov.ph/data-privacy-act/" target="_blank">https://www.privacy.gov.ph/data-privacy-act/</a></li>
+      </ol>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  BSIT 3A · Group 4 · Chapter 10 · Social &amp; Professional Issues in IT · CTU–Daanbantayan Campus
+</footer>
+
+<script>
+  const segments = document.querySelectorAll('.segment[id], .ilo-box[id], .summary-seg[id]');
+  const links = document.querySelectorAll('nav.sidenav a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(a => a.classList.remove('active'));
+        const match = document.querySelector(`nav.sidenav a[href="#${e.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { threshold: 0.25 });
+  document.querySelectorAll('[id]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
