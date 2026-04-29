@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>The Cinematic Century · Slide Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none; /* avoid accidental text selection on buttons, fine */
+  }
+
+  :root {
+    --bg: #0c0a08;
+    --surface: #151210;
+    --card: #1c1815;
+    --border: #2e2720;
+    --gold: #c9933a;
+    --gold-light: #e8b96a;
+    --cream: #f0e6d0;
+    --muted: #8a7a68;
+    --accent-red: #8b2e2e;
+    --white: #faf5ec;
+    --film-strip: #1a1612;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    color: var(--cream);
+    position: relative;
+  }
+
+  /* MAIN SLIDE DECK (powerpoint style) */
+  .slides-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease-in-out, visibility 0.35s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 8vw;
+    background: var(--bg);
+  }
+
+  .slide.active-slide {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* custom scroll inside slides (points-grid) */
+  .points-grid::-webkit-scrollbar {
+    width: 5px;
+  }
+  .points-grid::-webkit-scrollbar-track {
+    background: var(--border);
+  }
+  .points-grid::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 6px;
+  }
+
+  /* Film strip header (fixed) */
+  .filmstrip-top {
+    width: 100%;
+    height: 36px;
+    background: var(--film-strip);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border-bottom: 2px solid var(--gold);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 200;
+    overflow: hidden;
+  }
+
+  .filmstrip-top .hole {
+    width: 20px;
+    height: 16px;
+    border-radius: 3px;
+    background: var(--bg);
+    margin: 0 6px;
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
+  }
+
+  .filmstrip-label {
+    flex: 1;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 8px;
+    min-width: 0;
+  }
+
+  /* slide number indicator (original style) */
+  .slide-number {
+    position: fixed;
+    bottom: 24px;
+    right: 32px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    z-index: 150;
+    background: rgba(12,10,8,0.6);
+    backdrop-filter: blur(4px);
+    padding: 4px 12px;
+    border-radius: 40px;
+    letter-spacing: 1px;
+    pointer-events: none;
+  }
+
+  /* ====== POWERPOINT NAVIGATION (next/back) ====== */
+  .nav-controls {
+    position: fixed;
+    bottom: 28px;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .nav-btn {
+    pointer-events: auto;
+    background: rgba(28,24,21,0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 28px;
+    border-radius: 60px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.1em;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+
+  .nav-btn:hover {
+    background: var(--gold);
+    color: var(--bg);
+    border-color: var(--gold-light);
+    transform: scale(1.02);
+  }
+
+  .nav-btn:active {
+    transform: scale(0.98);
+  }
+
+  .nav-btn.disabled {
+    opacity: 0.35;
+    pointer-events: none;
+    filter: grayscale(0.2);
+  }
+
+  /* dot indicators (slide progress) */
+  .slide-dots {
+    position: fixed;
+    bottom: 80px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    z-index: 180;
+    pointer-events: none;
+  }
+
+  .dot {
+    pointer-events: auto;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--muted);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0;
+    margin: 0;
+  }
+
+  .dot.active-dot {
+    background: var(--gold);
+    transform: scale(1.4);
+    box-shadow: 0 0 6px var(--gold);
+  }
+
+  /* ===== ORIGINAL SLIDE STYLES (kept intact) ===== */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(201,147,58,0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 80% at 10% 80%, rgba(139,46,46,0.08) 0%, transparent 60%);
+    z-index: -1;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.6;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(3rem, 9vw, 7.5rem);
+    font-weight: 900;
+    line-height: 0.92;
+    color: var(--white);
+    max-width: 720px;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+  }
+  .hero-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-style: italic;
+    color: var(--muted);
+    max-width: 520px;
+    margin-top: 28px;
+    margin-bottom: 48px;
+    line-height: 1.6;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .reel-deco {
+    position: absolute;
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(280px, 40vw, 520px);
+    opacity: 0.05;
+    pointer-events: none;
+    animation: slowspin 60s linear infinite;
+  }
+  @keyframes slowspin {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+  }
+
+  .intro-slide {
+    width: 100%;
+    max-width: 900px;
+    text-align: left;
+  }
+  .intro-slide .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: block;
+  }
+  .intro-slide blockquote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.3rem, 2.8vw, 1.8rem);
+    color: var(--cream);
+    line-height: 1.7;
+    padding-left: 32px;
+    border-left: 3px solid var(--gold);
+  }
+
+  .act-slide {
+    width: 100%;
+    max-width: 1100px;
+  }
+  .act-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+  .act-number {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(4rem, 10vw, 7rem);
+    font-weight: 900;
+    color: var(--gold);
+    opacity: 0.4;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .act-era {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .act-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 700;
+    color: var(--white);
+  }
+  .act-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+  .act-divider {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold) 0%, transparent 100%);
+    margin-bottom: 40px;
+    opacity: 0.4;
+  }
+
+  /* Video example slides */
+  .example-slide {
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
+  }
+  .example-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+  .example-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 48px;
+    line-height: 1.3;
+  }
+  .video-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    border: 2px solid var(--border);
+  }
+  .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .points-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-right: 12px;
+  }
+  .point-item {
+    padding: 24px 28px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid rgba(201,147,58,0.5);
+    border-radius: 2px;
+  }
+  .point-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    margin-bottom: 12px;
+  }
+  .point-body {
+    font-size: 1rem;
+    color: var(--cream);
+    opacity: 0.9;
+    line-height: 1.7;
+  }
+  .debate-block {
+    margin-top: 32px;
+    padding: 32px 36px;
+    background: rgba(139,46,46,0.1);
+    border: 1px solid rgba(139,46,46,0.25);
+    border-left: 4px solid var(--accent-red);
+    border-radius: 2px;
+  }
+  .debate-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    color: #c06060;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .debate-q {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    color: var(--cream);
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(139,46,46,0.2);
+  }
+
+  .conclusion-slide {
+    width: 100%;
+    max-width: 1000px;
+  }
+  .tension-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 32px 0 40px;
+  }
+  .tension-card {
+    padding: 24px;
+    background: rgba(201,147,58,0.08);
+    border: 1px solid rgba(201,147,58,0.2);
+    border-radius: 2px;
+  }
+  .tension-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    margin-bottom: 12px;
+  }
+  .final-prompts {
+    margin-top: 32px;
+  }
+  .final-prompt {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  .prompt-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+  .prompt-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2.2vw, 1.15rem);
+    color: var(--cream);
+    opacity: 0.9;
+  }
+  .conclusion-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .conclusion-intro {
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: var(--cream);
+    margin-bottom: 40px;
+    line-height: 1.75;
+  }
+
+  @media (max-width: 768px) {
+    .slide { padding: 60px 5vw; }
+    .hero h1 { font-size: clamp(2.4rem, 11vw, 4rem); }
+    .reel-deco { display: none; }
+    .act-number { font-size: 3rem; }
+    .tension-grid { grid-template-columns: 1fr; }
+    .debate-block { padding: 24px 20px; }
+    .hero-meta { gap: 20px; }
+    .act-header { gap: 16px; margin-bottom: 32px; }
+    .points-grid { max-height: 50vh; }
+    
+    /* Film strip responsive */
+    .filmstrip-top .hole {
+      width: 16px;
+      height: 14px;
+      margin: 0 4px;
+    }
+    
+    .filmstrip-label {
+      font-size: 7px;
+      letter-spacing: 0.2em;
+      padding: 0 4px;
+    }
+    
+    /* Navigation layout for tablets */
+    .nav-btn { 
+      padding: 10px 24px; 
+      font-size: 13px; 
+    }
+    
+    .slide-dots { 
+      gap: 10px; 
+      bottom: 90px;
+    }
+    
+    .slide-number { 
+      top: 44px;
+      right: 16px;
+      bottom: auto;
+      font-size: 10px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    /* Film strip - hide some holes, smaller text */
+    .filmstrip-top .hole:nth-child(n+5):nth-child(-n+8),
+    .filmstrip-top .hole:nth-child(n+10):nth-child(-n+13) {
+      display: none;
+    }
+    
+    .filmstrip-label {
+      font-size: 6px;
+      letter-spacing: 0.15em;
+    }
+    
+    /* Minimal, subtle navigation for mobile */
+    .nav-controls {
+      bottom: 20px;
+      flex-direction: row;
+      gap: 16px;
+      padding: 0;
+    }
+    
+    .nav-btn {
+      width: auto;
+      padding: 6px 16px;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      background: rgba(28,24,21,0.7);
+      border: 1px solid rgba(201,147,58,0.4);
+      opacity: 0.7;
+    }
+    
+    .nav-btn:hover,
+    .nav-btn:active {
+      opacity: 1;
+      background: rgba(28,24,21,0.9);
+    }
+    
+    /* Compact dots */
+    .slide-dots {
+      bottom: 52px;
+      gap: 6px;
+    }
+    
+    .dot {
+      width: 6px;
+      height: 6px;
+      opacity: 0.5;
+    }
+    
+    .dot.active-dot {
+      opacity: 1;
+      transform: scale(1.3);
+    }
+    
+    /* Minimal slide number */
+    .slide-number {
+      top: 44px;
+      right: 12px;
+      bottom: auto;
+      font-size: 8px;
+      padding: 2px 8px;
+      opacity: 0.6;
+    }
+  }
+
+  @media (max-width: 480px) {
+    /* Extra small phones - further reduce film strip */
+    .filmstrip-top {
+      height: 32px;
+    }
+    
+    .filmstrip-top .hole {
+      width: 14px;
+      height: 12px;
+      margin: 0 3px;
+    }
+    
+    .filmstrip-label {
+      font-size: 5px;
+      letter-spacing: 0.1em;
+    }
+    
+    .slide-number {
+      top: 40px;
+      font-size: 7px;
+      padding: 2px 6px;
+    }
+    
+    .nav-btn {
+      padding: 5px 12px;
+      font-size: 9px;
+    }
+    
+    .slide-dots {
+      bottom: 48px;
+      gap: 5px;
+    }
+    
+    .dot {
+      width: 5px;
+      height: 5px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="filmstrip-top">
+  <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+  <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+  <div class="filmstrip-label">THE CINEMATIC CENTURY — FROM PEEPSHOWS TO PIXELS</div>
+  <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+  <div class="hole"></div><div class="hole"></div><div class="hole"></div><div class="hole"></div>
+</div>
+
+<div class="slides-container" id="slidesContainer">
+  <!-- SLIDE 1 - HERO -->
+  <section class="slide" data-index="0">
+    <div class="hero">
+      <div class="hero-eyebrow">Film History Discussion</div>
+      <h1>The Cinematic<em>Century</em></h1>
+      <p class="hero-subtitle">From Peep Shows to Pixels — tracing the technological, artistic, and commercial shifts that shaped the movies we watch today.</p>
+      <div class="hero-meta">
+        <div class="meta-item"><span class="meta-label">Format</span><span class="meta-value">Moderated Discussion</span></div>
+        <div class="meta-item"><span class="meta-label">Acts</span><span class="meta-value">5 Eras + Conclusion</span></div>
+        <div class="meta-item"><span class="meta-label">Span</span><span class="meta-value">1895 – Present</span></div>
+      </div>
+      <svg class="reel-deco" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="250" cy="250" r="240" stroke="#c9933a" stroke-width="2"/>
+        <circle cx="250" cy="250" r="180" stroke="#c9933a" stroke-width="1" stroke-dasharray="8 6"/>
+        <circle cx="250" cy="250" r="60" stroke="#c9933a" stroke-width="2"/>
+        <circle cx="250" cy="250" r="20" fill="#c9933a"/>
+        <g stroke="#c9933a" stroke-width="1.5">
+          <circle cx="250" cy="70" r="22"/><circle cx="250" cy="430" r="22"/>
+          <circle cx="70" cy="250" r="22"/><circle cx="430" cy="250" r="22"/>
+          <circle cx="136" cy="136" r="22"/><circle cx="364" cy="364" r="22"/>
+          <circle cx="364" cy="136" r="22"/><circle cx="136" cy="364" r="22"/>
+        </g>
+        <line x1="250" y1="10" x2="250" y2="490" stroke="#c9933a" stroke-width="0.5" stroke-dasharray="4 8"/>
+        <line x1="10" y1="250" x2="490" y2="250" stroke="#c9933a" stroke-width="0.5" stroke-dasharray="4 8"/>
+        <line x1="75" y1="75" x2="425" y2="425" stroke="#c9933a" stroke-width="0.5" stroke-dasharray="4 8"/>
+        <line x1="425" y1="75" x2="75" y2="425" stroke="#c9933a" stroke-width="0.5" stroke-dasharray="4 8"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 - INTRODUCTION -->
+  <section class="slide" data-index="1">
+    <div class="intro-slide">
+      <span class="section-label">Moderator's Introduction</span>
+      <blockquote>"Film is a relatively young art form—barely 130 years old. Yet in that time, it has evolved from a flickering novelty in a vaudeville hall to the dominant storytelling medium of our age. Tonight, we'll break down this history into key 'acts,' not as a dry timeline, but as a series of revolutions: technological, artistic, and industrial. The guiding question is not just <em>'What happened?'</em> but <em>'How did each change redefine what film could be?'"</em></blockquote>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: ACT I -->
+  <section class="slide" data-index="2">
+    <div class="act-slide"><div class="act-header"><div class="act-number">I</div><div class="act-title-block"><div class="act-era">1895 – Late 1920s</div><div class="act-title">The Silent Era — <em>The Birth of a Language</em></div></div></div><div class="act-divider"></div><div class="points-grid"><div class="point-item"><div class="point-title">The Lumières vs. Méliès</div><div class="point-body">Auguste and Louis Lumière filmed actuality (e.g., <em>Workers Leaving the Factory</em>), while Georges Méliès used magic and narrative (<em>A Trip to the Moon</em>). Is film's essential purpose to capture reality or to create illusion?</div></div><div class="point-item"><div class="point-title">The Grammar of Cinema</div><div class="point-body">Early films were static shots. Pioneers like Edwin S. Porter (<em>The Great Train Robbery</em>) and D.W. Griffith (<em>The Birth of a Nation</em>) invented close-ups, cross-cutting, and the narrative edit. How does editing manipulate time, space, and emotion?</div></div><div class="point-item"><div class="point-title">The Universal Language?</div><div class="point-body">Silent film relied on visual storytelling understandable across cultures. What was lost without dialogue? How did actors (Chaplin, Keaton) and title cards compensate?</div></div><div class="debate-block"><div class="debate-label">🗣 Spark Debate</div><div class="debate-q">"Griffith's <em>The Birth of a Nation</em> (1915) was a landmark of cinematic technique but a vile piece of racist propaganda. Can we separate a film's artistic innovations from its harmful content? How should we teach such films today?"</div></div></div></div>
+  </section>
+
+  <!-- Example: Act I -->
+  <section class="slide" data-index="3">
+    <div class="example-slide">
+      <div class="example-label">Act I Example</div>
+      <h2 class="example-title">The Silent Era</h2>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/yvC_xrDqB3s?si=xQN7EoSjTS9JHamn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT II -->
+  <section class="slide" data-index="4"><div class="act-slide"><div class="act-header"><div class="act-number">II</div><div class="act-title-block"><div class="act-era">Late 1920s – Late 1940s</div><div class="act-title">The Golden Age — <em>The Studio System</em></div></div></div><div class="act-divider"></div><div class="points-grid"><div class="point-item"><div class="point-title">The Coming of Sound (1927)</div><div class="point-body">The Jazz Singer was a disruptive technology. It killed some careers and created new genres (the musical, the screwball comedy). But cameras became immobile to stay quiet, and the visual sophistication of the late silent era temporarily regressed.</div></div><div class="point-item"><div class="point-title">The Studio System as Factory</div><div class="point-body">MGM, Warner Bros., Paramount were factories with contracted stars, writers, directors, and even carpenters. What are the pros and cons of a producer-driven system (e.g., Irving Thalberg) vs. a director-driven system?</div></div><div class="point-item"><div class="point-title">Genre Maturation</div><div class="point-body">The 1930s–40s perfected the Western, the gangster film, film noir, and the melodrama. Do genres provide a comforting formula for audiences, or are they a framework for artistic variation?</div></div><div class="debate-block"><div class="debate-label">🗣 Spark Debate</div><div class="debate-q">"The Hays Code (1934–1968) censored sex, violence, and 'socially unacceptable' ideas. Did this 'Golden Age' of Hollywood succeed <em>because of</em> the censorship — forcing writers to be clever and suggestive — or <em>in spite of</em> it?"</div></div></div></div></section>
+
+  <!-- Example: Act II -->
+  <section class="slide" data-index="5">
+    <div class="example-slide">
+      <div class="example-label">Act II Example</div>
+      <h2 class="example-title">The Golden Age</h2>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/6_WUiJEzG10?si=AVh5DVHMSFtuM8h7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT III -->
+  <section class="slide" data-index="6"><div class="act-slide"><div class="act-header"><div class="act-number">III</div><div class="act-title-block"><div class="act-era">1950s – 1970s</div><div class="act-title">Art Cinema — <em>Death of the Studio Monopoly</em></div></div></div><div class="act-divider"></div><div class="points-grid"><div class="point-item"><div class="point-title">The Rivals of Hollywood</div><div class="point-body">Post-WWII, Italian Neorealism (real locations, non-actors, stories of poverty) and the French New Wave (jump cuts, handheld cameras, self-aware characters) rejected Hollywood polish. How did these movements prove that low-budget, personal films could rival studio epics?</div></div><div class="point-item"><div class="point-title">The End of the Studio Monopoly</div><div class="point-body">The 1948 Paramount Decree forced studios to sell their theater chains. Television also stole audiences. Hollywood fought back with widescreen processes like CinemaScope, 'event' films, and more violent/adult content.</div></div><div class="point-item"><div class="point-title">The Anti-Hero Rises — New Hollywood</div><div class="point-body">The late 1960s–70s saw film-school rebels (Coppola, Scorsese, Altman) given control. Films like <em>Bonnie and Clyde</em>, <em>The Godfather</em>, and <em>Taxi Driver</em> featured morally ambiguous protagonists and downbeat endings. Was this a golden age of auteur cinema — or an unsustainable bubble?</div></div><div class="debate-block"><div class="debate-label">🗣 Spark Debate</div><div class="debate-q">"Which era produced 'better' films — the controlled, genre-driven Golden Age (e.g., <em>Casablanca</em>) or the raw, director-driven New Hollywood (e.g., <em>Easy Rider</em>)? Is one simply 'craft' and the other 'art'?"</div></div></div></div></section>
+
+  <!-- Example: Act III (Part 1) -->
+  <section class="slide" data-index="7">
+    <div class="example-slide">
+      <div class="example-label">Act III Example · Part 1</div>
+      <h2 class="example-title">Italian Neorealism</h2>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/H2P4xo9kmPM?si=m4QA64EtaEix1iEp&amp;start=71" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Example: Act III (Part 2) -->
+  <section class="slide" data-index="8">
+    <div class="example-slide">
+      <div class="example-label">Act III Example · Part 2</div>
+      <h2 class="example-title">New Hollywood</h2>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/2ZEPt1SiaHM?si=oOvRByCOvyoEmyX4&amp;start=71" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT IV -->
+  <section class="slide" data-index="9"><div class="act-slide"><div class="act-header"><div class="act-number">IV</div><div class="act-title-block"><div class="act-era">Mid-1970s – 1990s</div><div class="act-title">The Blockbuster — <em>& the Independent Boom</em></div></div></div><div class="act-divider"></div><div class="points-grid"><div class="point-item"><div class="point-title">The Summer Blockbuster is Born</div><div class="point-body"><em>Jaws</em> (1975) and <em>Star Wars</em> (1977) changed the business model from 'many medium films' to 'a few massive hits with saturation marketing and sequels.' What was gained (spectacle, shared cultural moments) and what was lost (mid-budget dramas for adults)?</div></div><div class="point-item"><div class="point-title">The Rise of the Indies</div><div class="point-body">Filmmakers like Spike Lee, the Coen Brothers, and Steven Soderbergh emerged from Sundance. Studios created 'specialty divisions' (e.g., Fox Searchlight) to distribute these films. Can a truly independent film exist if it's ultimately owned by a major studio?</div></div><div class="point-item"><div class="point-title">VHS, Cable & the Secondary Market</div><div class="point-body">For the first time, films could be 'owned' and watched at home. How did this change film viewing from a communal, temporary event to a private, permanent one? How did it save 'cult films' that bombed in theaters?</div></div><div class="debate-block"><div class="debate-label">🗣 Spark Debate</div><div class="debate-q">"Is <em>Star Wars</em> ultimately a force for good or bad in cinema? Did it inspire wonder and innovation — or did it doom Hollywood to perpetual sequel/merchandise-driven storytelling?"</div></div></div></div></section>
+
+  <!-- Example: Act IV -->
+  <section class="slide" data-index="10">
+    <div class="example-slide">
+      <div class="example-label">Act IV Example</div>
+      <h2 class="example-title">The Blockbuster Era</h2>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/NlMrsqJKNcs?si=4FYPKPTjPXP1wjk-&amp;start=71" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT V -->
+  <section class="slide" data-index="11"><div class="act-slide"><div class="act-header"><div class="act-number">V</div><div class="act-title-block"><div class="act-era">2000 – Present</div><div class="act-title">The Digital Age — <em>Pixels, Platforms & Pipelines</em></div></div></div><div class="act-divider"></div><div class="points-grid"><div class="point-item"><div class="point-title">The Digital Revolution</div><div class="point-body">Shooting on digital video (DV) instead of 35mm film democratized filmmaking. The Dogme 95 movement proved you could make a powerful movie with a handheld camcorder. But what is lost when film stock — with its grain, texture, and chemical reaction — is gone? Is it just 'data' now?</div></div><div class="point-item"><div class="point-title">The Superhero Hegemony (MCU Era)</div><div class="point-body">Shared universes, intertextual references, and 'content' over 'standalone stories.' Is the MCU the logical endpoint of the blockbuster model — or a new form of serialized television on a giant screen?</div></div><div class="point-item"><div class="point-title">Streaming Wars (Netflix et al.)</div><div class="point-body">Streaming has made thousands of films instantly accessible but also algorithmic. It has funded ambitious art films (<em>Roma</em>) but de-emphasized the theatrical experience. Is a film you watch on your phone, in 10-minute chunks, still the same film?</div></div><div class="debate-block"><div class="debate-label">🗣 Spark Debate</div><div class="debate-q">"Steven Spielberg once said, 'A streaming movie is a great movie, but it's not a motion picture — it's a television movie.' Is this gatekeeping and snobbery, or a valid defense of a unique art form?"</div><div class="debate-q">"Are we living in a 'post-movie' era where algorithm-friendly 'content' has replaced challenging, ambiguous cinema? Or is great work still being made — <em>Parasite</em>, <em>Get Out</em>, <em>Everything Everywhere All at Once</em> — just harder to find?"</div></div></div></div></section>
+
+  <!-- Example: Act V -->
+  <section class="slide" data-index="12">
+    <div class="example-slide">
+      <div class="example-label">Act V Example</div>
+      <h2 class="example-title">The Digital Age</h2>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/d8BanE_LKMQ?si=OgxBt3lfZBHmGShC&amp;start=71" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONCLUSION SLIDE -->
+  <section class="slide" data-index="13"><div class="conclusion-slide"><div class="conclusion-label">Conclusion</div><p class="conclusion-intro">We've seen film evolve from a silent, 60-second actuality to a 3-hour, CGI-saturated 'experience.' Two tensions have run through our entire discussion:</p><div class="tension-grid"><div class="tension-card"><div class="tension-title">Technology vs. Art</div><div class="tension-body">Every innovation — sound, color, digital, streaming — was first condemned as the 'death of cinema.' And every time, artists adapted and created new beauty.</div></div><div class="tension-card"><div class="tension-title">Spectacle vs. Intimacy</div><div class="tension-body">Film constantly swings between massive, awe-inspiring blockbusters and small, personal, character-driven stories. Neither pole wins permanently.</div></div></div><div class="final-prompts"><div class="final-prompt"><span class="prompt-num">01</span><span class="prompt-text">If you could bring one 'lost' aspect of film history back, what would it be? The standing ovation for a studio logo? The double feature? Midnight movies at a rep house? The 90-minute runtime?</span></div><div class="final-prompt"><span class="prompt-num">02</span><span class="prompt-text">Name a modern film that feels classic — one that could have been made 50 years ago — and one that could <em>only</em> be made today.</span></div><div class="final-prompt"><span class="prompt-num">03</span><span class="prompt-text">Is cinema dying, or simply becoming something we don't recognize yet?</span></div></div></div></section>
+
+  <!-- FINAL VIDEO: The Future of Cinema -->
+  <section class="slide" data-index="14">
+    <div class="example-slide">
+      <div class="example-label">Closing Reflection</div>
+      <h2 class="example-title">The Future of Cinema</h2>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/AfYcCg5QqyQ?si=Dp_8JC5KdqPJzzCZ&amp;start=71" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Slide number display -->
+<div class="slide-number" id="slideNumber">1 / 8</div>
+
+<!-- PowerPoint navigation -->
+<div class="nav-controls">
+  <button class="nav-btn" id="prevBtn">◀ BACK</button>
+  <button class="nav-btn" id="nextBtn">NEXT ▶</button>
+</div>
+<div class="slide-dots" id="dotsContainer"></div>
+
+<script>
+  (function() {
+    const slides = document.querySelectorAll('.slide');
+    let currentIdx = 0;
+    const total = slides.length;
+
+    // Helper: update active slide, buttons, dots, number
+    function updateDeck() {
+      slides.forEach((slide, idx) => {
+        if (idx === currentIdx) {
+          slide.classList.add('active-slide');
+        } else {
+          slide.classList.remove('active-slide');
+        }
+      });
+
+      // update slide number
+      const slideNumberSpan = document.getElementById('slideNumber');
+      if (slideNumberSpan) slideNumberSpan.innerText = `${currentIdx+1} / ${total}`;
+
+      // prev/next disable style
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      if (prevBtn) {
+        if (currentIdx === 0) prevBtn.classList.add('disabled');
+        else prevBtn.classList.remove('disabled');
+      }
+      if (nextBtn) {
+        if (currentIdx === total-1) nextBtn.classList.add('disabled');
+        else nextBtn.classList.remove('disabled');
+      }
+
+      // update dots
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, i) => {
+        if (i === currentIdx) dot.classList.add('active-dot');
+        else dot.classList.remove('active-dot');
+      });
+    }
+
+    function goPrev() {
+      if (currentIdx > 0) {
+        currentIdx--;
+        updateDeck();
+      }
+    }
+    function goNext() {
+      if (currentIdx < total - 1) {
+        currentIdx++;
+        updateDeck();
+      }
+    }
+
+    // build dot indicators
+    const dotsContainer = document.getElementById('dotsContainer');
+    if (dotsContainer) {
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('button');
+        dot.classList.add('dot');
+        if (i === currentIdx) dot.classList.add('active-dot');
+        dot.setAttribute('data-index', i);
+        dot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          currentIdx = i;
+          updateDeck();
+        });
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    // bind buttons
+    const prevEl = document.getElementById('prevBtn');
+    const nextEl = document.getElementById('nextBtn');
+    if (prevEl) prevEl.addEventListener('click', goPrev);
+    if (nextEl) nextEl.addEventListener('click', goNext);
+
+    // keyboard navigation (left/right)
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        goPrev();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        goNext();
+      }
+    });
+
+    // optional touch swipe for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const container = document.querySelector('.slides-container');
+    container.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    container.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const delta = touchEndX - touchStartX;
+      if (Math.abs(delta) > 60) {
+        if (delta > 0) goPrev();
+        else goNext();
+      }
+    });
+
+    // initial active slide
+    updateDeck();
+  })();
+</script>
+</body>
+</html>
