@@ -1,0 +1,255 @@
+/* =========================================================
+   SING SONG — style.css
+   Sections: 1 Variables · 2 Base · 3 Background · 4 Cards
+             5 Hero · 6 Featured · 7 Playlists · 8 Song item
+             9 Footer · 10 Responsive
+   ========================================================= */
+
+/* ---------- 1. VARIABLES ---------- */
+:root {
+  --dark-purple: #210B2C;
+  --wisteria: #BC96E6;
+  --sunglow: #FFD166;
+
+  --text: #F3EAFB;                          /* soft near-white with a purple tint */
+  --text-muted: rgba(243, 234, 251, 0.72);
+  --glass: rgba(188, 150, 230, 0.10);
+  --glass-strong: rgba(188, 150, 230, 0.16);
+  --border: rgba(188, 150, 230, 0.25);
+
+  --radius-lg: 32px;
+  --radius-md: 20px;
+  --radius-sm: 14px;
+}
+
+/* ---------- 2. BASE ---------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  font-family: "Nunito", "Quicksand", "Varela Round", "Segoe UI Rounded", system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(188, 150, 230, 0.18), transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(255, 209, 102, 0.07), transparent 40%),
+    var(--dark-purple);
+  overflow-x: hidden;
+}
+
+/* Shared small uppercase label */
+.label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wisteria);
+}
+
+/* ---------- 3. BACKGROUND BLOBS ---------- */
+.blob {
+  position: fixed;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+}
+.blob-1 { width: 420px; height: 420px; top: -120px; left: -100px; background: var(--wisteria); opacity: 0.35; }
+.blob-2 { width: 340px; height: 340px; top: 45%; right: -120px; background: var(--wisteria); opacity: 0.22; }
+.blob-3 { width: 260px; height: 260px; bottom: -80px; left: 25%; background: var(--sunglow); opacity: 0.14; }
+
+/* Page wrapper */
+.page {
+  width: min(1100px, 100% - 2.5rem);
+  margin: 0 auto;
+  padding: 4rem 0 2rem;
+  display: grid;
+  gap: 2.5rem;
+}
+
+/* ---------- 4. GLASS CARDS (shared) ---------- */
+.card {
+  background: linear-gradient(145deg, var(--glass-strong), var(--glass));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.30);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(188, 150, 230, 0.5);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35), 0 0 40px rgba(188, 150, 230, 0.22);
+}
+
+/* ---------- 5. HERO ---------- */
+.hero { text-align: center; display: grid; justify-items: center; gap: 0.75rem; }
+
+.hero-orb {
+  width: 84px; height: 84px;
+  display: grid; place-items: center;
+  font-size: 2.2rem;
+  color: var(--dark-purple);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--sunglow), var(--wisteria) 85%);
+  box-shadow: 0 0 50px rgba(188, 150, 230, 0.55), 0 0 20px rgba(255, 209, 102, 0.35);
+  margin-bottom: 0.5rem;
+}
+
+.hero-title {
+  font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  background: linear-gradient(180deg, #ffffff 20%, var(--wisteria));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero-subtitle { color: var(--sunglow); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.04em; }
+.hero-desc { max-width: 46ch; color: var(--text-muted); }
+
+/* ---------- 6. FEATURED SONG ---------- */
+.featured {
+  display: grid;
+  grid-template-columns: minmax(200px, 300px) 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.album-art {
+  aspect-ratio: 1;
+  display: grid; place-items: center;
+  font-size: 5rem;
+  color: rgba(33, 11, 44, 0.75);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(circle at 25% 20%, rgba(255, 209, 102, 0.85), transparent 45%),
+    linear-gradient(140deg, var(--wisteria), #7b4fb0 70%, var(--dark-purple));
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 40px rgba(188, 150, 230, 0.3);
+}
+
+.featured-info { display: grid; gap: 0.6rem; }
+.featured-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; }
+.featured-artist { font-size: 1.15rem; color: var(--text-muted); }
+
+.tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.4rem 0 0.8rem; }
+.tag {
+  padding: 0.25rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--wisteria);
+  background: rgba(188, 150, 230, 0.12);
+  border: 1px solid var(--border);
+}
+.tag-accent { color: var(--sunglow); border-color: rgba(255, 209, 102, 0.35); background: rgba(255, 209, 102, 0.08); }
+
+/* Decorative player */
+.progress { height: 6px; border-radius: 999px; background: rgba(188, 150, 230, 0.2); overflow: hidden; }
+.progress-fill { width: 38%; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--wisteria), var(--sunglow)); }
+.time { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem; }
+
+.controls { display: flex; justify-content: center; align-items: center; gap: 1.25rem; margin-top: 0.8rem; }
+.ctrl {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--glass);
+  color: var(--text);
+  font-size: 1rem;
+  cursor: default;
+}
+.ctrl-play {
+  width: 56px; height: 56px;
+  background: var(--sunglow);
+  color: var(--dark-purple);
+  border: none;
+  box-shadow: 0 0 24px rgba(255, 209, 102, 0.35);
+}
+
+/* ---------- 7. PLAYLISTS ---------- */
+.playlists {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.75rem;
+}
+
+.playlist { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.playlist-icon {
+  width: 46px; height: 46px;
+  display: grid; place-items: center;
+  font-size: 1.3rem;
+  color: var(--sunglow);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 209, 102, 0.08);
+  border: 1px solid rgba(255, 209, 102, 0.3);
+}
+.playlist-title { font-size: 1.35rem; font-weight: 800; line-height: 1.25; margin-top: 0.4rem; }
+.playlist-desc { color: var(--text-muted); font-size: 0.95rem; }
+
+/* Where JavaScript will insert songs */
+.song-list {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+  min-height: 60px;
+}
+.song-list:empty {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- 8. SONG ITEM (reusable) ---------- */
+.song-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-sm);
+  background: rgba(188, 150, 230, 0.08);
+  border: 1px solid rgba(188, 150, 230, 0.16);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.song-item:hover { background: rgba(188, 150, 230, 0.16); border-color: rgba(188, 150, 230, 0.35); }
+
+.song-number { font-weight: 800; font-size: 0.85rem; color: var(--sunglow); min-width: 1.6rem; }
+.song-main { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.song-title { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.song-artist { font-size: 0.85rem; color: var(--text-muted); }
+.song-mood {
+  font-size: 0.75rem; font-weight: 700;
+  padding: 0.15rem 0.65rem;
+  border-radius: 999px;
+  color: var(--wisteria);
+  border: 1px solid var(--border);
+}
+.song-icon { color: var(--wisteria); opacity: 0.8; }
+
+/* Template preview section */
+.template-section { display: grid; gap: 0.75rem; max-width: 520px; width: 100%; margin: 0 auto; }
+
+/* ---------- 9. FOOTER ---------- */
+.footer { text-align: center; padding: 2rem 1rem 3rem; font-size: 0.85rem; color: var(--text-muted); opacity: 0.8; }
+
+/* ---------- 10. RESPONSIVE ---------- */
+@media (max-width: 900px) {
+  .featured { grid-template-columns: 1fr; text-align: center; }
+  .album-art { max-width: 300px; width: 100%; margin: 0 auto; }
+  .tags { justify-content: center; }
+}
+
+@media (max-width: 700px) {
+  .playlists { grid-template-columns: 1fr; }   /* single column on mobile */
+  .page { padding-top: 2.5rem; }
+  .card { padding: 1.5rem; }
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  .card, .song-item { transition: none; }
+  .card:hover { transform: none; }
+}

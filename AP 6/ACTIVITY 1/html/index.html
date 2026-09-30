@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SONG DIGI SONG</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/x-icon" href="../assets/logo.svg">
+</head>
+<body>
+
+  <!-- Blurred background blobs (decorative only) -->
+  <div class="blob blob-1" aria-hidden="true"></div>
+  <div class="blob blob-2" aria-hidden="true"></div>
+  <div class="blob blob-3" aria-hidden="true"></div>
+
+  <main class="page">
+
+    <!-- ========== HERO ========== -->
+    <header class="hero">
+      <div class="hero-orb" aria-hidden="true">♪</div>
+      <h1 class="hero-title">SONG DIGI SONG</h1>
+      <p class="hero-subtitle">a highly questionable collection of songs</p>
+      <p class="hero-desc">Songs I love, songs I hate, and songs that probably possess magical powers.</p>
+    </header>
+
+    <!-- ========== FEATURED SONG ========== -->
+    <section class="featured card" aria-labelledby="featured-label">
+      <div class="album-art" id="featured-art" aria-hidden="true">♫</div>
+
+      <div class="featured-info">
+        <p class="label" id="featured-label">Now obsessing over</p>
+        <h2 class="featured-title" id="featured-title">Supernatural</h2>
+        <p class="featured-artist" id="featured-artist">NewJeans</p>
+
+        <div class="tags">
+          <span class="tag" id="featured-genre">K-Pop</span>
+          <span class="tag tag-accent" id="featured-mood">Dreamy</span>
+        </div>
+
+        <div class="player">
+          <div class="progress" aria-hidden="true"><div class="progress-fill"></div></div>
+          <div class="time"><span>1:12</span><span>3:11</span></div>
+          <div class="controls" aria-hidden="true">
+            <button class="ctrl" type="button" tabindex="-1">⏮</button>
+            <button class="ctrl ctrl-play" type="button" tabindex="-1">▶</button>
+            <button class="ctrl" type="button" tabindex="-1">⏭</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PLAYLISTS ========== -->
+    <section class="playlists" aria-label="Playlists">
+
+      <article class="playlist card">
+        <div class="playlist-icon" aria-hidden="true">♡</div>
+        <h2 class="playlist-title">Songs I Effin' Like</h2>
+        <p class="playlist-desc">Unfortunately, these have permanent residency in my brain.</p>
+        <div class="song-list" id="favorite-songs">
+        </div>
+      </article>
+
+      <article class="playlist card">
+        <div class="playlist-icon" aria-hidden="true">✕</div>
+        <h2 class="playlist-title">Songs I Hate</h2>
+        <p class="playlist-desc">Respectfully, please remove these from my ears.</p>
+        <div class="song-list" id="hated-songs">
+        </div>
+      </article>
+
+      <article class="playlist card">
+        <div class="playlist-icon" aria-hidden="true">✦</div>
+        <h2 class="playlist-title">Songs That Would Give Me Magical Powers</h2>
+        <p class="playlist-desc">Play at your own risk.</p>
+        <div class="song-list" id="magical-songs">
+        </div>
+      </article>
+
+      <article class="playlist card">
+        <div class="playlist-icon" aria-hidden="true">☾</div>
+        <h2 class="playlist-title">Songs for Main Character Moments</h2>
+        <p class="playlist-desc">Because apparently walking outside requires a soundtrack.</p>
+        <div class="song-list" id="main-character-songs">
+        </div>
+      </article>
+
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>made with questionable music taste ♡</p>
+  </footer>
+
+       <script src="../js/script.js"></script>
+
+</body>
+</html>
