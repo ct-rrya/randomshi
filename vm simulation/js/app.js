@@ -60,14 +60,62 @@ class AppMain {
     }
 
     bindTopControls() {
-        document.getElementById('sim-btn-sandbox')?.addEventListener('click', () => this.switchToSandboxMode());
-        document.getElementById('sim-btn-hint')?.addEventListener('click', () => this.showSystemHint());
-        document.getElementById('sim-btn-reset')?.addEventListener('click', () => this.promptReset());
-        document.getElementById('sim-btn-demo-load')?.addEventListener('click', () => this.promptLoadDemo());
-        document.getElementById('sim-btn-guide')?.addEventListener('click', () => this.toggleGuideModal());
-        document.getElementById('sim-btn-role-summary')?.addEventListener('click', () => window.usersManager.openEducationalRoleSummary('jdoe'));
-        document.getElementById('sim-btn-clear-audit')?.addEventListener('click', () => this.promptClearAudit());
-        document.getElementById('sim-btn-view-audit')?.addEventListener('click', () => this.openActivityLogModal());
+        const wrapper = document.getElementById('sim-tools-dropdown-wrapper');
+        const trigger = document.getElementById('sim-tools-trigger');
+
+        const closeDropdown = () => {
+            if (wrapper && wrapper.classList.contains('open')) {
+                wrapper.classList.remove('open');
+                trigger?.setAttribute('aria-expanded', 'false');
+            }
+        };
+
+        const toggleDropdown = (e) => {
+            e.stopPropagation();
+            if (wrapper) {
+                const isOpen = wrapper.classList.toggle('open');
+                trigger?.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            }
+        };
+
+        trigger?.addEventListener('click', toggleDropdown);
+
+        // Click outside closes dropdown
+        document.addEventListener('click', (e) => {
+            if (wrapper && !wrapper.contains(e.target)) {
+                closeDropdown();
+            }
+        });
+
+        // Pressing Escape closes dropdown
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeDropdown();
+            }
+        });
+
+        // Helper to run action and close dropdown
+        const runAction = (fn) => {
+            closeDropdown();
+            fn();
+        };
+
+        // Status indicator click: switch back to sandbox if currently in demo mode
+        document.getElementById('sim-mode-badge')?.addEventListener('click', () => {
+            const state = window.systemState?.getState();
+            if (state && state.simulationMode !== 'sandbox') {
+                this.switchToSandboxMode();
+            }
+        });
+
+        document.getElementById('sim-btn-sandbox')?.addEventListener('click', () => runAction(() => this.switchToSandboxMode()));
+        document.getElementById('sim-btn-demo-load')?.addEventListener('click', () => runAction(() => this.promptLoadDemo()));
+        document.getElementById('sim-btn-hint')?.addEventListener('click', () => runAction(() => this.showSystemHint()));
+        document.getElementById('sim-btn-reset')?.addEventListener('click', () => runAction(() => this.promptReset()));
+        document.getElementById('sim-btn-clear-audit')?.addEventListener('click', () => runAction(() => this.promptClearAudit()));
+        document.getElementById('sim-btn-view-audit')?.addEventListener('click', () => runAction(() => this.openActivityLogModal()));
+        document.getElementById('sim-btn-role-summary')?.addEventListener('click', () => runAction(() => window.usersManager.openEducationalRoleSummary('jdoe')));
+        document.getElementById('sim-btn-guide')?.addEventListener('click', () => runAction(() => this.toggleGuideModal()));
     }
 
     switchToSandboxMode() {
@@ -367,6 +415,7 @@ class AppMain {
             if (badgeEl) {
                 badgeEl.textContent = '🎮 SANDBOX MODE';
                 badgeEl.className = 'sim-mode-badge sandbox';
+                badgeEl.title = 'Simulator Mode: Sandbox (Unrestricted system administration)';
             }
             if (descEl) {
                 descEl.textContent = 'Free Exploration System Administration (Actions in any order)';
@@ -378,6 +427,7 @@ class AppMain {
             if (badgeEl) {
                 badgeEl.textContent = '🎬 DEMO MODE';
                 badgeEl.className = 'sim-mode-badge demo';
+                badgeEl.title = 'Simulator Mode: Demonstration Scenario (Click to switch back to Sandbox Mode)';
             }
             if (descEl) {
                 descEl.textContent = 'Demonstration Scenario (jdoe, GRP_Finance, C:\\FinanceData)';

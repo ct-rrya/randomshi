@@ -12,42 +12,52 @@
     <!-- Simulator Top Bar: Interactive Sandbox & Administration Controls -->
     <header class="simulator-topbar">
         <div class="sim-banner-left">
-            <span class="sim-mode-badge sandbox" id="sim-mode-badge">🎮 SANDBOX MODE</span>
-            <span class="sim-mode-desc" id="sim-mode-desc"
-                style="font-size: 11px; color: #a0aec0; margin-left: 6px;">Interactive Sandbox (Free-Play)</span>
+            <span class="sim-mode-badge sandbox" id="sim-mode-badge" title="Simulator Mode Indicator">🎮 SANDBOX MODE</span>
+            <span class="sim-mode-desc" id="sim-mode-desc">Interactive Sandbox (Free-Play)</span>
         </div>
         <div class="sim-banner-right">
-            <button class="sim-control-btn" id="sim-btn-sandbox"
-                title="Switch to interactive sandbox environment for free-play administration">
-                🎮 Sandbox Mode
-            </button>
-            <button class="sim-control-btn" id="sim-btn-demo-load"
-                title="Load pre-configured demonstration scenario (jdoe, GRP_Finance, C:\FinanceData)">
-                ⚡ Load Demo Scenario
-            </button>
-            <button class="sim-control-btn" id="sim-btn-hint"
-                title="View optional guidance and system hints based on current server state">
-                💡 System Hint
-            </button>
-            <button class="sim-control-btn" id="sim-btn-reset" title="Reset simulator to clean state">
-                🧹 Reset Lab
-            </button>
-            <button class="sim-control-btn" id="sim-btn-clear-audit"
-                title="Clear simulated security and administrative audit log">
-                🗑️ Clear Audit Log
-            </button>
-            <button class="sim-control-btn" id="sim-btn-view-audit"
-                title="View Administration and Security Activity Log">
-                📜 Activity Log
-            </button>
-            <button class="sim-control-btn" id="sim-btn-role-summary"
-                title="Educational breakdown: Organizational Role vs Windows Security Group">
-                🎓 Role vs Group (RBAC)
-            </button>
-            <button class="sim-control-btn sim-btn-accent" id="sim-btn-guide"
-                title="Classroom Demonstration Reference Guide">
-                📋 Reference Guide
-            </button>
+            <!-- Compact Collapsible Sandbox Tools Menu -->
+            <div class="sim-tools-dropdown-wrapper" id="sim-tools-dropdown-wrapper">
+                <button type="button" class="sim-tools-trigger-btn" id="sim-tools-trigger" aria-haspopup="true" aria-expanded="false" title="Sandbox & Administration Tools">
+                    <span class="sim-tools-icon">⚙</span>
+                    <span class="sim-tools-label">Sandbox Tools</span>
+                    <span class="sim-tools-arrow">▾</span>
+                </button>
+                <div class="sim-tools-menu" id="sim-tools-menu" role="menu" aria-label="Sandbox Tools">
+                    <div class="sim-tools-menu-header">SANDBOX TOOLS</div>
+                    <div class="sim-tools-menu-list">
+                        <button type="button" class="sim-tools-item" id="sim-btn-demo-load" role="menuitem" title="Load pre-configured demonstration scenario (jdoe, GRP_Finance, C:\FinanceData)">
+                            <span class="sim-item-icon">⚡</span>
+                            <span class="sim-item-label">Load Demo Scenario</span>
+                        </button>
+                        <button type="button" class="sim-tools-item" id="sim-btn-hint" role="menuitem" title="View optional guidance and system hints based on current server state">
+                            <span class="sim-item-icon">💡</span>
+                            <span class="sim-item-label">System Hint</span>
+                        </button>
+                        <button type="button" class="sim-tools-item" id="sim-btn-reset" role="menuitem" title="Reset simulator to clean state">
+                            <span class="sim-item-icon">↻</span>
+                            <span class="sim-item-label">Reset Lab</span>
+                        </button>
+                        <button type="button" class="sim-tools-item" id="sim-btn-clear-audit" role="menuitem" title="Clear simulated security and administrative audit log">
+                            <span class="sim-item-icon">🗑</span>
+                            <span class="sim-item-label">Clear Audit</span>
+                        </button>
+                        <div class="sim-tools-menu-sep"></div>
+                        <button type="button" class="sim-tools-item" id="sim-btn-view-audit" role="menuitem" title="View Administration and Security Activity Log">
+                            <span class="sim-item-icon">📋</span>
+                            <span class="sim-item-label">Activity Log</span>
+                        </button>
+                        <button type="button" class="sim-tools-item" id="sim-btn-role-summary" role="menuitem" title="Educational breakdown: Organizational Role vs Windows Security Group">
+                            <span class="sim-item-icon">🔐</span>
+                            <span class="sim-item-label">Role vs Group (RBAC)</span>
+                        </button>
+                        <button type="button" class="sim-tools-item" id="sim-btn-guide" role="menuitem" title="Classroom Demonstration Reference Guide">
+                            <span class="sim-item-icon">📖</span>
+                            <span class="sim-item-label">Reference Guide</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
